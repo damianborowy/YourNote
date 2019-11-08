@@ -17,5 +17,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared\YourNote.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
 
 </Project>

@@ -1,7 +1,8 @@
-﻿
-<BSCard Color="@GetColorAsEnum()">
+﻿<BSCard Class="note" Color="@GetColorAsEnum()" @onclick=@(() => ModalRef.Show())>
     <BSCard CardType="CardType.Header">
-        @Title
+        <span class="note__title">
+            @Title
+        </span>
     </BSCard>
     <BSCard CardType="CardType.Body">
         <BSCard CardType="CardType.Text">
@@ -10,16 +11,17 @@
     </BSCard>
 </BSCard>
 
-<BSModal IsCentered="true">
-    <BSModalHeader>
+
+<BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
+    <BSModalHeader OnClick="@(() => ModalRef.Hide())">
         @Title
     </BSModalHeader>
     <BSModalBody>
         @ChildContent
     </BSModalBody>
     <BSModalFooter>
-        <BSButton Color="BlazorStrap.Color.Primary">Some button</BSButton>
-        <BSButton Color="BlazorStrap.Color.Secondary">Some other button</BSButton>
+        <BSButton Color="BlazorStrap.Color.Primary">Submit</BSButton>
+        <BSButton Color="BlazorStrap.Color.Secondary" OnClick="@(() => ModalRef.Hide())">Cancel</BSButton>
     </BSModalFooter>
 </BSModal>
 
@@ -33,7 +35,9 @@
     [Parameter]
     public int Color { get; set; } = 3;
 
-    public BlazorStrap.Color GetColorAsEnum()
+    BSModal ModalRef;
+
+    private BlazorStrap.Color GetColorAsEnum()
     {
         return (BlazorStrap.Color)Color;
     }
