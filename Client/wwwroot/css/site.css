@@ -7,6 +7,12 @@ html, body {
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.wrapper {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))
+}
+
 .note {
     cursor: pointer;
 }
@@ -14,4 +20,19 @@ html, body {
 .note__title {
     overflow-wrap: break-word;
     word-break: break-word;
+}
+
+/* Overriding bootstrap values */
+.modal-header .modal-title {
+    width: 100%;
+}
+
+.modal__title {
+    outline: none;
+}
+
+.modal__content {
+    outline: none;
+    resize: none;
+    overflow: auto;
 }
