@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using System.Linq;
+using YourNote.Server.Services;
 
 namespace YourNote.Server
 {
@@ -20,6 +21,7 @@ namespace YourNote.Server
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
+            services.AddTransient<NhibernateService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
