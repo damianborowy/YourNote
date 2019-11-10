@@ -46,7 +46,7 @@ namespace YourNote.Server.Services
                 .Password(Password)))
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<NoteMap>())
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(false, false))
+                .Create(true, true))
                 .BuildSessionFactory();
         }
 

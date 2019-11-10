@@ -37,16 +37,39 @@ namespace YourNote.Server.Controllers
 
             //var completeList = session.CreateCriteria<Object>().List();
             Note testNote = new Note();
-            testNote.Owner = "Notatka na serwerze";
-            //session.Save(testNote);
 
-            var completeList = session.Statistics;
+            Note testNote1 = new Note();
+            testNote.Owner = "Notatka na serwerze2";
+            testNote1.Owner = "Notatka na serwerze3";
+            testNote1.ID = 1;
+           /* using (var transaction = session.BeginTransaction())
+            {
+
+                session.Save(testNote);
+                
+                transaction.Commit();
+                transaction.Dispose();
+                
+            }*/
+
+            using (var transaction = session.BeginTransaction())
+            {
+
+                session.Save(testNote1);
+
+                transaction.Commit();
+                transaction.Dispose();
+                
+            }
+
+
+            //var completeList = session.Statistics;
 
             IEnumerable<Note> notes = Enumerable.Range(1, 5).Select(index => new Note
             {
                 ID = index,
                 Owner = session.IsConnected + "",
-                Title = completeList.ToString(),
+                Title = "DI",
                 Color = 0,
                 Content = session.ToString(),
                 Date = DateTime.Now,
