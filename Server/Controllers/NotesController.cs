@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHibernate;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using YourNote.Server.Services;
 using YourNote.Shared.Models;
 
@@ -12,30 +10,28 @@ namespace YourNote.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NoteController : ControllerBase
+    public class NotesController : ControllerBase
     {
-        private readonly ILogger<NoteController> logger;
+        private readonly ILogger<NotesController> logger;
         private readonly NhibernateService nhibernateService;
 
-
-        public NoteController(ILogger<NoteController> logger,
+        public NotesController(ILogger<NotesController> logger,
             NhibernateService nhibernateService)
         {
             this.logger = logger;
             this.nhibernateService = nhibernateService;
-
         }
 
-        // GET: api/Note
+        // GET: api/Notes
         [HttpGet]
         public IEnumerable<Note> GetAllNotes()
         {
             #region Dodawanie notatek testowo
+
             /*
             using (var session = GetSession())
             using (ITransaction tx = session.BeginTransaction())
             {
-
                 var note = new Note();
 
                 note.Title = "DDDDD";
@@ -46,7 +42,6 @@ namespace YourNote.Server.Controllers
             using (var session = GetSession())
             using (ITransaction tx = session.BeginTransaction())
             {
-
                 var note = new Note();
 
                 note.Title = "ZZZZZ";
@@ -56,15 +51,14 @@ namespace YourNote.Server.Controllers
             }
 
             */
-            #endregion
+
+            #endregion Dodawanie notatek testowo
 
             using (var session = GetSession())
                 return session.QueryOver<Note>().List<Note>();
-
-
         }
 
-        // GET: api/Note/5
+        // GET: api/Notes/5
         [HttpGet("{id}", Name = "Get")]
         public IEnumerable<Note> GetNoteById(int id)
         {
@@ -72,24 +66,19 @@ namespace YourNote.Server.Controllers
                 return session.QueryOver<Note>().Where(n => n.ID == id).List<Note>();
         }
 
-        // POST: api/Note
+        // POST: api/Notes
         [HttpPost]
         public void Post([FromBody] Note note)
         {
-
             AddNote(note);
-
         }
 
-        // PUT: api/Note/5
-        [HttpPut]
-        public void Put([FromBody] Note note)
+        // PUT: api/Notes/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] Note note)
         {
-
-
-            AddNote(note);
-
-
+            AddNote(note, id);
+            Ok();
         }
 
         // DELETE: api/ApiWithActions/5
@@ -99,50 +88,41 @@ namespace YourNote.Server.Controllers
             using (var session = GetSession())
             using (var tx = session.BeginTransaction())
             {
-
                 session.Delete(id);
                 session.Flush();
                 tx.Commit();
             }
-
-
-
         }
 
-
-
-
-
-
         #region Private methods
-
 
         private ISession GetSession()
         {
             return nhibernateService.OpenSession();
         }
 
-
-        private void AddNote(Note note)
+        private void AddNote(Note note, int id = -1)
         {
             using (var session = GetSession())
-                using (ITransaction tx = session.BeginTransaction())
+            using (ITransaction tx = session.BeginTransaction())
+            {
+                try
                 {
-                    try
-                    {
-                    session.SaveOrUpdate(note);
+                    if (id == -1)
+                        session.SaveOrUpdate(note);
+                    else
+                        session.SaveOrUpdate("Note", note, id);
                     session.Flush();
                     tx.Commit();
-                    }
-                    catch (NHibernate.HibernateException)
-                    {
+                }
+                catch (NHibernate.HibernateException)
+                {
                     tx.Rollback();
                     throw;
-                    }
+                }
             }
-
         }
 
-        #endregion
+        #endregion Private methods
     }
 }

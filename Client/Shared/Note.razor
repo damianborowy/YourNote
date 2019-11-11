@@ -23,7 +23,7 @@
             <textarea rows="4" class="form-control text-light bg-dark modal__content" value="@Content" />
         </BSModalBody>
         <BSModalFooter>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit"  class="btn btn-primary">Submit</button>
             <BSButton Color="BlazorStrap.Color.Secondary" OnClick="@(() => ModalRef.Hide())">Cancel</BSButton>
         </BSModalFooter>
     </form>
@@ -32,6 +32,9 @@
 @code {
     [Parameter]
     public string Title { get; set; }
+
+    [Parameter]
+    public Note Note { get; set; }
 
     [Parameter]
     public string Content { get; set; }

@@ -36,6 +36,7 @@ namespace YourNote.Server.Services
         public static ISessionFactory CreateSessionFactory()
         {
 
+            bool createNew = false;
            
             return Fluently.Configure()
                 .Database(PostgreSQLConfiguration.PostgreSQL81
@@ -49,7 +50,7 @@ namespace YourNote.Server.Services
                 .AddFromAssemblyOf<NoteMap>()
                 .AddFromAssemblyOf<UserMap>())
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(false, false))
+                .Create(createNew, createNew))
                 .BuildSessionFactory();
         }
 
