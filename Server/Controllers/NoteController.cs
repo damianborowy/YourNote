@@ -11,19 +11,19 @@ using YourNote.Shared.Models;
 namespace YourNote.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class NoteController : ControllerBase
     {
         private readonly ILogger<NoteController> logger;
         private readonly NhibernateService nhibernateService;
-        private readonly ISession session;
+
 
         public NoteController(ILogger<NoteController> logger,
             NhibernateService nhibernateService)
         {
             this.logger = logger;
             this.nhibernateService = nhibernateService;
-            
+
         }
 
         // GET: api/Note
@@ -60,7 +60,7 @@ namespace YourNote.Server.Controllers
 
             using (var session = GetSession())
                 return session.QueryOver<Note>().List<Note>();
-           
+
 
         }
 
@@ -74,14 +74,22 @@ namespace YourNote.Server.Controllers
 
         // POST: api/Note
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Note note)
         {
+
+            AddNote(note);
+
         }
 
         // PUT: api/Note/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public void Put([FromBody] Note note)
         {
+
+
+            AddNote(note);
+
+
         }
 
         // DELETE: api/ApiWithActions/5
@@ -96,19 +104,45 @@ namespace YourNote.Server.Controllers
                 session.Flush();
                 tx.Commit();
             }
-            
-                
-            
+
+
+
         }
 
 
 
 
+
+
+        #region Private methods
 
 
         private ISession GetSession()
         {
-            return nhibernateService.OpenSession(); 
+            return nhibernateService.OpenSession();
         }
+
+
+        private void AddNote(Note note)
+        {
+            using (var session = GetSession())
+                using (ITransaction tx = session.BeginTransaction())
+                {
+                    try
+                    {
+                    session.SaveOrUpdate(note);
+                    session.Flush();
+                    tx.Commit();
+                    }
+                    catch (NHibernate.HibernateException)
+                    {
+                    tx.Rollback();
+                    throw;
+                    }
+            }
+
+        }
+
+        #endregion
     }
 }
