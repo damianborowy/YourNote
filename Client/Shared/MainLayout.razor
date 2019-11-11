@@ -1,15 +1,15 @@
 ﻿@inherits LayoutComponentBase
+@inject IBootstrapCSS BootstrapCSS
 
-<div class="sidebar">
-    <NavMenu />
+<NavMenu />
+
+<div class="container wrapper">
+    @Body
 </div>
 
-<div class="main">
-    <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
-
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await BootstrapCSS.SetBootstrapCSS("Cyborg", "latest");
+    }
+}
