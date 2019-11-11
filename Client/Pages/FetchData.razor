@@ -1,12 +1,12 @@
 ﻿@page "/fetchdata"
-@using YourNote.Shared
+@using YourNote.Shared.Models
 @inject HttpClient Http
 
 <h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (notes == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -16,31 +16,43 @@ else
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>ID</th>
+                <th>Owner</th>
+                <th>Title</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var notes in notes)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@notes.Date.ToShortDateString()</td>
+                    <td>@notes.ID</td>
+                    <td>@notes.Owner</td>
+                    <td>@notes.Title</td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
+
+
+
+
 @code {
-    WeatherForecast[] forecasts;
+
+    Note[] notes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        notes = await Http.GetJsonAsync<Note[]>("Note");
+    }
+
+    /*WeatherForecast[] forecasts;
 
     protected override async Task OnInitializedAsync()
     {
         forecasts = await Http.GetJsonAsync<WeatherForecast[]>("WeatherForecast");
-    }
+    }*/
 
 }
