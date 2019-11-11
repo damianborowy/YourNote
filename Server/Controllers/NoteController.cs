@@ -1,40 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Http;
+﻿//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NHibernate;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using YourNote.Server.Services;
 using YourNote.Shared.Models;
-using NHibernate;
+
 namespace YourNote.Server.Controllers
 {
-    
     [ApiController]
     [Route("[controller]")]
     public class NoteController : ControllerBase
     {
-
         private readonly ILogger<NoteController> logger;
         private readonly NhibernateService nhibernateService;
         private readonly ISession session;
-        
 
-        public NoteController(ILogger<NoteController> logger, 
+        public NoteController(ILogger<NoteController> logger,
             NhibernateService nhibernateService)
         {
             this.logger = logger;
             this.nhibernateService = nhibernateService;
             session = nhibernateService.OpenSession();
-
         }
 
         // GET: api/Note
         [HttpGet]
         public IEnumerable<Note> Get()
         {
-
             //var completeList = session.CreateCriteria<Object>().List();
             Note testNote = new Note();
 
@@ -42,26 +37,21 @@ namespace YourNote.Server.Controllers
             testNote.Owner = "Notatka na serwerze2";
             testNote1.Owner = "Notatka na serwerze3";
             testNote1.ID = 1;
-           /* using (var transaction = session.BeginTransaction())
-            {
+            /* using (var transaction = session.BeginTransaction())
+             {
+                 session.Save(testNote);
 
-                session.Save(testNote);
-                
-                transaction.Commit();
-                transaction.Dispose();
-                
-            }*/
+                 transaction.Commit();
+                 transaction.Dispose();
+             }*/
 
             using (var transaction = session.BeginTransaction())
             {
-
                 session.Save(testNote1);
 
                 transaction.Commit();
                 transaction.Dispose();
-                
             }
-
 
             //var completeList = session.Statistics;
 
@@ -73,10 +63,10 @@ namespace YourNote.Server.Controllers
                 Color = 0,
                 Content = session.ToString(),
                 Date = DateTime.Now,
-                
             }).ToArray();
+
             //notes.Append<Note>((Note) completeList[0]);
-            
+
             return notes;
         }
 

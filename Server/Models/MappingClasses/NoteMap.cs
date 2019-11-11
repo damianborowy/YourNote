@@ -15,7 +15,7 @@ namespace YourNote.Shared.Models.MappingClasses
             Id(n => n.ID).GeneratedBy.Assigned();
             Map(n => n.Owner);
             Map(n => n.Color);
-            Map(n => n.Date);
+            Map(n => n.Date).Default("getdate()").Not.Nullable();
             Map(n => n.Title);
             
         }
