@@ -1,4 +1,4 @@
-﻿//using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHibernate;
@@ -78,28 +78,30 @@ namespace YourNote.Server.Controllers
         public void Put(int id, [FromBody] Note note)
         {
             AddNote(note, id);
-            Ok();
+            
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void DeleteNoteWithId(int id)
+        public void DeleteNoteById(int id)
         {
             using (var session = GetSession())
             using (var tx = session.BeginTransaction())
             {
-                session.Delete(id);
+                session.Delete("Note",id);
                 session.Flush();
                 tx.Commit();
             }
         }
 
+
+
         #region Private methods
 
-        private ISession GetSession()
-        {
-            return nhibernateService.OpenSession();
-        }
+        private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
+
+       
+
 
         private void AddNote(Note note, int id = -1)
         {
@@ -123,6 +125,6 @@ namespace YourNote.Server.Controllers
             }
         }
 
-        #endregion Private methods
+        #endregion 
     }
 }
