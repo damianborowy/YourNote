@@ -1,5 +1,5 @@
 ﻿@page "/fetchdata"
-@using YourNote.Shared.Models
+@using SharedModels = YourNote.Shared.Models
 @inject HttpClient Http
 
 <h1>Weather forecast</h1>
@@ -40,12 +40,12 @@ else
 
 
 @code {
-
-    Note[] notes;
+    
+    SharedModels.Note[] notes;
 
     protected override async Task OnInitializedAsync()
     {
-        notes = await Http.GetJsonAsync<Note[]>("Note");
+        notes = await Http.GetJsonAsync<SharedModels.Note[]>("Note");
     }
 
     /*WeatherForecast[] forecasts;
@@ -54,5 +54,4 @@ else
     {
         forecasts = await Http.GetJsonAsync<WeatherForecast[]>("WeatherForecast");
     }*/
-
 }
