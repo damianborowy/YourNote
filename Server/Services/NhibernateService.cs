@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using YourNote.Shared.Models.MappingClasses;
 using System.Data.SqlClient;
+using YourNote.Server.Models.MappingClasses;
 
 namespace YourNote.Server.Services
 {
@@ -44,9 +45,11 @@ namespace YourNote.Server.Services
                 .Port(Port)
                 .Username(User)
                 .Password(Password)))
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<NoteMap>())
+                .Mappings(m => m.FluentMappings
+                .AddFromAssemblyOf<NoteMap>()
+                .AddFromAssemblyOf<UserMap>())
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(true, true))
+                .Create(false, false))
                 .BuildSessionFactory();
         }
 

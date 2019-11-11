@@ -8,7 +8,7 @@ namespace YourNote.Shared.Models
     public class User
     {
 
-        public virtual decimal ID { get; set; }
+        public virtual int ID { get; set; }
         public virtual String Name { get; set; }
         public virtual String EmailAddress { get; set; }
         [DataType(DataType.Date)]

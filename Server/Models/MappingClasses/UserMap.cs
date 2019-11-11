@@ -14,10 +14,10 @@ namespace YourNote.Server.Models.MappingClasses
         {
 
             Table("Users");
-            Id(u => u.ID).GeneratedBy.Assigned();
+            Id(u => u.ID).GeneratedBy.Identity().Not.Nullable();
             Map(u => u.Name);
             Map(u => u.EmailAddress);
-            Map(u => u.Date).Default("getdate()").Not.Nullable();
+            Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
         }
 
 

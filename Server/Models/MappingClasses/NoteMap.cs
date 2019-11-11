@@ -11,11 +11,11 @@ namespace YourNote.Shared.Models.MappingClasses
         
         public NoteMap()
         {
-            Table("Notes");
-            Id(n => n.ID).GeneratedBy.Assigned();
+            Table("Note");
+            Id(n => n.ID).GeneratedBy.Identity().Not.Nullable();
             Map(n => n.Owner);
             Map(n => n.Color);
-            Map(n => n.Date).Default("getdate()").Not.Nullable();
+            Map(n => n.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(n => n.Title);
             
         }

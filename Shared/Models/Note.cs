@@ -9,7 +9,7 @@ namespace YourNote.Shared.Models
     public class Note
     {
 
-        public virtual decimal  ID      { get; set; }
+        public virtual int  ID      { get; set; }
         public virtual string Owner   { get; set; }  //klasa w przyszłośći 
         [DataType(DataType.Date)]
         public virtual DateTime Date    { get; set; }

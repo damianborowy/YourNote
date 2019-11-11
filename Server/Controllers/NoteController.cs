@@ -23,58 +23,53 @@ namespace YourNote.Server.Controllers
         {
             this.logger = logger;
             this.nhibernateService = nhibernateService;
-            session = nhibernateService.OpenSession();
+            
         }
 
         // GET: api/Note
         [HttpGet]
-        public IEnumerable<Note> Get()
+        public IEnumerable<Note> GetAllNotes()
         {
-            //var completeList = session.CreateCriteria<Object>().List();
-            Note testNote = new Note();
-
-            Note testNote1 = new Note();
-            testNote.Owner = "Notatka na serwerze2";
-            testNote1.Owner = "Notatka na serwerze3";
-            testNote1.ID = 1;
-            /* using (var transaction = session.BeginTransaction())
-             {
-                 session.Save(testNote);
-
-                 transaction.Commit();
-                 transaction.Dispose();
-             }*/
-
-            using (var transaction = session.BeginTransaction())
+            #region Dodawanie notatek testowo
+            /*
+            using (var session = GetSession())
+            using (ITransaction tx = session.BeginTransaction())
             {
-                session.Save(testNote1);
 
-                transaction.Commit();
-                transaction.Dispose();
+                var note = new Note();
+
+                note.Title = "DDDDD";
+                session.SaveOrUpdate(note);
+                session.Flush();
+                tx.Commit();
+            }
+            using (var session = GetSession())
+            using (ITransaction tx = session.BeginTransaction())
+            {
+
+                var note = new Note();
+
+                note.Title = "ZZZZZ";
+                session.Save(note);
+                session.Flush();
+                tx.Commit();
             }
 
-            //var completeList = session.Statistics;
+            */
+            #endregion
 
-            IEnumerable<Note> notes = Enumerable.Range(1, 5).Select(index => new Note
-            {
-                ID = index,
-                Owner = session.IsConnected + "",
-                Title = "DI",
-                Color = 0,
-                Content = session.ToString(),
-                Date = DateTime.Now,
-            }).ToArray();
+            using (var session = GetSession())
+                return session.QueryOver<Note>().List<Note>();
+           
 
-            //notes.Append<Note>((Note) completeList[0]);
-
-            return notes;
         }
 
         // GET: api/Note/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public IEnumerable<Note> GetNoteById(int id)
         {
-            return "value";
+            using (var session = GetSession())
+                return session.QueryOver<Note>().Where(n => n.ID == id).List<Note>();
         }
 
         // POST: api/Note
@@ -91,8 +86,29 @@ namespace YourNote.Server.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void DeleteNoteWithId(int id)
         {
+            using (var session = GetSession())
+            using (var tx = session.BeginTransaction())
+            {
+
+                session.Delete(id);
+                session.Flush();
+                tx.Commit();
+            }
+            
+                
+            
+        }
+
+
+
+
+
+
+        private ISession GetSession()
+        {
+            return nhibernateService.OpenSession(); 
         }
     }
 }
