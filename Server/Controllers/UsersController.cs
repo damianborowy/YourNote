@@ -34,7 +34,7 @@ namespace YourNote.Server.Controllers
         }
 
         // GET: api/User/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public IEnumerable<User> GetUserById(int id)
         {
             using (var session = GetSession())

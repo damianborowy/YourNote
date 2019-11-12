@@ -59,7 +59,7 @@ namespace YourNote.Server.Controllers
         }
 
         // GET: api/Notes/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public IEnumerable<Note> GetNoteById(int id)
         {
             using (var session = GetSession())
