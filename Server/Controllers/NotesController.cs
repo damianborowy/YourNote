@@ -105,15 +105,19 @@ namespace YourNote.Server.Controllers
 
         private void AddNote(Note note, int id = -1)
         {
+
+            var isUpdated = id > 0 ? true : false;
+
             using (var session = GetSession())
             using (ITransaction tx = session.BeginTransaction())
             {
                 try
                 {
-                    if (id == -1)
-                        session.SaveOrUpdate(note);
-                    else
+                    if (isUpdated)
                         session.SaveOrUpdate("Note", note, id);
+                    else
+                        session.SaveOrUpdate(note);
+
                     session.Flush();
                     tx.Commit();
                 }
@@ -127,4 +131,6 @@ namespace YourNote.Server.Controllers
 
         #endregion 
     }
+
+    enum UpdateOrSave{ UPDATE, SAVE};
 }
