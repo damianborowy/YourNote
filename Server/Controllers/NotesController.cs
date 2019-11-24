@@ -27,8 +27,8 @@ namespace YourNote.Server.Controllers
         public IEnumerable<Note> GetAllNotes()
         {
             #region Dodawanie notatek testowo
-
-            /*
+           /* 
+            
             using (var session = GetSession())
             using (ITransaction tx = session.BeginTransaction())
             {
