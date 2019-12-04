@@ -60,7 +60,7 @@ namespace YourNote.Server.Services
 
         public ISession OpenSession() => SessionFactory.OpenSession();
 
-        private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSFILE").Split(':');
+        private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSDATA").Split(':');
         
 
            
