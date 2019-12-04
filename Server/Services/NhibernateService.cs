@@ -20,12 +20,18 @@ namespace YourNote.Server.Services
 
         // Obtain connection string information from the portal
         //
-        private static string Host = "pbds.postgres.database.azure.com";
-        private static string User = "login@pbds";
-        private static string DBname = "postgres";
-        private static string Password = "pass@word1";
-        private static int Port = 5432;
+        private static string[] connectionData = GetConnectionData();
+        private static string Host = connectionData[0];
+        private static string Port = connectionData[1];
+        private static string DBname = connectionData[2];
+        private static string User = connectionData[3]; 
+        private static string Password = connectionData[4]; 
         
+        
+
+
+
+
         public static ISessionFactory SessionFactory { get; set; }
 
         public NhibernateService()
@@ -36,25 +42,27 @@ namespace YourNote.Server.Services
         public static ISessionFactory CreateSessionFactory()
         {
 
-           
+            bool createNew = false;
+            
             return Fluently.Configure()
                 .Database(PostgreSQLConfiguration.PostgreSQL81
-                .ConnectionString(c => c
-                .Host(Host)
-                .Database(DBname)
-                .Port(Port)
-                .Username(User)
-                .Password(Password)))
+                .ConnectionString($" Host={Host}; Port={Port}; Database={DBname};" +
+                $" Username={User}; Password={Password};"))              
                 .Mappings(m => m.FluentMappings
                 .AddFromAssemblyOf<NoteMap>()
                 .AddFromAssemblyOf<UserMap>())
-                .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(false, false))
+                
+                .ExposeConfiguration(cfg => new SchemaExport(cfg)     
+                .Create(createNew, createNew))
+                
                 .BuildSessionFactory();
         }
 
         public ISession OpenSession() => SessionFactory.OpenSession();
 
+        private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSDATA").Split(':');
+        
 
+           
     }
 }

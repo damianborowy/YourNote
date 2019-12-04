@@ -13,6 +13,7 @@ namespace YourNote.Shared.Models
         public virtual String EmailAddress { get; set; }
         [DataType(DataType.Date)]
         public virtual DateTime Date { get; set; }
+        public virtual string Password { get; set; }
         public virtual Dictionary<decimal, Note> Notes { get; set; }
 
 

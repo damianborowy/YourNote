@@ -46,3 +46,93 @@
         return (BlazorStrap.Color)Color;
     }
 }
+
+
+
+
+
+
+
+
+
+@code
+{/*
+
+
+
+
+   @using Microsoft.AspNetCore.Components.Forms;
+   @inject HttpClient Http
+   @using SharedModels = YourNote.Shared.Models
+
+
+
+   <BSCard Class="note" Color="@GetColorAsEnum()" @onclick=@(() => ModalRef.Show())>
+       <BSCard CardType="CardType.Header">
+           <span class="note__title">
+               @Note.Title
+           </span>
+       </BSCard>
+       <BSCard CardType="CardType.Body">
+           <BSCard CardType="CardType.Text">
+               @Note.Content
+           </BSCard>
+       </BSCard>
+   </BSCard>
+
+
+   <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
+       <form>
+           <BSModalHeader OnClick="@(() => ModalRef.Hide())">
+               <input class="form-control text-light bg-dark modal__title" value="@Note.Title" />
+           </BSModalHeader>
+           <BSModalBody>
+               <textarea rows="4" class="form-control text-light bg-dark modal__content" value="@Note.Content" />
+           </BSModalBody>
+           <BSModalFooter>
+               <button type="submit"  class="btn btn-primary">Submit</button>
+               <BSButton Color="BlazorStrap.Color.Secondary" OnClick="@(() => ModalRef.Hide())">Cancel</BSButton>
+           </BSModalFooter>
+       </form>
+   </BSModal>
+
+   @code {
+
+
+
+       [Parameter]
+       public SharedModels.Note Note { get; set; }
+
+
+       BSModal ModalRef;
+   /*
+       private void UpdateNote()
+       {
+           var note = Note;
+
+
+
+
+       }
+
+       private void EditNote()
+       {
+
+
+
+
+       }
+
+
+       private async Task SaveNote() =>
+           await Http.PutJsonAsync($"api/Notes/{Note.ID}", Note);
+
+
+
+
+       private BlazorStrap.Color GetColorAsEnum()
+       {
+           return (BlazorStrap.Color)Note.Color;
+       }
+   }
+      */ }

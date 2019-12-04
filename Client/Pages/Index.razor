@@ -1,27 +1,36 @@
 ﻿@page "/"
+@using SharedModels = YourNote.Shared.Models
+@inject HttpClient Http
 
-@for (int i = 1; i < 9; i++)
+
+
+@if (notes == null)
 {
-    <Note Title="Note title"
-          Color="@i"
-          Content=@GenerateContent() />
+    
+    <p><em>Loading...</em></p>
+}
+else
+{
+    foreach (var note in notes)
+    {
+
+
+        <Note Title="@note.Title"
+            Color="@note.Color"
+            Content="@note.Content" />
+
+    }
 }
 
+
 @code {
-    public string GenerateContent()
+
+    SharedModels.Note[] notes;
+
+    protected override async Task OnInitializedAsync()
     {
-        String content = "lorem ipsum";
-        String result = "";
-        Random rng = new Random();
-
-        int count = rng.Next(5, 50);
-
-        for (int i = 0; i < count; ++i)
-        {
-            result += content;
-        }
-
-        Console.Write(result);
-        return result;
+        notes = await Http.GetJsonAsync<SharedModels.Note[]>("api/Notes");
+        
     }
+
 }

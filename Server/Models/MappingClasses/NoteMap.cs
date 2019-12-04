@@ -17,6 +17,7 @@ namespace YourNote.Shared.Models.MappingClasses
             Map(n => n.Color);
             Map(n => n.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(n => n.Title);
+            Map(n => n.Content);
             
         }
     }
