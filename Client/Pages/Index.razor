@@ -6,31 +6,25 @@
 
 @if (notes == null)
 {
-    
     <p><em>Loading...</em></p>
 }
 else
 {
     foreach (var note in notes)
     {
-
-
         <Note Title="@note.Title"
-            Color="@note.Color"
-            Content="@note.Content" />
-
+              Color="@note.Color"
+              Content="@note.Content" />
     }
 }
 
 
 @code {
-
     SharedModels.Note[] notes;
 
     protected override async Task OnInitializedAsync()
     {
         notes = await Http.GetJsonAsync<SharedModels.Note[]>("api/Notes");
-        
-    }
 
+    }
 }
