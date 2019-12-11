@@ -18,6 +18,11 @@ namespace YourNote.Server.Models.MappingClasses
             Map(u => u.Name);
             Map(u => u.EmailAddress);
             Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
+
+            //nwm co robię ~ Lehovitz
+            Map(u => u.Token);
+            Map(u => u.Password);
+            Map(u => u.Username);
         }
 
 

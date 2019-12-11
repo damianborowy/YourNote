@@ -15,6 +15,8 @@ namespace YourNote.Shared.Models
         public virtual DateTime Date { get; set; }
         public virtual string Password { get; set; }
         public virtual Dictionary<decimal, Note> Notes { get; set; }
+        public string Token { get; set; }
+        public string Username { get; set; }
 
 
 
