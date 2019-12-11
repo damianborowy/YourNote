@@ -17,6 +17,7 @@ namespace YourNote.Server.Services
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
     }
+
     public class UserService : IUserService
     {
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
@@ -47,7 +48,8 @@ namespace YourNote.Server.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.ID.ToString())
+                    new Claim("id", user.ID.ToString()),
+                    new Claim("username", user.Username)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
