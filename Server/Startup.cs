@@ -86,7 +86,7 @@ namespace YourNote.Server
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); //nie wiem czy to potrzebne w sumie
+                endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });

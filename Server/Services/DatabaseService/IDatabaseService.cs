@@ -6,7 +6,7 @@ using YourNote.Shared.Models;
 
 namespace YourNote.Server.Services.DatabaseService
 {
-    interface IDatabaseService
+    public interface IDatabaseService
     {
         bool CreateUser (User obj);
         IEnumerable<User> ReadUser(int? id = null);
