@@ -15,7 +15,6 @@ namespace YourNote.Server.Services
     public interface IUserService
     {
         User Authenticate(string username, string password);
-        IEnumerable<User> GetAll();
     }
 
     public class UserService : IUserService
@@ -49,11 +48,6 @@ namespace YourNote.Server.Services
             user.Token = tokenHandler.WriteToken(token);
 
             return user.WithoutPassword();
-        }
-
-        public IEnumerable<User> GetAll()
-        {
-            return _users.WithoutPasswords();
         }
     }
 }
