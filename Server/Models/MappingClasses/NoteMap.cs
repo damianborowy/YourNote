@@ -11,7 +11,7 @@ namespace YourNote.Shared.Models.MappingClasses
         
         public NoteMap()
         {
-            Table("Note");
+            Table("Notes");
             Id(n => n.ID).GeneratedBy.Identity().Not.Nullable();
             Map(n => n.Owner);
             Map(n => n.Color);

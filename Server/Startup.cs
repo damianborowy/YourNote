@@ -10,18 +10,13 @@ using YourNote.Server.Services;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using YourNote.Server.Services.DatabaseService;
+using System;
 
 namespace YourNote.Server
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().AddNewtonsoftJson();
@@ -30,12 +25,11 @@ namespace YourNote.Server
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
-            services.AddTransient<NhibernateService>();
 
             services.AddCors();
             services.AddControllers();
 
-            var key = Encoding.ASCII.GetBytes("SOME_KEY_THAT_HAS_TO_BE_MOVED_TO_ENVIRONMENTAL_VARIABLES"); // TO BE CHANGED
+            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWTSECRET"));
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,6 +49,7 @@ namespace YourNote.Server
             });
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDatabaseService, NhibernateService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -84,7 +79,7 @@ namespace YourNote.Server
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); //nie wiem czy to potrzebne w sumie
+                endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +9,7 @@ using YourNote.Server.Services;
 using YourNote.Shared.Models;
 using NHibernate;
 using Microsoft.AspNetCore.Authorization;
+using YourNote.Server.Services.DatabaseService;
 
 namespace YourNote.Server.Controllers
 {
@@ -18,15 +19,15 @@ namespace YourNote.Server.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> logger;
-        private readonly NhibernateService nhibernateService;
+        private readonly IDatabaseService iDbService;
         private readonly IUserService userService;
 
         public UsersController(ILogger<UsersController> logger,
-            NhibernateService nhibernateService,
+            IDatabaseService iDbService,
             IUserService userService)
         {
             this.logger = logger;
-            this.nhibernateService = nhibernateService;
+            this.iDbService = iDbService;
             this.userService = userService;
         }
 
@@ -34,84 +35,64 @@ namespace YourNote.Server.Controllers
         [HttpGet]
         public IEnumerable<User> GetAllUsers()
         {
-            using (var session = GetSession())
-                return session.QueryOver<User>().List<User>();
+            return iDbService.ReadUser();
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
         public IEnumerable<User> GetUserById(int id)
         {
-            using (var session = GetSession())
-                return session.QueryOver<User>().Where(n => n.ID == id).List<User>();
-        }
-
-        // POST: api/User
-        [HttpPost]
-        public void Post([FromBody] User user)
-        {
-            AddUser(user);
+            return iDbService.ReadUser(id);
         }
 
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] User user)
+        public bool Put(int id, [FromBody] User user)
         {
-            AddUser(user, id);
+            return iDbService.UpdateUser(user, id);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void DeleteUserById(int id)
         {
-            using (var session = GetSession())
-            using (var tx = session.BeginTransaction())
-            {
-                session.Delete("User", id);
-                session.Flush();
-                tx.Commit();
-            }
+            iDbService.DeleteUser(id);
+        }
+
+        // POST: api/User
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public bool RegisterUser([FromBody] User user)
+        {
+            user = HashPassword(user);
+            return iDbService.CreateUser(user);
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] AuthenticateModel model)
+        public IActionResult Authenticate([FromBody] User user)
         {
-            var user = userService.Authenticate(model.Username, model.Password);
+            var userFromDb = iDbService.ReadUser().FirstOrDefault(u => u.Username == user.Username);
 
-            if (user == null)
+            if (userFromDb == null || !BCrypt.Net.BCrypt.EnhancedVerify(user.Password, userFromDb.Password))
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            HttpContext.Response.Headers.Add("x-auth-token", user.Token);
-            return Ok(user.Username);
+            userFromDb.Token = userService.Authenticate(userFromDb);
+
+            iDbService.UpdateUser(userFromDb, userFromDb.ID);
+
+            return Ok(userFromDb.Token);
         }
 
         #region Private methods
 
-        private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
+      
 
-        private void AddUser(User user, int id = -1)
+        public User HashPassword(User user)
         {
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                try
-                {
-                    if (id == -1)
-                        session.SaveOrUpdate(user);
-                    else
-                        session.SaveOrUpdate("User", user, id);
-                    session.Flush();
-                    tx.Commit();
-                }
-                catch (NHibernate.HibernateException)
-                {
-                    tx.Rollback();
-                    throw;
-                }
-            }
+            user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password);
+            return user;
         }
-
         #endregion 
     }
 }

@@ -14,26 +14,15 @@ namespace YourNote.Server.Services
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
+        string Authenticate(User user);
     }
 
     public class UserService : IUserService
     {
-        // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<User> _users = new List<User>
+        public string Authenticate(User user)
         {
-            new User { ID = 1, Name = "testName", EmailAddress = "tymooteuusz@gmail.com", Username = "testUN", Password = "somePassword" }
-        };
-
-        public User Authenticate(string username, string password)
-        {
-            var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
-
-            if (user == null)
-                return null;
-
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("SOME_KEY_THAT_HAS_TO_BE_MOVED_TO_ENVIRONMENTAL_VARIABLES"); // TO BE CHANGED
+            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWTSECRET"));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -45,9 +34,8 @@ namespace YourNote.Server.Services
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
 
-            return user.WithoutPassword();
+            return tokenHandler.WriteToken(token);
         }
     }
 }
