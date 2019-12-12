@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +13,6 @@ using YourNote.Server.Services.DatabaseService;
 
 namespace YourNote.Server.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -69,15 +68,16 @@ namespace YourNote.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] AuthenticateModel model)
+        public IActionResult Authenticate([FromBody] User user)
         {
-            var user = userService.Authenticate(model.Username, model.Password);
+            var userFromDb = iDbService.ReadUser().FirstOrDefault(u => u.Username == user.Username);
 
-            if (user == null)
+            if (userFromDb == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            HttpContext.Response.Headers.Add("x-auth-token", user.Token);
-            return Ok(user.Username);
+            var token = userService.Authenticate(userFromDb);
+
+            return Ok(token);
         }
 
         #region Private methods

@@ -23,7 +23,6 @@ namespace YourNote.Server.Services
         private static string User = connectionData[3];
         private static string Password = connectionData[4];
 
-        private readonly NhibernateService nhibernateService;
         public static ISessionFactory SessionFactory { get; set; }
 
         public NhibernateService()
@@ -62,12 +61,12 @@ namespace YourNote.Server.Services
         {
             if(id!=null)
             {
-                using (var session = GetSession())
+                using (var session = OpenSession())
                     return session.QueryOver<User>().Where(n => n.ID == id).List<User>();
             }
             else
             {
-                using (var session = GetSession())
+                using (var session = OpenSession())
                     return session.QueryOver<User>().List<User>();
             }
         }
@@ -80,7 +79,7 @@ namespace YourNote.Server.Services
         public void DeleteUser(int id)
         {
            
-            using (var session = GetSession())
+            using (var session = OpenSession())
             using (var tx = session.BeginTransaction())
             {        
                     session.Delete("User", id);
@@ -99,12 +98,12 @@ namespace YourNote.Server.Services
         {
             if (id != null)
             {
-                using (var session = GetSession())
+                using (var session = OpenSession())
                     return session.QueryOver<Note>().Where(n => n.ID == id).List<Note>();
             }
             else
             {
-                using (var session = GetSession())
+                using (var session = OpenSession())
                     return session.QueryOver<Note>().List<Note>();
             }
         }
@@ -116,7 +115,7 @@ namespace YourNote.Server.Services
 
         public void DeleteNote(int id)
         {
-            using (var session = GetSession())
+            using (var session = OpenSession())
             using (var tx = session.BeginTransaction())
             {
                 session.Delete("Note", id);
@@ -126,11 +125,10 @@ namespace YourNote.Server.Services
         }
 
         #region privateMethods
-        private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
         private bool AddOrUpdateUser(User user, int id = -1)
         {
             bool wasSucceeded = true;
-            using (var session = GetSession())
+            using (var session = OpenSession())
             using (ITransaction tx = session.BeginTransaction())
             {
                 try
@@ -160,7 +158,7 @@ namespace YourNote.Server.Services
 
             var isUpdated = id > 0 ? true : false;
             bool wasSucceeded = true; ;
-            using (var session = GetSession())
+            using (var session = OpenSession())
             using (ITransaction tx = session.BeginTransaction())
             {
                 try
