@@ -76,54 +76,59 @@ namespace YourNote.Server.Services
             return AddOrUpdateUser(obj, id);
         }
 
-        public bool DeleteUser(int id)
+        public void DeleteUser(int id)
         {
-            bool wasSucceeded = false;
+           
             using (var session = GetSession())
             using (var tx = session.BeginTransaction())
-            {
-                try
-                {
-                    wasSucceeded = true;
+            {        
                     session.Delete("User", id);
                     session.Flush();
-                    tx.Commit();
-                }
-                catch (NHibernate.HibernateException)
-                {
-                    wasSucceeded = false;
-                    throw;
-                }
-                
+                    tx.Commit();                         
             }
-            return wasSucceeded;
+           
         }
 
         public bool CreateNote(Note obj)
         {
-            throw new NotImplementedException();
+            return AddOrUpdateNote(obj);
         }
 
         public IEnumerable<Note> ReadNote(int? id = null)
         {
-            throw new NotImplementedException();
+            if (id != null)
+            {
+                using (var session = GetSession())
+                    return session.QueryOver<Note>().Where(n => n.ID == id).List<Note>();
+            }
+            else
+            {
+                using (var session = GetSession())
+                    return session.QueryOver<Note>().List<Note>();
+            }
         }
 
         public bool UpdateNote(Note obj, int id)
         {
-            throw new NotImplementedException();
+            return AddOrUpdateNote(obj, id);
         }
 
-        public bool DeleteNote(int id)
+        public void DeleteNote(int id)
         {
-            throw new NotImplementedException();
+            using (var session = GetSession())
+            using (var tx = session.BeginTransaction())
+            {
+                session.Delete("Note", id);
+                session.Flush();
+                tx.Commit();
+            }
         }
 
         #region privateMethods
         private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
         private bool AddOrUpdateUser(User user, int id = -1)
         {
-            bool wasSucceeded = false;
+            bool wasSucceeded = true;
             using (var session = GetSession())
             using (ITransaction tx = session.BeginTransaction())
             {
@@ -137,7 +142,6 @@ namespace YourNote.Server.Services
                     {
                         session.SaveOrUpdate("User", user, id);
                     }
-                    wasSucceeded = true;
                     session.Flush();
                     tx.Commit();      
                 }
@@ -145,6 +149,33 @@ namespace YourNote.Server.Services
                 {
                     tx.Rollback();
                     wasSucceeded = false;
+                    throw;
+                }
+            }
+            return wasSucceeded;
+        }
+        private bool AddOrUpdateNote(Note note, int id = -1)
+        {
+
+            var isUpdated = id > 0 ? true : false;
+            bool wasSucceeded = true; ;
+            using (var session = GetSession())
+            using (ITransaction tx = session.BeginTransaction())
+            {
+                try
+                {
+                    if (isUpdated)
+                        session.SaveOrUpdate("Note", note, id);
+                    else
+                        session.SaveOrUpdate(note);
+
+                    session.Flush();
+                    tx.Commit();
+                }
+                catch (NHibernate.HibernateException)
+                {
+                    wasSucceeded = false;
+                    tx.Rollback();
                     throw;
                 }
             }

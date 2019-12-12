@@ -11,11 +11,10 @@ namespace YourNote.Server.Services.DatabaseService
         bool CreateUser (User obj);
         IEnumerable<User> ReadUser(int? id = null);
         bool UpdateUser(User obj, int id);
-        bool DeleteUser(int id);
-
+        void DeleteUser(int id);
         bool CreateNote(Note obj);
         IEnumerable<Note> ReadNote(int? id = null);
         bool UpdateNote(Note obj, int id);
-        bool DeleteNote(int id);
+        void DeleteNote(int id);
     }
 }

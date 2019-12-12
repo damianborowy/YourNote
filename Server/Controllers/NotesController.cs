@@ -26,111 +26,43 @@ namespace YourNote.Server.Controllers
         [HttpGet]
         public IEnumerable<Note> GetAllNotes()
         {
-            #region Dodawanie notatek testowo
-           /* 
-            
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                var note = new Note();
-
-                note.Title = "DDDDD";
-                session.SaveOrUpdate(note);
-                session.Flush();
-                tx.Commit();
-            }
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                var note = new Note();
-
-                note.Title = "ZZZZZ";
-                session.Save(note);
-                session.Flush();
-                tx.Commit();
-            }
-
-            */
-
-            #endregion Dodawanie notatek testowo
-
-            using (var session = GetSession())
-                return session.QueryOver<Note>().List<Note>();
+           return nhibernateService.ReadNote();
         }
 
         // GET: api/Notes/5
         [HttpGet("{id}")]
         public IEnumerable<Note> GetNoteById(int id)
         {
-            using (var session = GetSession())
-                return session.QueryOver<Note>().Where(n => n.ID == id).List<Note>();
+            return nhibernateService.ReadNote(id);
         }
 
         // POST: api/Notes
         [HttpPost]
-        public void Post([FromBody] Note note)
+        public bool Post([FromBody] Note note)
         {
-            AddNote(note);
+            return nhibernateService.CreateNote(note);
         }
 
         // PUT: api/Notes/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Note note)
+        public bool Put(int id, [FromBody] Note note)
         {
-            AddNote(note, id);
-            
+            return nhibernateService.UpdateNote(note, id);
+
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void DeleteNoteById(int id)
         {
-            using (var session = GetSession())
-            using (var tx = session.BeginTransaction())
-            {
-                session.Delete("Note",id);
-                session.Flush();
-                tx.Commit();
-            }
+            nhibernateService.DeleteNote(id);
         }
 
 
 
         #region Private methods
-
-        private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
-
-       
-
-
-        private void AddNote(Note note, int id = -1)
-        {
-
-            var isUpdated = id > 0 ? true : false;
-
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                try
-                {
-                    if (isUpdated)
-                        session.SaveOrUpdate("Note", note, id);
-                    else
-                        session.SaveOrUpdate(note);
-
-                    session.Flush();
-                    tx.Commit();
-                }
-                catch (NHibernate.HibernateException)
-                {
-                    tx.Rollback();
-                    throw;
-                }
-            }
-        }
-
         #endregion 
     }
 
-    enum UpdateOrSave{ UPDATE, SAVE};
+    //enum UpdateOrSave{ UPDATE, SAVE};
 }
