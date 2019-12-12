@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using YourNote.Server.Services;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace YourNote.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class NotesController : ControllerBase

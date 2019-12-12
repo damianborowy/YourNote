@@ -59,7 +59,7 @@ namespace YourNote.Server.Services
 
         public IEnumerable<User> ReadUser(int? id = null)
         {
-            if(id!=null)
+            if (id != null)
             {
                 using (var session = OpenSession())
                     return session.QueryOver<User>().Where(n => n.ID == id).List<User>();
@@ -78,15 +78,15 @@ namespace YourNote.Server.Services
 
         public void DeleteUser(int id)
         {
-           
+
             using (var session = OpenSession())
             using (var tx = session.BeginTransaction())
-            {        
-                    session.Delete("User", id);
-                    session.Flush();
-                    tx.Commit();                         
+            {
+                session.Delete("Users", id);
+                session.Flush();
+                tx.Commit();
             }
-           
+
         }
 
         public bool CreateNote(Note obj)
@@ -118,7 +118,7 @@ namespace YourNote.Server.Services
             using (var session = OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                session.Delete("Note", id);
+                session.Delete("Notes", id);
                 session.Flush();
                 tx.Commit();
             }
@@ -139,10 +139,10 @@ namespace YourNote.Server.Services
                     }
                     else
                     {
-                        session.SaveOrUpdate("User", user, id);
+                        session.SaveOrUpdate("Users", user, id);
                     }
                     session.Flush();
-                    tx.Commit();      
+                    tx.Commit();
                 }
                 catch (NHibernate.HibernateException)
                 {
@@ -164,7 +164,7 @@ namespace YourNote.Server.Services
                 try
                 {
                     if (isUpdated)
-                        session.SaveOrUpdate("Note", note, id);
+                        session.SaveOrUpdate("Notes", note, id);
                     else
                         session.SaveOrUpdate(note);
 

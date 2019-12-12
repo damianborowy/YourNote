@@ -13,6 +13,7 @@ using YourNote.Server.Services.DatabaseService;
 
 namespace YourNote.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -44,14 +45,6 @@ namespace YourNote.Server.Controllers
             return iDbService.ReadUser(id);
         }
 
-        // POST: api/User
-        [HttpPost]
-        public bool Post([FromBody] User user)
-        {
-            user = HashPassword(user);
-            return iDbService.CreateUser(user);
-        }
-
         // PUT: api/User/5
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] User user)
@@ -66,18 +59,29 @@ namespace YourNote.Server.Controllers
             iDbService.DeleteUser(id);
         }
 
+        // POST: api/User
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public bool RegisterUser([FromBody] User user)
+        {
+            user = HashPassword(user);
+            return iDbService.CreateUser(user);
+        }
+
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] User user)
         {
             var userFromDb = iDbService.ReadUser().FirstOrDefault(u => u.Username == user.Username);
 
-            if (userFromDb == null)
+            if (userFromDb == null || !BCrypt.Net.BCrypt.EnhancedVerify(user.Password, userFromDb.Password))
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            var token = userService.Authenticate(userFromDb);
+            userFromDb.Token = userService.Authenticate(userFromDb);
 
-            return Ok(token);
+            iDbService.UpdateUser(userFromDb, userFromDb.ID);
+
+            return Ok(userFromDb.Token);
         }
 
         #region Private methods
