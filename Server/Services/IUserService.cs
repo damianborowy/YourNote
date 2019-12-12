@@ -23,27 +23,18 @@ namespace YourNote.Server.Services
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
         private List<User> _users = new List<User>
         {
-            new User { ID = 1, Name = "testName", EmailAddress = "user@gmail.com", Username = "testUN", Password = "testPass" }
+            new User { ID = 1, Name = "testName", EmailAddress = "tymooteuusz@gmail.com", Username = "testUN", Password = "somePassword" }
         };
-
-        private readonly AppSettings _appSettings;
-
-        public UserService(IOptions<AppSettings> appSettings)
-        {
-            _appSettings = appSettings.Value;
-        }
 
         public User Authenticate(string username, string password)
         {
             var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
-            // return null if user not found
             if (user == null)
                 return null;
 
-            // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes("SOME_KEY_THAT_HAS_TO_BE_MOVED_TO_ENVIRONMENTAL_VARIABLES"); // TO BE CHANGED
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

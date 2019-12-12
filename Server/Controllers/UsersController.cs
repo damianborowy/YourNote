@@ -19,12 +19,15 @@ namespace YourNote.Server.Controllers
     {
         private readonly ILogger<UsersController> logger;
         private readonly NhibernateService nhibernateService;
+        private readonly IUserService userService;
 
         public UsersController(ILogger<UsersController> logger,
-            NhibernateService nhibernateService)
+            NhibernateService nhibernateService,
+            IUserService userService)
         {
             this.logger = logger;
             this.nhibernateService = nhibernateService;
+            this.userService = userService;
         }
 
         // GET: api/User
@@ -47,21 +50,14 @@ namespace YourNote.Server.Controllers
         [HttpPost]
         public void Post([FromBody] User user)
         {
-
-
             AddUser(user);
-
-
-
         }
 
         // PUT: api/User/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] User user)
         {
-
             AddUser(user, id);
-
         }
 
         // DELETE: api/ApiWithActions/5
@@ -75,43 +71,24 @@ namespace YourNote.Server.Controllers
                 session.Flush();
                 tx.Commit();
             }
-
-
-        }
-
-        //JWT lehovitz modification 11.12.2019
-        private IUserService _userService;
-
-        public UsersController(IUserService userService)
-        {
-            _userService = userService;
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthenticateModel model)
+        public IActionResult Authenticate([FromBody] AuthenticateModel model)
         {
-            var user = _userService.Authenticate(model.Username, model.Password);
+            var user = userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            return Ok(user);
+            HttpContext.Response.Headers.Add("x-auth-token", user.Token);
+            return Ok(user.Username);
         }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var users = _userService.GetAll();
-            return Ok(users);
-        }
-        //end of my mod ~lehovitz 
 
         #region Private methods
 
         private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
-
-
 
         private void AddUser(User user, int id = -1)
         {
@@ -137,9 +114,4 @@ namespace YourNote.Server.Controllers
 
         #endregion 
     }
-
-
-
-
-
 }
