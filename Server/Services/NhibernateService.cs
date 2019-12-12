@@ -30,6 +30,7 @@ namespace YourNote.Server.Services
         public static ISessionFactory CreateSessionFactory()
         {
             bool createNew = false;
+            Console.WriteLine(connectionData);
 
             return Fluently.Configure()
                 .Database(PostgreSQLConfiguration.PostgreSQL81
