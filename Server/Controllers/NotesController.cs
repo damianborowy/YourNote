@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NHibernate;
 using System.Collections.Generic;
 using YourNote.Server.Services;
+using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
 
 namespace YourNote.Server.Controllers
@@ -13,124 +14,56 @@ namespace YourNote.Server.Controllers
     public class NotesController : ControllerBase
     {
         private readonly ILogger<NotesController> logger;
-        private readonly NhibernateService nhibernateService;
+        private readonly IDatabaseService iDbService;
 
         public NotesController(ILogger<NotesController> logger,
-            NhibernateService nhibernateService)
+            IDatabaseService iDbService)
         {
             this.logger = logger;
-            this.nhibernateService = nhibernateService;
+            this.iDbService = iDbService;
         }
 
         // GET: api/Notes
         [HttpGet]
         public IEnumerable<Note> GetAllNotes()
         {
-            #region Dodawanie notatek testowo
-           /* 
-            
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                var note = new Note();
-
-                note.Title = "DDDDD";
-                session.SaveOrUpdate(note);
-                session.Flush();
-                tx.Commit();
-            }
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                var note = new Note();
-
-                note.Title = "ZZZZZ";
-                session.Save(note);
-                session.Flush();
-                tx.Commit();
-            }
-
-            */
-
-            #endregion Dodawanie notatek testowo
-
-            using (var session = GetSession())
-                return session.QueryOver<Note>().List<Note>();
+           return iDbService.ReadNote();
         }
 
         // GET: api/Notes/5
         [HttpGet("{id}")]
         public IEnumerable<Note> GetNoteById(int id)
         {
-            using (var session = GetSession())
-                return session.QueryOver<Note>().Where(n => n.ID == id).List<Note>();
+            return iDbService.ReadNote(id);
         }
 
         // POST: api/Notes
         [HttpPost]
-        public void Post([FromBody] Note note)
+        public bool Post([FromBody] Note note)
         {
-            AddNote(note);
+            return iDbService.CreateNote(note);
         }
 
         // PUT: api/Notes/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Note note)
+        public bool Put(int id, [FromBody] Note note)
         {
-            AddNote(note, id);
-            
+            return iDbService.UpdateNote(note, id);
+
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void DeleteNoteById(int id)
         {
-            using (var session = GetSession())
-            using (var tx = session.BeginTransaction())
-            {
-                session.Delete("Note",id);
-                session.Flush();
-                tx.Commit();
-            }
+            iDbService.DeleteNote(id);
         }
 
 
 
         #region Private methods
-
-        private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
-
-       
-
-
-        private void AddNote(Note note, int id = -1)
-        {
-
-            var isUpdated = id > 0 ? true : false;
-
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                try
-                {
-                    if (isUpdated)
-                        session.SaveOrUpdate("Note", note, id);
-                    else
-                        session.SaveOrUpdate(note);
-
-                    session.Flush();
-                    tx.Commit();
-                }
-                catch (NHibernate.HibernateException)
-                {
-                    tx.Rollback();
-                    throw;
-                }
-            }
-        }
-
         #endregion 
     }
 
-    enum UpdateOrSave{ UPDATE, SAVE};
+    //enum UpdateOrSave{ UPDATE, SAVE};
 }

@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YourNote.Shared.Models;
 
 namespace YourNote.Server.Services.DatabaseService
 {
-    interface IDatabaseService
+    public interface IDatabaseService
     {
-        bool Create<T>(T obj);
-        T Read<T>(int? id = null);
-        bool Update<T>(T obj);
-        bool Delete<T>(int id);
+        bool CreateUser (User obj);
+        IEnumerable<User> ReadUser(int? id = null);
+        bool UpdateUser(User obj, int id);
+        void DeleteUser(int id);
+        bool CreateNote(Note obj);
+        IEnumerable<Note> ReadNote(int? id = null);
+        bool UpdateNote(Note obj, int id);
+        void DeleteNote(int id);
     }
 }

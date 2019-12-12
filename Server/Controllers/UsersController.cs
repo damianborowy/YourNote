@@ -9,6 +9,7 @@ using YourNote.Server.Services;
 using YourNote.Shared.Models;
 using NHibernate;
 using Microsoft.AspNetCore.Authorization;
+using YourNote.Server.Services.DatabaseService;
 
 namespace YourNote.Server.Controllers
 {
@@ -18,15 +19,15 @@ namespace YourNote.Server.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> logger;
-        private readonly NhibernateService nhibernateService;
+        private readonly IDatabaseService iDbService;
         private readonly IUserService userService;
 
         public UsersController(ILogger<UsersController> logger,
-            NhibernateService nhibernateService,
+            IDatabaseService iDbService,
             IUserService userService)
         {
             this.logger = logger;
-            this.nhibernateService = nhibernateService;
+            this.iDbService = iDbService;
             this.userService = userService;
         }
 
@@ -34,43 +35,36 @@ namespace YourNote.Server.Controllers
         [HttpGet]
         public IEnumerable<User> GetAllUsers()
         {
-            using (var session = GetSession())
-                return session.QueryOver<User>().List<User>();
+            return iDbService.ReadUser();
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
         public IEnumerable<User> GetUserById(int id)
         {
-            using (var session = GetSession())
-                return session.QueryOver<User>().Where(n => n.ID == id).List<User>();
+            return iDbService.ReadUser(id);
         }
 
         // POST: api/User
         [HttpPost]
-        public void Post([FromBody] User user)
+        public bool Post([FromBody] User user)
         {
-            AddUser(user);
+            user = HashPassword(user);
+            return iDbService.CreateUser(user);
         }
 
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] User user)
+        public bool Put(int id, [FromBody] User user)
         {
-            AddUser(user, id);
+            return iDbService.UpdateUser(user, id);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void DeleteUserById(int id)
         {
-            using (var session = GetSession())
-            using (var tx = session.BeginTransaction())
-            {
-                session.Delete("User", id);
-                session.Flush();
-                tx.Commit();
-            }
+            iDbService.DeleteUser(id);
         }
 
         [AllowAnonymous]
@@ -88,30 +82,13 @@ namespace YourNote.Server.Controllers
 
         #region Private methods
 
-        private NHibernate.ISession GetSession() => nhibernateService.OpenSession();
+      
 
-        private void AddUser(User user, int id = -1)
+        public User HashPassword(User user)
         {
-            using (var session = GetSession())
-            using (ITransaction tx = session.BeginTransaction())
-            {
-                try
-                {
-                    if (id == -1)
-                        session.SaveOrUpdate(user);
-                    else
-                        session.SaveOrUpdate("User", user, id);
-                    session.Flush();
-                    tx.Commit();
-                }
-                catch (NHibernate.HibernateException)
-                {
-                    tx.Rollback();
-                    throw;
-                }
-            }
+            user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password);
+            return user;
         }
-
         #endregion 
     }
 }
