@@ -1,7 +1,7 @@
 ﻿<AuthorizeView>
     <Authorized>
         <BSNavItem>
-            @context.User.Identity.Name
+            @*@context.User.Claims // TODO:: find out what's wrong with context*@
         </BSNavItem>
         <BSNavItem>
             <BSNavLink Href="/logout">
