@@ -18,7 +18,6 @@ namespace YourNote.Server.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly ILogger<UsersController> logger;
         private readonly IDatabaseService iDbService;
         private readonly IUserService userService;
 
@@ -26,7 +25,6 @@ namespace YourNote.Server.Controllers
             IDatabaseService iDbService,
             IUserService userService)
         {
-            this.logger = logger;
             this.iDbService = iDbService;
             this.userService = userService;
         }
@@ -62,33 +60,42 @@ namespace YourNote.Server.Controllers
         // POST: api/User
         [AllowAnonymous]
         [HttpPost("register")]
-        public bool RegisterUser([FromBody] User user)
+        public IActionResult RegisterUser([FromBody] RegisterModel registerModel)
         {
+            User user = new User
+            {
+                Username = registerModel.Username,
+                Password = registerModel.Password
+            };
+
             user = HashPassword(user);
-            return iDbService.CreateUser(user);
+            var result = iDbService.CreateUser(user);
+
+            if (result)
+                return Ok(new RegisterResult { Successful = true });
+            else
+                return BadRequest(new RegisterResult { Successful = false });
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] User user)
+        public IActionResult Authenticate([FromBody] LoginModel user)
         {
             var userFromDb = iDbService.ReadUser().FirstOrDefault(u => u.Username == user.Username);
 
             if (userFromDb == null || !BCrypt.Net.BCrypt.EnhancedVerify(user.Password, userFromDb.Password))
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new LoginResult { Successful = false, Error = "Podano niepoprawny login lub has³o." });
 
             userFromDb.Token = userService.Authenticate(userFromDb);
 
             iDbService.UpdateUser(userFromDb, userFromDb.ID);
 
-            return Ok(userFromDb.Token);
+            return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
         }
 
         #region Private methods
 
-      
-
-        public User HashPassword(User user)
+        public static User HashPassword(User user)
         {
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password);
             return user;
