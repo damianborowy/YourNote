@@ -1,0 +1,24 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <BSNavItem>
+            @context.User.Identity.Name
+        </BSNavItem>
+        <BSNavItem>
+            <BSNavLink Href="/logout">
+                Wyloguj się
+            </BSNavLink>
+        </BSNavItem>
+    </Authorized>
+    <NotAuthorized>
+        <BSNavItem>
+            <BSNavLink Href="register">
+                Rejestracja
+            </BSNavLink>
+        </BSNavItem>
+        <BSNavItem>
+            <BSNavLink Href="login">
+                Logowanie
+            </BSNavLink>
+        </BSNavItem>
+    </NotAuthorized>
+</AuthorizeView>

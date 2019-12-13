@@ -15,13 +15,11 @@ namespace YourNote.Server.Controllers
     [Route("api/[controller]")]
     public class NotesController : ControllerBase
     {
-        private readonly ILogger<NotesController> logger;
         private readonly IDatabaseService iDbService;
 
         public NotesController(ILogger<NotesController> logger,
             IDatabaseService iDbService)
         {
-            this.logger = logger;
             this.iDbService = iDbService;
         }
 

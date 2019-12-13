@@ -3,16 +3,7 @@
     <BSNavbarToggler @onclick="onclick" />
     <BSCollapse isOpen="@IsOpen" IsNavbar="true" IsOpenChanged="OpenChanged">
         <BSNav IsList="true" Class="ml-auto" IsNavbar="true">
-            <BSNavItem>
-                <BSNavLink Href="/logout">
-                    Logout
-                </BSNavLink>
-            </BSNavItem>
-            <BSNavItem>
-                <BSNavLink Href="#">
-                    User
-                </BSNavLink>
-            </BSNavItem>
+            <LoginDisplay />
         </BSNav>
     </BSCollapse>
 </BSNavbar>
