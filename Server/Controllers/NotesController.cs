@@ -52,11 +52,11 @@ namespace YourNote.Server.Controllers
 
         }
 
-        // DELETE: api/Notes/5
-        [HttpDelete("{id}")]
-        public void DeleteById(int id)
+        // DELETE: api/Notes/
+        [HttpDelete]
+        public void DeleteById([FromBody] Note obj)
         {
-            DataBaseCRUD.Delete(id);
+            DataBaseCRUD.Delete(obj);
         }
 
 

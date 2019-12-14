@@ -12,7 +12,7 @@ namespace YourNote.Server.Services.DatabaseService
         T Read(int id);
         IList<T> Read(); 
         bool Update(int id, T obj);
-        bool Delete(int id);
+        bool Delete(T obj);
 
     }
 }

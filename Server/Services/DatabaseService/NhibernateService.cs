@@ -47,7 +47,7 @@ namespace YourNote.Server.Services
                     .AddFromAssemblyOf<UserMap>()
                 )
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(true, true))
+                .Create(createNew, createNew))
                 .BuildSessionFactory();
         }
 
@@ -60,7 +60,7 @@ namespace YourNote.Server.Services
 
         #endregion
 
-        #region notesCRUD
+        #region CRUD
 
         public bool Create(T obj)
         {
@@ -82,9 +82,9 @@ namespace YourNote.Server.Services
             return UpdateRecord(id, obj);
         }
 
-        public bool Delete(int id)
+        public bool Delete(T obj)
         {
-            return DeleteRecord(id);
+            return DeleteRecord(obj);
         }
 
         #endregion
@@ -150,7 +150,7 @@ namespace YourNote.Server.Services
         }
 
 
-        private bool DeleteRecord(int id)
+        private bool DeleteRecord(T obj)
         {
 
             bool wasSucceeded = true;
@@ -158,12 +158,14 @@ namespace YourNote.Server.Services
             var entityName = objType.Name;
 
 
+
             using (var session = OpenSession())
             {
                 var tx = session.BeginTransaction();
                 try
                 {
-                    session.Delete(entityName, id);
+                    
+                    session.Delete(entityName, obj);
                     tx.Commit();
                 }
                 catch (NHibernate.HibernateException)

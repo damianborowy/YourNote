@@ -27,8 +27,7 @@ namespace YourNote.Server
                     new[] { "application/octet-stream" });
             });
 
-            services.AddCors();
-            services.AddControllers();
+            
 
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWTSECRET"));
             services.AddAuthentication(x =>
@@ -53,6 +52,10 @@ namespace YourNote.Server
 
             services.AddScoped<IDatabaseCRUD<Note>, NhibernateService<Note>>();
             services.AddScoped<IDatabaseCRUD<User>, NhibernateService<User>>();
+
+
+            services.AddCors();
+            services.AddControllers();
 
         }
 

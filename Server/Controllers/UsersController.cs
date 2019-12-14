@@ -51,11 +51,11 @@ namespace YourNote.Server.Controllers
             return DataBaseCRUD.Update(id, user);
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void DeleteUserById(int id)
+        // DELETE: api/User
+        [HttpDelete]
+        public void DeleteUserById(User obj)
         {
-            DataBaseCRUD.Delete(id);
+            DataBaseCRUD.Delete(obj);
         }
 
         // POST: api/User
