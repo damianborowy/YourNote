@@ -15,48 +15,48 @@ namespace YourNote.Server.Controllers
     [Route("api/[controller]")]
     public class NotesController : ControllerBase
     {
-        private readonly IDatabaseService iDbService;
+        private readonly IDatabaseCRUD<Note> DataBaseCRUD;
 
         public NotesController(ILogger<NotesController> logger,
-            IDatabaseService iDbService)
+           IDatabaseCRUD<Note> DatabaseCRUD)
         {
-            this.iDbService = iDbService;
+            this.DataBaseCRUD = DatabaseCRUD;
         }
 
         // GET: api/Notes
         [HttpGet]
-        public IEnumerable<Note> GetAllNotes()
+        public IEnumerable<Note> GetAllRecords()
         {
-           return iDbService.ReadNote();
+           return DataBaseCRUD.Read();
         }
 
         // GET: api/Notes/5
         [HttpGet("{id}")]
-        public IEnumerable<Note> GetNoteById(int id)
+        public Note GetById(int id)
         {
-            return iDbService.ReadNote(id);
+            return DataBaseCRUD.Read(id);
         }
 
         // POST: api/Notes
         [HttpPost]
-        public bool Post([FromBody] Note note)
+        public bool Post([FromBody] Note obj)
         {
-            return iDbService.CreateNote(note);
+            return DataBaseCRUD.Create(obj);
         }
 
-        // PUT: api/Notes/5
+        // PUT: api/Notes
         [HttpPut("{id}")]
-        public bool Put(int id, [FromBody] Note note)
+        public bool Put(int id, [FromBody] Note obj)
         {
-            return iDbService.UpdateNote(note, id);
+            return DataBaseCRUD.Update(id, obj);
 
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Notes/5
         [HttpDelete("{id}")]
-        public void DeleteNoteById(int id)
+        public void DeleteById(int id)
         {
-            iDbService.DeleteNote(id);
+            DataBaseCRUD.Delete(id);
         }
 
 

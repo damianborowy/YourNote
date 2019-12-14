@@ -13,7 +13,7 @@ namespace YourNote.Server.Models.MappingClasses
         public UserMap()
         {
             Table("Users");
-            Id(u => u.ID).GeneratedBy.Identity().Not.Nullable();
+            Id(u => u.Id).GeneratedBy.Identity().Not.Nullable();
             Map(u => u.Username).Unique();
             Map(u => u.Name);
             Map(u => u.EmailAddress);

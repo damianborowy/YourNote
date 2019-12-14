@@ -9,7 +9,7 @@ namespace YourNote.Shared.Models
     public class Note
     {
 
-        public virtual int  ID      { get; set; }
+        public virtual int  Id      { get; set; }
         public virtual string Owner   { get; set; }  //klasa w przyszłośći 
         [DataType(DataType.Date)]
         public virtual DateTime Date    { get; set; }
@@ -17,11 +17,11 @@ namespace YourNote.Shared.Models
         public virtual string Content { get; set; }
         public virtual byte Color   { get; set; }
 
-        
 
 
 
 
+        public override string ToString() => Id + "";
 
         /*public Note(string owner, string contnent, decimal color)
         {

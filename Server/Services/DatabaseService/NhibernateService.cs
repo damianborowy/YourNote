@@ -12,8 +12,11 @@ using System.Collections.Generic;
 
 namespace YourNote.Server.Services
 {
-    public class NhibernateService : IDatabaseService
+    public class NhibernateService<T> : IDatabaseCRUD<T> where T : class 
     {
+
+        #region Connection to Database
+
         // Obtain connection string information from the portal
         //
         private static string[] connectionData = GetConnectionData();
@@ -44,7 +47,7 @@ namespace YourNote.Server.Services
                     .AddFromAssemblyOf<UserMap>()
                 )
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(createNew, createNew))
+                .Create(true, true))
                 .BuildSessionFactory();
         }
 
@@ -52,123 +55,86 @@ namespace YourNote.Server.Services
 
         private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSDATA").Split(':');
 
-        public bool CreateUser(User obj)
+
+
+
+        #endregion
+
+        #region notesCRUD
+
+        public bool Create(T obj)
         {
-            return AddOrUpdateUser(obj);
+            return AddRecord(obj);
         }
 
-        public IEnumerable<User> ReadUser(int? id = null)
+        public T Read(int id)
         {
-            if (id != null)
-            {
-                using (var session = OpenSession())
-                    return session.QueryOver<User>().Where(n => n.ID == id).List<User>();
-            }
-            else
-            {
-                using (var session = OpenSession())
-                    return session.QueryOver<User>().List<User>();
-            }
+            return GetById(id);
         }
 
-        public bool UpdateUser(User obj, int id)
+        public IList<T> Read() 
         {
-            return AddOrUpdateUser(obj, id);
+            return GetAllRecords();
         }
 
-        public void DeleteUser(int id)
+        public bool Update(int id, T obj)
         {
-
-            using (var session = OpenSession())
-            using (var tx = session.BeginTransaction())
-            {
-                session.Delete("Users", id);
-                session.Flush();
-                tx.Commit();
-            }
-
+            return UpdateRecord(id, obj);
         }
 
-        public bool CreateNote(Note obj)
+        public bool Delete(int id)
         {
-            return AddOrUpdateNote(obj);
+            return DeleteRecord(id);
         }
 
-        public IEnumerable<Note> ReadNote(int? id = null)
-        {
-            if (id != null)
-            {
-                using (var session = OpenSession())
-                    return session.QueryOver<Note>().Where(n => n.ID == id).List<Note>();
-            }
-            else
-            {
-                using (var session = OpenSession())
-                    return session.QueryOver<Note>().List<Note>();
-            }
-        }
-
-        public bool UpdateNote(Note obj, int id)
-        {
-            return AddOrUpdateNote(obj, id);
-        }
-
-        public void DeleteNote(int id)
-        {
-            using (var session = OpenSession())
-            using (var tx = session.BeginTransaction())
-            {
-                session.Delete("Notes", id);
-                session.Flush();
-                tx.Commit();
-            }
-        }
-
+        #endregion
+      
         #region privateMethods
-        private bool AddOrUpdateUser(User user, int id = -1)
+        
+
+        private bool AddRecord(T obj)
         {
+
             bool wasSucceeded = true;
+
             using (var session = OpenSession())
-            using (ITransaction tx = session.BeginTransaction())
             {
+                var tx = session.BeginTransaction();
+
                 try
                 {
-                    if (id == -1)
-                    {
-                        session.SaveOrUpdate(user);
-                    }
-                    else
-                    {
-                        session.SaveOrUpdate("Users", user, id);
-                    }
-                    session.Flush();
+
+                    session.Save(obj);
                     tx.Commit();
+
                 }
                 catch (NHibernate.HibernateException)
                 {
-                    tx.Rollback();
                     wasSucceeded = false;
+                    tx.Rollback();
                     throw;
                 }
+
             }
+
             return wasSucceeded;
         }
-        private bool AddOrUpdateNote(Note note, int id = -1)
+
+
+        private bool UpdateRecord(int id, T obj)
         {
 
-            var isUpdated = id > 0 ? true : false;
-            bool wasSucceeded = true; ;
+            bool wasSucceeded = true;
+            Type objType = typeof(T);
+            var entityName = objType.Name;
+
             using (var session = OpenSession())
-            using (ITransaction tx = session.BeginTransaction())
             {
+                var tx = session.BeginTransaction();
+
                 try
                 {
-                    if (isUpdated)
-                        session.SaveOrUpdate("Notes", note, id);
-                    else
-                        session.SaveOrUpdate(note);
-
-                    session.Flush();
+                    session.Update(entityName, obj, id);
                     tx.Commit();
                 }
                 catch (NHibernate.HibernateException)
@@ -177,10 +143,62 @@ namespace YourNote.Server.Services
                     tx.Rollback();
                     throw;
                 }
+
             }
+
             return wasSucceeded;
         }
 
+
+        private bool DeleteRecord(int id)
+        {
+
+            bool wasSucceeded = true;
+            Type objType = typeof(T);
+            var entityName = objType.Name;
+
+
+            using (var session = OpenSession())
+            {
+                var tx = session.BeginTransaction();
+                try
+                {
+                    session.Delete(entityName, id);
+                    tx.Commit();
+                }
+                catch (NHibernate.HibernateException)
+                {
+                    wasSucceeded = false;
+                    tx.Rollback();
+                    throw;
+                }
+
+            }
+
+            return wasSucceeded;
+
+        }
+
+
+
+        private T GetById(int id)
+        {
+            
+            using(var session = OpenSession())
+                return session.Get<T>(id);
+            
+        }
+
+        
+        private IList<T> GetAllRecords() 
+        {
+            
+            using (var session = OpenSession())   
+                return  session.QueryOver<T>().List<T>();                        
+           
+        }
+
+       
         #endregion
     }
 }

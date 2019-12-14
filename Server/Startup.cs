@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using YourNote.Server.Services.DatabaseService;
 using System;
+using YourNote.Shared.Models;
 
 namespace YourNote.Server
 {
@@ -48,8 +49,11 @@ namespace YourNote.Server
                 };
             });
 
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IDatabaseService, NhibernateService>();
+            services.AddScoped<IUserAuthenticateService, UserAuthenticateService>();
+
+            services.AddScoped<IDatabaseCRUD<Note>, NhibernateService<Note>>();
+            services.AddScoped<IDatabaseCRUD<User>, NhibernateService<User>>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
