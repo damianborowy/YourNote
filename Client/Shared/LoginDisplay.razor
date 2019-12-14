@@ -1,7 +1,11 @@
-﻿<AuthorizeView>
+﻿@inject AuthenticationStateProvider ApiAuthenticationStateProvider
+
+<AuthorizeView>
     <Authorized>
         <BSNavItem>
-            @*@context.User.Claims // TODO:: find out what's wrong with context*@
+            <BSNavLink>
+                @Username
+            </BSNavLink>
         </BSNavItem>
         <BSNavItem>
             <BSNavLink Href="/logout">
@@ -22,3 +26,14 @@
         </BSNavItem>
     </NotAuthorized>
 </AuthorizeView>
+
+@code {
+    private string Username;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        Username = ClaimsParser.Select(authState, "username");
+    }
+}

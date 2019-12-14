@@ -1,0 +1,19 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider ApiAuthenticationStateProvider
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/notes");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

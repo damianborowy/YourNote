@@ -1,39 +1,38 @@
 ﻿@page "/notes/"
-@page "/notes/{Username}"
+@page "/notes/{UserId}"
 @using SharedModels = YourNote.Shared.Models
 @inject HttpClient Http
+@inject AuthenticationStateProvider ApiAuthenticationStateProvider
 
-
-
-@if (notes == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    foreach (var note in notes)
+<div class="wrapper">
+    @if (notes == null)
     {
-        <Note Title="@note.Title"
-              Color="@note.Color"
-              Content="@note.Content" />
+        <p><em>Loading...</em></p>
     }
-}
+    else
+    {
+        foreach (var note in notes)
+        {
+            <Note Title="@note.Title"
+                  Color="@note.Color"
+                  Content="@note.Content" />
+        }
+    }
+</div>
+
 
 
 @code {
     [Parameter]
-    public string Username { get; set; }
+    public string UserId { get; set; }
 
     SharedModels.Note[] notes;
 
-    protected override void OnInitialized()
-    {
-        // TODO:: set username to proper value when not initialized
-        Username = Username ?? "username";
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        notes = await Http.GetJsonAsync<SharedModels.Note[]>("api/Notes");
+        var authService = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
+        UserId = UserId ?? ClaimsParser.Select(authService, "id");
+
+        notes = await Http.GetJsonAsync<SharedModels.Note[]>($"api/notes/{UserId}");
     }
 }
