@@ -53,7 +53,7 @@ namespace YourNote.Server.Controllers
 
         // DELETE: api/User
         [HttpDelete]
-        public void DeleteUserById(User obj)
+        public void DeleteUserById([FromBody]User obj)
         {
             DataBaseCRUD.Delete(obj);
         }
