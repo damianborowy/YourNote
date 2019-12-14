@@ -19,13 +19,14 @@ namespace YourNote.Shared.Models
         public virtual String EmailAddress { get; set; }
         [DataType(DataType.Date)]
         public virtual DateTime Date { get; set; }
-        public virtual Dictionary<decimal, Note> Notes { get; set; }
+        public virtual IList<Note> Notes { get; set; }
         public virtual string Token { get; set; }
 
 
-        public override string ToString() => Id + "";
-
-
+        public User()
+        {
+            Notes = new List<Note>();
+        }
 
     }
 }

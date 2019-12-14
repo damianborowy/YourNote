@@ -18,12 +18,12 @@ namespace YourNote.Server.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IDatabaseCRUD<User> DataBaseCRUD;
+        private readonly IDatabaseService<User> DataBaseCRUD;
 
         private readonly IUserAuthenticateService userService;
 
         public UsersController(ILogger<UsersController> logger,
-            IDatabaseCRUD<User> DataBaseCRUD,
+            IDatabaseService<User> DataBaseCRUD,
             IUserAuthenticateService userService)
         {
             this.DataBaseCRUD = DataBaseCRUD;
@@ -52,10 +52,10 @@ namespace YourNote.Server.Controllers
         }
 
         // DELETE: api/User
-        [HttpDelete]
-        public void DeleteUserById([FromBody]User obj)
+        [HttpDelete("{id}")]
+        public void DeleteUserById(int id)
         {
-            DataBaseCRUD.Delete(obj);
+            DataBaseCRUD.Delete(id);
         }
 
         // POST: api/User

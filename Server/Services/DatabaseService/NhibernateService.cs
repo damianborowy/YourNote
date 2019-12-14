@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace YourNote.Server.Services
 {
-    public class NhibernateService<T> : IDatabaseCRUD<T> where T : class 
+    public class NhibernateService<T> : IDatabaseService<T> where T : class 
     {
 
         #region Connection to Database
@@ -82,9 +82,9 @@ namespace YourNote.Server.Services
             return UpdateRecord(id, obj);
         }
 
-        public bool Delete(T obj)
+        public bool Delete(int id)
         {
-            return DeleteRecord(obj);
+            return DeleteRecord(id);
         }
 
         #endregion
@@ -150,7 +150,7 @@ namespace YourNote.Server.Services
         }
 
 
-        private bool DeleteRecord(T obj)
+        private bool DeleteRecord(int id)
         {
 
             bool wasSucceeded = true;
@@ -165,7 +165,7 @@ namespace YourNote.Server.Services
                 try
                 {
                     
-                    session.Delete(entityName, obj);
+                    session.Delete(entityName , session.Get<T>(id));
                     tx.Commit();
                 }
                 catch (NHibernate.HibernateException)

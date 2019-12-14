@@ -6,13 +6,13 @@ using YourNote.Shared.Models;
 
 namespace YourNote.Server.Services.DatabaseService
 {
-    public interface IDatabaseCRUD<T> where T : class 
+    public interface IDatabaseService<T> where T : class 
     {
         bool Create(T obj);
         T Read(int id);
         IList<T> Read(); 
         bool Update(int id, T obj);
-        bool Delete(T obj);
+        bool Delete(int id);
 
     }
 }

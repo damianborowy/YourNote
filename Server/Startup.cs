@@ -50,8 +50,8 @@ namespace YourNote.Server
 
             services.AddScoped<IUserAuthenticateService, UserAuthenticateService>();
 
-            services.AddScoped<IDatabaseCRUD<Note>, NhibernateService<Note>>();
-            services.AddScoped<IDatabaseCRUD<User>, NhibernateService<User>>();
+            services.AddScoped<IDatabaseService<Note>, NhibernateService<Note>>();
+            services.AddScoped<IDatabaseService<User>, NhibernateService<User>>();
 
 
             services.AddCors();
