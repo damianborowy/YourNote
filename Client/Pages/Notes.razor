@@ -18,7 +18,7 @@
     }
 </div>
 
-
+<NoteAdder />
 
 @code {
     [Parameter]
@@ -31,45 +31,6 @@
         var authService = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
         UserId = UserId ?? ClaimsParser.Select(authService, "id");
 
-        //notes = await Http.GetJsonAsync<SharedModels.Note[]>($"api/notes/{UserId}");
-        notes = new SharedModels.Note[]
-        {
-            new SharedModels.Note
-            {
-                Title = "lala",
-                Content = "hihiai akdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpoawkdpoawkdpoawkdpoak adoawkdpaw pawkd awopdkwaodkwa pdk  dawkopk",
-                Color = 3
-            },
-            new SharedModels.Note
-            {
-                Title = "lulu",
-                Content = "hihiai akdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpkdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpkdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpkdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpoawkdpoawkdpoawkdpoak adoawkdpaw pawkd awopdkwaodkwa pdk  dawkopk",
-                Color = 2
-            },
-            new SharedModels.Note
-            {
-                Title = "lala",
-                Content = "hihiai akdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpoawkdpoawkdpoawkdpoak adoawkdpaw pawkd awopdkwaodkwa pdk  dawkopk",
-                Color = 3
-            },
-            new SharedModels.Note
-            {
-                Title = "lulu",
-                Content = "hihiai akdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpoawkdpoawkdpoawkdpoak adoawkdpaw pawkd awopdkwaodkwa pdk  dawkopk",
-                Color = 2
-            },
-            new SharedModels.Note
-            {
-                Title = "lala",
-                Content = "hihiai akdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpoawkdpoawkdpoawkdpoak adoawkdpaw pawkd awopdkwaodkwa pdk  dawkopk",
-                Color = 3
-            },
-            new SharedModels.Note
-            {
-                Title = "lulu",
-                Content = "hihiai akdowakdwao kadawd aowjd awdoiaw  oawkdopawkdpowakdpoawkdpoawkdpoawkdpoak adoawkdpaw pawkd awopdkwaodkwa pdk  dawkopk",
-                Color = 2
-            }
-        };
+        notes = await Http.GetJsonAsync<SharedModels.Note[]>($"api/notes/{UserId}");
     }
 }

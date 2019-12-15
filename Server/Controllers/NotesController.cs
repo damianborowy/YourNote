@@ -36,7 +36,7 @@ namespace YourNote.Server.Controllers
         [HttpGet("{id}")]
         public IEnumerable<Note> GetAllRecordsById(int id)
         {
-            return databaseUser.Read(id).Notes;
+            return databaseUser.Read(id).Notes ?? System.Array.Empty<Note>();
         }
 
         // POST: api/Notes

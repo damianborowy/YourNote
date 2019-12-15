@@ -28,7 +28,8 @@ namespace YourNote.Server.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("id", user.Id.ToString()),
-                    new Claim("username", user.Username)
+                    new Claim("username", user.Username),
+                    new Claim("role", user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

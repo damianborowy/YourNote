@@ -12,13 +12,11 @@ using System.Collections.Generic;
 
 namespace YourNote.Server.Services
 {
-    public class NhibernateService<T> : IDatabaseService<T> where T : class 
+    public class NhibernateService<T> : IDatabaseService<T> where T : class
     {
 
         #region Connection to Database
 
-        // Obtain connection string information from the portal
-        //
         private static string[] connectionData = GetConnectionData();
         private static string Host = connectionData[0];
         private static string Port = connectionData[1];
@@ -55,9 +53,6 @@ namespace YourNote.Server.Services
 
         private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSDATA").Split(':');
 
-
-
-
         #endregion
 
         #region CRUD
@@ -72,14 +67,14 @@ namespace YourNote.Server.Services
             return GetById(id);
         }
 
-        public IList<T> Read() 
+        public IList<T> Read()
         {
             return GetAllRecords();
         }
 
-        public bool Update( T obj)
+        public bool Update(T obj)
         {
-            return UpdateRecord( obj);
+            return UpdateRecord(obj);
         }
 
         public bool Delete(int id)
@@ -88,9 +83,9 @@ namespace YourNote.Server.Services
         }
 
         #endregion
-      
+
         #region privateMethods
-        
+
 
         private bool AddRecord(T obj)
         {
@@ -152,14 +147,14 @@ namespace YourNote.Server.Services
         {
 
             bool wasSucceeded = true;
-            
+
 
             using (var session = OpenSession())
             {
                 var tx = session.BeginTransaction();
                 try
                 {
-                    
+
                     session.Delete(session.Get<T>(id));
                     tx.Commit();
                 }
@@ -180,22 +175,25 @@ namespace YourNote.Server.Services
 
         private T GetById(int id)
         {
-            
-            using(var session = OpenSession())
-                return session.Get<T>(id);
-            
+
+            using (var session = OpenSession())
+            {
+                var result = session.Get<T>(id);
+                return result;
+            }
         }
 
-        
-        private IList<T> GetAllRecords() 
+
+        private IList<T> GetAllRecords()
         {
-            
-            using (var session = OpenSession())   
-                return  session.QueryOver<T>().List<T>();                        
-           
+            using (var session = OpenSession())
+            {
+                var result = session.QueryOver<T>().List<T>();
+                return result;
+            }
         }
 
-       
+
         #endregion
     }
 }
