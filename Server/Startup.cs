@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using YourNote.Server.Services.DatabaseService;
 using System;
+using YourNote.Shared.Models;
 
 namespace YourNote.Server
 {
@@ -26,8 +27,7 @@ namespace YourNote.Server
                     new[] { "application/octet-stream" });
             });
 
-            services.AddCors();
-            services.AddControllers();
+            
 
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWTSECRET"));
             services.AddAuthentication(x =>
@@ -48,8 +48,15 @@ namespace YourNote.Server
                 };
             });
 
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IDatabaseService, NhibernateService>();
+            services.AddScoped<IUserAuthenticateService, UserAuthenticateService>();
+
+            services.AddScoped<IDatabaseService<Note>, NhibernateService<Note>>();
+            services.AddScoped<IDatabaseService<User>, NhibernateService<User>>();
+
+
+            services.AddCors();
+            services.AddControllers();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

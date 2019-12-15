@@ -15,48 +15,50 @@ namespace YourNote.Server.Controllers
     [Route("api/[controller]")]
     public class NotesController : ControllerBase
     {
-        private readonly IDatabaseService iDbService;
+        private readonly IDatabaseService<Note> databaseNote;
+        private readonly IDatabaseService<User> databaseUser;
 
         public NotesController(ILogger<NotesController> logger,
-            IDatabaseService iDbService)
+           IDatabaseService<Note> dataBaseNote, IDatabaseService<User> databaseUser)
         {
-            this.iDbService = iDbService;
+            this.databaseNote = dataBaseNote;
+            this.databaseUser = databaseUser;
         }
 
         // GET: api/Notes
         [HttpGet]
-        public IEnumerable<Note> GetAllNotes()
+        public IEnumerable<Note> GetAllRecords()
         {
-           return iDbService.ReadNote();
+           return databaseNote.Read();
         }
 
         // GET: api/Notes/5
         [HttpGet("{id}")]
-        public IEnumerable<Note> GetNoteById(int id)
+        public IEnumerable<Note> GetAllRecordsById(int id)
         {
-            return iDbService.ReadNote(id);
+            return databaseUser.Read(id).Notes;
         }
 
         // POST: api/Notes
         [HttpPost]
-        public bool Post([FromBody] Note note)
+        public bool Post([FromBody] Note obj)
         {
-            return iDbService.CreateNote(note);
+            return databaseNote.Create(obj);
         }
 
-        // PUT: api/Notes/5
+        // PUT: api/Notes
         [HttpPut("{id}")]
-        public bool Put(int id, [FromBody] Note note)
+        public bool Put(int id, [FromBody] Note obj)
         {
-            return iDbService.UpdateNote(note, id);
+            return databaseNote.Update(obj);
 
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Notes/5
         [HttpDelete("{id}")]
-        public void DeleteNoteById(int id)
+        public void DeleteById(int id)
         {
-            iDbService.DeleteNote(id);
+            databaseNote.Delete(id);
         }
 
 

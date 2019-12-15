@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using YourNote.Shared.Models;
 
+
 namespace YourNote.Server.Models.MappingClasses
 {
     public class UserMap : ClassMap<User>
@@ -13,13 +14,27 @@ namespace YourNote.Server.Models.MappingClasses
         public UserMap()
         {
             Table("Users");
-            Id(u => u.ID).GeneratedBy.Identity().Not.Nullable();
+            Id(u => u.Id).GeneratedBy.Identity().Not.Nullable();
             Map(u => u.Username).Unique();
-            Map(u => u.Name);
-            Map(u => u.EmailAddress);
-            Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
-            Map(u => u.Token);
             Map(u => u.Password);
+            Map(u => u.Role).CustomType<User.Permission>().Not.Nullable();
+            Map(u => u.EmailAddress).Unique();
+            Map(u => u.Token);
+
+
+
+            Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
+            Map(u => u.Name);
+
+            HasMany(x => x.Notes)
+                .Cascade.All();
+            HasManyToMany(x => x.SharedNotes)
+                .Inverse()
+                .Cascade.All()
+                .Table("UserNote");
+
+
+
         }
 
 

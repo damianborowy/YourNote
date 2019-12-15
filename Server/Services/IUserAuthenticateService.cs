@@ -12,12 +12,12 @@ using YourNote.Server.Helpers;
 
 namespace YourNote.Server.Services
 {
-    public interface IUserService
+    public interface IUserAuthenticateService
     {
         string Authenticate(User user);
     }
 
-    public class UserService : IUserService
+    public class UserAuthenticateService : IUserAuthenticateService
     {
         public string Authenticate(User user)
         {
@@ -27,7 +27,7 @@ namespace YourNote.Server.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("id", user.ID.ToString()),
+                    new Claim("id", user.Id.ToString()),
                     new Claim("username", user.Username)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),

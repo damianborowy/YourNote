@@ -18,14 +18,15 @@ namespace YourNote.Server.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IDatabaseService iDbService;
-        private readonly IUserService userService;
+        private readonly IDatabaseService<User> databaseUser;
+
+        private readonly IUserAuthenticateService userService;
 
         public UsersController(ILogger<UsersController> logger,
-            IDatabaseService iDbService,
-            IUserService userService)
+            IDatabaseService<User> databaseUser,
+            IUserAuthenticateService userService)
         {
-            this.iDbService = iDbService;
+            this.databaseUser = databaseUser;
             this.userService = userService;
         }
 
@@ -33,28 +34,28 @@ namespace YourNote.Server.Controllers
         [HttpGet]
         public IEnumerable<User> GetAllUsers()
         {
-            return iDbService.ReadUser();
+            return databaseUser.Read();
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public IEnumerable<User> GetUserById(int id)
+        public User GetUserById(int id)
         {
-            return iDbService.ReadUser(id);
+            return databaseUser.Read(id);
         }
 
         // PUT: api/User/5
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] User user)
         {
-            return iDbService.UpdateUser(user, id);
+            return databaseUser.Update(user);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/User
         [HttpDelete("{id}")]
         public void DeleteUserById(int id)
         {
-            iDbService.DeleteUser(id);
+            databaseUser.Delete(id);
         }
 
         // POST: api/User
@@ -69,7 +70,7 @@ namespace YourNote.Server.Controllers
             };
 
             user = HashPassword(user);
-            var result = iDbService.CreateUser(user);
+            var result = databaseUser.Create(user);
 
             if (result)
                 return Ok(new RegisterResult { Successful = true });
@@ -81,14 +82,14 @@ namespace YourNote.Server.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] LoginModel user)
         {
-            var userFromDb = iDbService.ReadUser().FirstOrDefault(u => u.Username == user.Username);
+            var userFromDb = databaseUser.Read().FirstOrDefault(u => u.Username == user.Username);
 
             if (userFromDb == null || !BCrypt.Net.BCrypt.EnhancedVerify(user.Password, userFromDb.Password))
                 return BadRequest(new LoginResult { Successful = false, Error = "Podano niepoprawny login lub has³o." });
 
             userFromDb.Token = userService.Authenticate(userFromDb);
 
-            iDbService.UpdateUser(userFromDb, userFromDb.ID);
+            databaseUser.Update(userFromDb);
 
             return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
         }
