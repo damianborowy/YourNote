@@ -10,7 +10,7 @@
         <input class="form-control text-light bg-dark modal__title" @bind="@note.Title" placeholder="Tytuł" />
     </BSModalHeader>
     <BSModalBody>
-        <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@note.Content" placeholder="Tekst notatki..." />
+        <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@note.Content" placeholder="Treść notatki..." />
     </BSModalBody>
     <BSModalFooter>
         <BSButton Color="BlazorStrap.Color.Primary" OnClick=@SaveNote IsDisabled="@IsNoteBeingSaved">Wyślij</BSButton>
@@ -19,16 +19,21 @@
 </BSModal>
 
 @code {
-    SharedModels.Note note = new SharedModels.Note();
+    [Parameter]
+    public string UserId { get; set; }
+
+    SharedModels.Note note = new SharedModels.Note()
+    {
+        Color = 1
+    };
 
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
 
     async Task SaveNote()
     {
-        note.Color = 2;
         IsNoteBeingSaved = true;
-        await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
+        await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/{UserId}", note);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();
