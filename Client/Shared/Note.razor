@@ -43,7 +43,7 @@
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
-        await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.ID}", NoteObj);
+        await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.Id}", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();

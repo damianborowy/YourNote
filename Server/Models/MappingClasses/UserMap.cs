@@ -17,17 +17,15 @@ namespace YourNote.Server.Models.MappingClasses
             Id(u => u.Id).GeneratedBy.Identity().Not.Nullable();
             Map(u => u.Username).Unique();
             Map(u => u.Password);
-            Map(u => u.Role).CustomType<User.Permission>().Not.Nullable();
+            Map(u => u.Role);
             Map(u => u.EmailAddress).Unique();
             Map(u => u.Token);
-
-
-
             Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(u => u.Name);
 
             HasMany(x => x.Notes)
                 .Cascade.All();
+
             HasManyToMany(x => x.SharedNotes)
                 .Inverse()
                 .Cascade.All()
