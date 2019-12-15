@@ -17,13 +17,13 @@
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
     <BSModalHeader OnClick="@(() => ModalRef.Hide())">
         <input class="form-control text-light bg-dark modal__title" @bind="@NoteObj.Title" />
-        <ColorPicker @bind="@NoteObj.Color" />
+        @*<ColorPicker @bind="@NoteObj.Color" />*@
     </BSModalHeader>
     <BSModalBody>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" />
     </BSModalBody>
     <BSModalFooter>
-        <BSButton Color="BlazorStrap.Color.Primary" OnClick=@SaveNote IsDisabled="@IsNoteBeingSaved">Submit</BSButton>
+        <BSButton Color="BlazorStrap.Color.Primary" OnClick=@SaveNote IsDisabled="@IsNoteBeingSaved">Wyślij</BSButton>
         <BSButton Color="BlazorStrap.Color.Secondary" OnClick="@(() => ModalRef.Hide())">Anuluj</BSButton>
     </BSModalFooter>
 </BSModal>
