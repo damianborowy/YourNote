@@ -1,135 +1,51 @@
-﻿<BSCard Class="note" Color="@GetColorAsEnum()" @onclick=@(() => ModalRef.Show())>
+﻿@inject HttpClient Http
+@using SharedModels = YourNote.Shared.Models
+
+<BSCard Class="note" Color="@GetColorAsEnum()" @onclick=@(() => ModalRef.Show())>
     <BSCard CardType="CardType.Header">
         <span class="note__title">
-            @Title
+            @NoteObj.Title
         </span>
     </BSCard>
     <BSCard CardType="CardType.Body">
         <BSCard CardType="CardType.Text">
-            @Content
+            @NoteObj.Content
         </BSCard>
     </BSCard>
 </BSCard>
 
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
-    <form>
-        <BSModalHeader OnClick="@(() => ModalRef.Hide())">
-            <input class="form-control text-light bg-dark modal__title" value="@Title" />
-        </BSModalHeader>
-        <BSModalBody>
-            <textarea rows="4" class="form-control text-light bg-dark modal__content" value="@Content" />
-        </BSModalBody>
-        <BSModalFooter>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <BSButton Color="BlazorStrap.Color.Secondary" OnClick="@(() => ModalRef.Hide())">Cancel</BSButton>
-        </BSModalFooter>
-    </form>
+    <BSModalHeader OnClick="@(() => ModalRef.Hide())">
+        <input class="form-control text-light bg-dark modal__title" @bind="@NoteObj.Title" />
+        <ColorPicker @bind="@NoteObj.Color" />
+    </BSModalHeader>
+    <BSModalBody>
+        <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" />
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="BlazorStrap.Color.Primary" OnClick=@SaveNote IsDisabled="@IsNoteBeingSaved">Submit</BSButton>
+        <BSButton Color="BlazorStrap.Color.Secondary" OnClick="@(() => ModalRef.Hide())">Anuluj</BSButton>
+    </BSModalFooter>
 </BSModal>
 
 @code {
     [Parameter]
-    public string Title { get; set; }
-
-    [Parameter]
-    public string Content { get; set; }
-
-    [Parameter]
-    public int Color { get; set; } = 3;
+    public SharedModels.Note NoteObj { get; set; }
 
     BSModal ModalRef;
+    bool IsNoteBeingSaved = false;
 
     private BlazorStrap.Color GetColorAsEnum()
     {
-        return (BlazorStrap.Color)Color;
+        return (BlazorStrap.Color)NoteObj.Color;
+    }
+
+    async Task SaveNote()
+    {
+        IsNoteBeingSaved = true;
+        await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.ID}", NoteObj);
+        IsNoteBeingSaved = false;
+
+        ModalRef.Hide();
     }
 }
-
-
-
-
-
-
-
-
-
-@code
-{/*
-
-
-
-
-   @using Microsoft.AspNetCore.Components.Forms;
-   @inject HttpClient Http
-   @using SharedModels = YourNote.Shared.Models
-
-
-
-   <BSCard Class="note" Color="@GetColorAsEnum()" @onclick=@(() => ModalRef.Show())>
-       <BSCard CardType="CardType.Header">
-           <span class="note__title">
-               @Note.Title
-           </span>
-       </BSCard>
-       <BSCard CardType="CardType.Body">
-           <BSCard CardType="CardType.Text">
-               @Note.Content
-           </BSCard>
-       </BSCard>
-   </BSCard>
-
-
-   <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
-       <form>
-           <BSModalHeader OnClick="@(() => ModalRef.Hide())">
-               <input class="form-control text-light bg-dark modal__title" value="@Note.Title" />
-           </BSModalHeader>
-           <BSModalBody>
-               <textarea rows="4" class="form-control text-light bg-dark modal__content" value="@Note.Content" />
-           </BSModalBody>
-           <BSModalFooter>
-               <button type="submit"  class="btn btn-primary">Submit</button>
-               <BSButton Color="BlazorStrap.Color.Secondary" OnClick="@(() => ModalRef.Hide())">Cancel</BSButton>
-           </BSModalFooter>
-       </form>
-   </BSModal>
-
-   @code {
-
-
-
-       [Parameter]
-       public SharedModels.Note Note { get; set; }
-
-
-       BSModal ModalRef;
-   /*
-       private void UpdateNote()
-       {
-           var note = Note;
-
-
-
-
-       }
-
-       private void EditNote()
-       {
-
-
-
-
-       }
-
-
-       private async Task SaveNote() =>
-           await Http.PutJsonAsync($"api/Notes/{Note.ID}", Note);
-
-
-
-
-       private BlazorStrap.Color GetColorAsEnum()
-       {
-           return (BlazorStrap.Color)Note.Color;
-       }
-   }
-      */ }
