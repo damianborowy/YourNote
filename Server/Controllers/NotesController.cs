@@ -50,7 +50,7 @@ namespace YourNote.Server.Controllers
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] Note obj)
         {
-            return databaseNote.Update(id, obj);
+            return databaseNote.Update(obj);
 
         }
 

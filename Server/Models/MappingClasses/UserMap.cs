@@ -17,7 +17,7 @@ namespace YourNote.Server.Models.MappingClasses
             Id(u => u.Id).GeneratedBy.Identity().Not.Nullable();
             Map(u => u.Username).Unique();
             Map(u => u.Password);
-            Map(u => u.Role).CustomType<User.Permission>();
+            Map(u => u.Role).CustomType<User.Permission>().Not.Nullable();
             Map(u => u.EmailAddress).Unique();
             Map(u => u.Token);
 

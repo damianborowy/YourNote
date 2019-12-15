@@ -48,7 +48,7 @@ namespace YourNote.Server.Controllers
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] User user)
         {
-            return DataBaseCRUD.Update(id, user);
+            return DataBaseCRUD.Update(user);
         }
 
         // DELETE: api/User
@@ -89,7 +89,7 @@ namespace YourNote.Server.Controllers
 
             userFromDb.Token = userService.Authenticate(userFromDb);
 
-            DataBaseCRUD.Update(userFromDb.Id, userFromDb);
+            DataBaseCRUD.Update(userFromDb);
 
             return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
         }
