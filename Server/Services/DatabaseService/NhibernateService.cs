@@ -77,9 +77,9 @@ namespace YourNote.Server.Services
             return GetAllRecords();
         }
 
-        public bool Update(int id, T obj)
+        public bool Update( T obj)
         {
-            return UpdateRecord(id, obj);
+            return UpdateRecord( obj);
         }
 
         public bool Delete(int id)
@@ -121,12 +121,10 @@ namespace YourNote.Server.Services
         }
 
 
-        private bool UpdateRecord(int id, T obj)
+        private bool UpdateRecord(T obj)
         {
 
             bool wasSucceeded = true;
-            Type objType = typeof(T);
-            var entityName = objType.Name;
 
             using (var session = OpenSession())
             {
@@ -134,7 +132,7 @@ namespace YourNote.Server.Services
 
                 try
                 {
-                    session.Update(entityName, obj, id);
+                    session.Update(obj);
                     tx.Commit();
                 }
                 catch (NHibernate.HibernateException)
@@ -154,10 +152,7 @@ namespace YourNote.Server.Services
         {
 
             bool wasSucceeded = true;
-            Type objType = typeof(T);
-            var entityName = objType.Name;
-
-
+            
 
             using (var session = OpenSession())
             {
@@ -165,7 +160,7 @@ namespace YourNote.Server.Services
                 try
                 {
                     
-                    session.Delete(entityName , session.Get<T>(id));
+                    session.Delete(session.Get<T>(id));
                     tx.Commit();
                 }
                 catch (NHibernate.HibernateException)

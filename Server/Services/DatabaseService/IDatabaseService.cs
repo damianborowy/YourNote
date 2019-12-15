@@ -11,7 +11,7 @@ namespace YourNote.Server.Services.DatabaseService
         bool Create(T obj);
         T Read(int id);
         IList<T> Read(); 
-        bool Update(int id, T obj);
+        bool Update(T obj);
         bool Delete(int id);
 
     }
