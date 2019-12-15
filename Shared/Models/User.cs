@@ -34,6 +34,7 @@ namespace YourNote.Shared.Models
         public User()
         {
             Notes = new List<Note>();
+            SharedNotes = new List<Note>();
         }
 
         public virtual void AddNote(Note note)

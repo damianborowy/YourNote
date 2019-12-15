@@ -27,8 +27,6 @@ namespace YourNote.Server
                     new[] { "application/octet-stream" });
             });
 
-            
-
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWTSECRET"));
             services.AddAuthentication(x =>
             {
@@ -53,10 +51,8 @@ namespace YourNote.Server
             services.AddScoped<IDatabaseService<Note>, NhibernateService<Note>>();
             services.AddScoped<IDatabaseService<User>, NhibernateService<User>>();
 
-
             services.AddCors();
             services.AddControllers();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -74,8 +70,6 @@ namespace YourNote.Server
 
             app.UseRouting();
 
-            //lehovitz start
-            // global cors policy
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
