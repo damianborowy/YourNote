@@ -17,7 +17,7 @@ namespace YourNote.Shared.Models
         [StringLength(255, MinimumLength = 8)]
         public virtual string Password { get; set; }
         public virtual string Role { get; set; }
-        [Required]
+        
         public virtual string EmailAddress { get; set; }
         public virtual string Token { get; set; }
 
