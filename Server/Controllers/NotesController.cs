@@ -46,7 +46,6 @@ namespace YourNote.Server.Controllers
         {
             var note = new Note()
             {
-                Date = DateTime.Now,
                 Title = obj.Title,
                 Content = obj.Content,
                 Color = obj.Color,

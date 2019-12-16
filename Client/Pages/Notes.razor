@@ -24,13 +24,13 @@
     [Parameter]
     public string UserId { get; set; }
 
-    SharedModels.Note[] notes;
+    List<SharedModels.Note> notes;
 
     protected override async Task OnInitializedAsync()
     {
         var authService = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
         UserId = UserId ?? ClaimsParser.Select(authService, "id");
 
-        notes = await Http.GetJsonAsync<SharedModels.Note[]>($"api/notes/{UserId}");
+        notes = await Http.GetJsonAsync<List<SharedModels.Note>>($"api/notes/{UserId}");
     }
 }

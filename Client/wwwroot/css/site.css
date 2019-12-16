@@ -30,6 +30,11 @@ html, body {
     display: flex;
 }
 
+.modal__header {
+    display: flex;
+    align-items: center;
+}
+
 .modal__title {
     outline: none;
 }
@@ -38,4 +43,9 @@ html, body {
     outline: none;
     resize: none;
     overflow: auto;
+}
+
+.svg-icon {
+    cursor: pointer;
+    fill: white;
 }

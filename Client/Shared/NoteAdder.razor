@@ -1,6 +1,5 @@
 ﻿@inject HttpClient Http
 @using SharedModels = YourNote.Shared.Models
-@using System.Text.Json
 
 <BSButton Color="BlazorStrap.Color.Primary" @onclick="(() => ModalRef.Show())">
     Dodaj
@@ -9,6 +8,7 @@
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
     <BSModalHeader OnClick="@(() => ModalRef.Hide())">
         <input class="form-control text-light bg-dark modal__title" @bind="@note.Title" placeholder="Tytuł" />
+        <?xml version="1.0" encoding="UTF-8" ?>
     </BSModalHeader>
     <BSModalBody>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@note.Content" placeholder="Treść notatki..." />
@@ -35,6 +35,8 @@
         IsNoteBeingSaved = true;
         var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
         IsNoteBeingSaved = false;
+
+        note = new SharedModels.NotePost();
 
         ModalRef.Hide();
     }

@@ -1,0 +1,18 @@
+﻿@inject HttpClient Http
+
+<img src="/img/delete.svg" class="svg-icon" @onclick="@DeleteNote" />
+
+@code {
+    [Parameter]
+    public int NoteId { get; set; }
+
+    [Parameter]
+    public BSModal ModalRef { get; set; }
+
+    async Task DeleteNote()
+    {
+        await Http.DeleteAsync($"/api/notes/{NoteId}");
+
+        ModalRef.Hide();
+    }
+}
