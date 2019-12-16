@@ -63,9 +63,12 @@ namespace YourNote.Server.Controllers
         }
 
         // PUT: api/Notes
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Note obj)
+        [HttpPut("{userId}")]
+        public IActionResult Put(int userId, [FromBody] Note obj)
         {
+            var user = databaseUser.Read(userId);
+            obj.Owner = user;
+
             var result = databaseNote.Update(obj);
 
             if (result != null)

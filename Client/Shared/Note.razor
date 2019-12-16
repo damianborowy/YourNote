@@ -34,6 +34,9 @@
     [Parameter]
     public SharedModels.Note NoteObj { get; set; }
 
+    [Parameter]
+    public string UserId { get; set; }
+
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
 
@@ -45,7 +48,7 @@
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
-        var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.Id}", NoteObj);
+        var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{UserId}", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();
