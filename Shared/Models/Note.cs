@@ -9,7 +9,7 @@ namespace YourNote.Shared.Models
     public class Note
     {
 
-        public virtual int  Id      { get; protected set; } 
+        public virtual int  Id      { get; set; } 
         [DataType(DataType.Date)]
         public virtual DateTime Date    { get; set; }
         public virtual string Title { get; set; }
@@ -17,11 +17,12 @@ namespace YourNote.Shared.Models
         public virtual byte Color   { get; set; }
         [JsonIgnore]
         public virtual User Owner { get; set; }
-        public virtual IList<User> SharedTo { get; protected set; }
+        public virtual IList<User> SharedTo { get; set; }
 
         public Note()
         {
             SharedTo = new List<User>();
+            Date = DateTime.Now;
         }
 
         public virtual void AddListener(User user)

@@ -35,6 +35,7 @@ namespace YourNote.Shared.Models
         {
             Notes = new List<Note>();
             SharedNotes = new List<Note>();
+            Date = DateTime.Now;
         }
 
         public virtual void AddNote(Note note)

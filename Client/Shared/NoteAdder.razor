@@ -36,6 +36,8 @@
         var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
         IsNoteBeingSaved = false;
 
+        note = new SharedModels.NotePost();
+
         ModalRef.Hide();
     }
 }
