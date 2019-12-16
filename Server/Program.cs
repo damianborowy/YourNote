@@ -12,6 +12,17 @@ namespace YourNote.Server
 {
     public class Program
     {
+
+        private static string[] connectionData = GetConnectionData();
+        private static string Host = connectionData[0];
+        private static string Port = connectionData[1];
+        private static string DBname = connectionData[2];
+        private static string User = connectionData[3];
+        private static string Password = connectionData[4];
+
+        private static readonly string connectionString = $" Host={Host}; Port={Port}; Database={DBname};" +
+                $" Username={User}; Password={Password};";
+
         public static void Main(string[] args)
         {
 
@@ -38,9 +49,9 @@ namespace YourNote.Server
                 .AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
                     // Add SQLite support to FluentMigrator
-                    .AddSQLite()
+                    .AddPostgres()
                     // Set the connection string
-                    .WithGlobalConnectionString("Data Source=test.db")
+                    .WithGlobalConnectionString(connectionString)
                     // Define the assembly containing the migrations
                     .ScanIn(typeof(AddLogTable).Assembly).For.Migrations())
                 // Enable logging to console in the FluentMigrator way
@@ -67,5 +78,15 @@ namespace YourNote.Server
                     .Build())
                 .UseStartup<Startup>()
                 .Build();
+
+        private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSDATA").Split(':');
+
+
+
     }
+
+
+
+
+
 }
