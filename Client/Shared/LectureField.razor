@@ -2,7 +2,7 @@
 
 @if (IsToggled)
 {
-    <div class="flex-column align-items-center">
+    <div class="d-flex flex-row align-items-center">
         <img src="/img/file-document-box.svg" class="svg-icon" />
         <input list="lectures" @bind-value="Lecture" @oninput="@OnInput" />
         <datalist id="lectures">

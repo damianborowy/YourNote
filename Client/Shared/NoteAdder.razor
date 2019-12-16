@@ -1,7 +1,7 @@
 ﻿@inject HttpClient Http
 @using SharedModels = YourNote.Shared.Models
 
-<BSButton Color="BlazorStrap.Color.Primary" @onclick="(() => ModalRef.Show())">
+<BSButton Color="BlazorStrap.Color.Primary" @onclick="(() => ModalRef.Show())" Class="adder">
     <img src="/img/plus.svg" />
 </BSButton>
 
@@ -21,6 +21,12 @@
 
 @code {
     [Parameter]
+    public List<SharedModels.Note> Notes { get; set; }
+
+    [Parameter]
+    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
+
+    [Parameter]
     public string UserId { get; set; }
 
     SharedModels.NotePost note = new SharedModels.NotePost();
@@ -35,6 +41,9 @@
         IsNoteBeingSaved = true;
         var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
         IsNoteBeingSaved = false;
+
+        Notes.Add(result);
+        await NotesChanged.InvokeAsync(Notes);
 
         note = new SharedModels.NotePost();
 
