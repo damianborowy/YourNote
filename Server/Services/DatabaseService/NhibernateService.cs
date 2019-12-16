@@ -57,7 +57,7 @@ namespace YourNote.Server.Services
 
         #region CRUD
 
-        public bool Create(T obj)
+        public T Create(T obj)
         {
             return AddRecord(obj);
         }
@@ -72,7 +72,7 @@ namespace YourNote.Server.Services
             return GetAllRecords();
         }
 
-        public bool Update(T obj)
+        public T Update(T obj)
         {
             return UpdateRecord(obj);
         }
@@ -87,11 +87,8 @@ namespace YourNote.Server.Services
         #region privateMethods
 
 
-        private bool AddRecord(T obj)
+        private T AddRecord(T obj)
         {
-
-            bool wasSucceeded = true;
-
             using (var session = OpenSession())
             {
                 var tx = session.BeginTransaction();
@@ -105,22 +102,18 @@ namespace YourNote.Server.Services
                 }
                 catch (NHibernate.HibernateException)
                 {
-                    wasSucceeded = false;
                     tx.Rollback();
                     throw;
                 }
 
             }
 
-            return wasSucceeded;
+            return obj;
         }
 
 
-        private bool UpdateRecord(T obj)
+        private T UpdateRecord(T obj)
         {
-
-            bool wasSucceeded = true;
-
             using (var session = OpenSession())
             {
                 var tx = session.BeginTransaction();
@@ -132,14 +125,12 @@ namespace YourNote.Server.Services
                 }
                 catch (NHibernate.HibernateException)
                 {
-                    wasSucceeded = false;
                     tx.Rollback();
                     throw;
                 }
-
             }
 
-            return wasSucceeded;
+            return obj;
         }
 
 

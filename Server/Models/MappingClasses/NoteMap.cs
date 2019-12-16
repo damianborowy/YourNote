@@ -23,7 +23,8 @@ namespace YourNote.Shared.Models.MappingClasses
             References(n => n.Owner);
             HasManyToMany(n => n.SharedTo)
                 .Cascade.All()
-                .Table("UserNote");
+                .Table("UserNote")
+                .Not.LazyLoad();
 
 
         }

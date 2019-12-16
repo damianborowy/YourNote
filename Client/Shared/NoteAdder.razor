@@ -1,5 +1,6 @@
 ﻿@inject HttpClient Http
 @using SharedModels = YourNote.Shared.Models
+@using System.Text.Json
 
 <BSButton Color="BlazorStrap.Color.Primary" @onclick="(() => ModalRef.Show())">
     Dodaj
@@ -22,18 +23,17 @@
     [Parameter]
     public string UserId { get; set; }
 
-    SharedModels.Note note = new SharedModels.Note()
-    {
-        Color = 1
-    };
+    SharedModels.NotePost note = new SharedModels.NotePost();
 
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
 
     async Task SaveNote()
     {
+        note.OwnerId = Int32.Parse(UserId);
+
         IsNoteBeingSaved = true;
-        await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/{UserId}", note);
+        var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();

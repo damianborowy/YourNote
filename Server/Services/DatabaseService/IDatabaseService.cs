@@ -8,10 +8,10 @@ namespace YourNote.Server.Services.DatabaseService
 {
     public interface IDatabaseService<T> where T : class 
     {
-        bool Create(T obj);
+        T Create(T obj);
         T Read(int id);
         IList<T> Read(); 
-        bool Update(T obj);
+        T Update(T obj);
         bool Delete(int id);
 
     }

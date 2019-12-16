@@ -46,16 +46,21 @@ namespace YourNote.Server.Controllers
 
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public bool Put(int id, [FromBody] User user)
+        public IActionResult Put(int id, [FromBody] User user)
         {
-            return databaseUser.Update(user);
+            var result = databaseUser.Update(user);
+
+            if (result != null)
+                return Ok(result);
+            else
+                return BadRequest(new { error = "User doesn't exist" });
         }
 
         // DELETE: api/User
         [HttpDelete("{id}")]
-        public void DeleteUserById(int id)
+        public bool DeleteUserById(int id)
         {
-            databaseUser.Delete(id);
+            return databaseUser.Delete(id);
         }
 
         // POST: api/User
@@ -72,7 +77,7 @@ namespace YourNote.Server.Controllers
             user = HashPassword(user);
             var result = databaseUser.Create(user);
 
-            if (result)
+            if (result != null)
                 return Ok(new RegisterResult { Successful = true });
             else
                 return BadRequest(new RegisterResult { Successful = false });

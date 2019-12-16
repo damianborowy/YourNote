@@ -23,11 +23,11 @@ namespace YourNote.Server.Models.MappingClasses
             Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(u => u.Name);
 
-            HasMany(x => x.Notes)
+            HasMany(u => u.Notes)
                 .Cascade.All()
                 .Not.LazyLoad();
 
-            HasManyToMany(x => x.SharedNotes)
+            HasManyToMany(u => u.SharedNotes)
                 .Inverse()
                 .Cascade.All()
                 .Table("UserNote")

@@ -1,5 +1,6 @@
 ﻿@inject HttpClient Http
 @using SharedModels = YourNote.Shared.Models
+@using System.Text.Json
 
 <BSCard Class="note" Color="@GetColorAsEnum()" @onclick=@(() => ModalRef.Show())>
     <BSCard CardType="CardType.Header">
@@ -43,7 +44,7 @@
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
-        await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.Id}", NoteObj);
+        var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.Id}", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();
