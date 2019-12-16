@@ -7,6 +7,7 @@ using YourNote.Server.Services;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace YourNote.Server.Controllers
 {
@@ -36,29 +37,49 @@ namespace YourNote.Server.Controllers
         [HttpGet("{id}")]
         public IEnumerable<Note> GetAllRecordsById(int id)
         {
-            return databaseUser.Read(id).Notes ?? System.Array.Empty<Note>();
+            return databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
         }
 
         // POST: api/Notes
         [HttpPost]
-        public bool Post([FromBody] Note obj)
+        public IActionResult Post([FromBody] NotePost obj)
         {
-            return databaseNote.Create(obj);
+            var note = new Note()
+            {
+                Date = DateTime.Now,
+                Title = obj.Title,
+                Content = obj.Content,
+                Color = obj.Color,
+            };
+
+            var user = databaseUser.Read(obj.OwnerId);
+            user.AddNote(note);
+
+            var result = databaseUser.Update(user);
+
+            if (result != null)
+                return Ok(databaseNote.Create(note));
+            else
+                return BadRequest(new { error = "User doesn't exist" });
         }
 
         // PUT: api/Notes
         [HttpPut("{id}")]
-        public bool Put(int id, [FromBody] Note obj)
+        public IActionResult Put(int id, [FromBody] Note obj)
         {
-            return databaseNote.Update(obj);
+            var result = databaseNote.Update(obj);
 
+            if (result != null)
+                return Ok(result);
+            else
+                return BadRequest(new { error = "Note doesn't exist" });
         }
 
         // DELETE: api/Notes/5
         [HttpDelete("{id}")]
-        public void DeleteById(int id)
+        public bool DeleteById(int id)
         {
-            databaseNote.Delete(id);
+            return databaseNote.Delete(id);
         }
 
 

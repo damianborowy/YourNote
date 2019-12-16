@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace YourNote.Shared.Models
 {
@@ -15,6 +15,7 @@ namespace YourNote.Shared.Models
         public virtual string Title { get; set; }
         public virtual string Content { get; set; }
         public virtual byte Color   { get; set; }
+        [JsonIgnore]
         public virtual User Owner { get; set; }
         public virtual IList<User> SharedTo { get; protected set; }
 

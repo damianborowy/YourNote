@@ -1,5 +1,6 @@
 ﻿@inject HttpClient Http
 @using SharedModels = YourNote.Shared.Models
+@using System.Text.Json
 
 <BSCard Class="note" Color="@GetColorAsEnum()" @onclick=@(() => ModalRef.Show())>
     <BSCard CardType="CardType.Header">
@@ -16,11 +17,11 @@
 
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
     <BSModalHeader OnClick="@(() => ModalRef.Hide())">
-        <input class="form-control text-light bg-dark modal__title" @bind="@NoteObj.Title" />
+        <input class="form-control text-light bg-dark modal__title" @bind="@NoteObj.Title" placeholder="Tytuł" />
         @*<ColorPicker @bind="@NoteObj.Color" />*@
     </BSModalHeader>
     <BSModalBody>
-        <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" />
+        <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" placeholder="Treść notatki..." />
     </BSModalBody>
     <BSModalFooter>
         <BSButton Color="BlazorStrap.Color.Primary" OnClick=@SaveNote IsDisabled="@IsNoteBeingSaved">Wyślij</BSButton>
@@ -43,7 +44,7 @@
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
-        await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.Id}", NoteObj);
+        var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{NoteObj.Id}", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();
