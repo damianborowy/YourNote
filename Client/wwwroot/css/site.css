@@ -41,11 +41,12 @@ html, body {
 
 .modal__content {
     outline: none;
-    resize: none;
-    overflow: auto;
+}
+
+.modal__inputs {
+    padding: 6px 16px;
 }
 
 .svg-icon {
     cursor: pointer;
-    fill: white;
 }

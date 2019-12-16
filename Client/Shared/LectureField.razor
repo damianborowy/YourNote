@@ -1,0 +1,51 @@
+﻿@inject HttpClient Http
+
+@if (IsToggled)
+{
+    <div class="flex-column align-items-center">
+        <img src="/img/file-document-box.svg" class="svg-icon" />
+        <input list="lectures" @bind-value="Lecture" @oninput="@OnInput" />
+        <datalist id="lectures">
+            @foreach (var lecture in Lectures)
+            {
+                <option value="@lecture" />
+            }
+        </datalist><br />
+    </div>
+}
+else
+{
+    <img src="/img/file-document-box-plus.svg" class="svg-icon" @onclick="@OnAddClick" />
+}
+
+@code {
+    [Parameter]
+    public string Lecture { get; set; }
+
+    [Parameter]
+    public EventCallback<string> LectureChanged { get; set; }
+
+    string[] Lectures { get; set; } = Array.Empty<string>();
+    bool IsToggled { get; set; } = false;
+
+    void OnAddClick()
+    {
+        IsToggled = true;
+    }
+
+    async Task OnInput()
+    {
+        await LectureChanged.InvokeAsync(Lecture);
+        Console.WriteLine($"Lecture: {Lecture}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Lectures = new string[]
+        {
+            "lalala",
+            "lelelel",
+            "foo"
+        };
+    }
+}

@@ -1,0 +1,23 @@
+﻿@if (IsToggled)
+{
+    <img src="/img/tag.svg" class="svg-icon" />
+}
+else
+{
+    <img src="/img/tag-plus.svg" class="svg-icon" @onclick="@OnAddClick" />
+}
+
+@code {
+    [Parameter]
+    public string Tag { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TagChanged { get; set; }
+
+    bool IsToggled { get; set; } = false;
+
+    void OnAddClick()
+    {
+        IsToggled = true;
+    }
+}
