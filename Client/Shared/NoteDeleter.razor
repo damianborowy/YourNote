@@ -1,25 +1,18 @@
-﻿<div style="background-color: @Color">
+﻿@inject HttpClient Http
 
-</div>
+<img src="/img/delete.svg" class="svg-icon" @onclick="@DeleteNote" />
 
 @code {
     [Parameter]
-    public int Color { get; set; }
+    public int NoteId { get; set; }
 
-    Dictionary<int, string> colors = new Dictionary<int, string>()
-    {
-        {1, "" },
-        {2, "" },
-        {3, "" },
-        {4, "" },
-        {5, "" },
-        {6, "" },
-        {7, "" },
-        {8, "" },
-    };
+    [Parameter]
+    public BSModal ModalRef { get; set; }
 
-    private string GetRgbFromEnum(int color)
+    async Task DeleteNote()
     {
-        return colors[color];
+        await Http.DeleteAsync($"/api/notes/{NoteId}");
+
+        ModalRef.Hide();
     }
 }
