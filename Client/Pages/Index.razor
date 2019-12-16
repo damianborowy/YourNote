@@ -9,11 +9,11 @@
 
         if (authState.User.Identity.IsAuthenticated)
         {
-            NavigationManager.NavigateTo("/notes");
+            NavigationManager.NavigateTo("/notes", true);
         }
         else
         {
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("/login", true);
         }
     }
 }
