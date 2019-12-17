@@ -20,6 +20,7 @@ namespace YourNote.Shared.Models.MappingClasses
             Map(n => n.Content);
 
             References(n => n.Owner);
+            
             References(n => n.Tag).Cascade.All().Nullable();
             References(n => n.Lecture).Cascade.All().Nullable();
 

@@ -18,7 +18,7 @@ namespace YourNote.Shared.Models
         [JsonIgnore]
         public virtual User Owner { get; set; }
         public virtual IList<User> SharedTo { get; set; }
-
+        
         public virtual Tag Tag {get; set;}
         public virtual Lecture Lecture {get; set;}
 

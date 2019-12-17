@@ -23,9 +23,17 @@ namespace YourNote.Server.Controllers
         }
         // GET: api/Lectures
         [HttpGet]
-        public IEnumerable<Lecture> GetAllRecords()
+        public IEnumerable<string> GetAllRecords()
         {
-            return databaseLecture.Read();
+            var list = new List<string>();
+
+            foreach (var item in databaseLecture.Read())
+            {
+                if (item.Name != null)
+                    list.Add(item.Name);
+            }
+
+            return list;
         }
     }
 }
