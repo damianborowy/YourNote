@@ -42,7 +42,10 @@ namespace YourNote.Shared.Models
 
         public virtual int CompareTo(Note other)
         {
-            return this.Id.CompareTo(other.Id);
+            if (other == null)
+                return 1;
+            else
+                return Id.CompareTo(other.Id);
         }
     }
 }

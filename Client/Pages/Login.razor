@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 @using YourNote.Shared.Models;
 
-<h1>Logowanie</h1>
+<h1 class="text-center">Logowanie</h1>
 
 @if (ShowErrors)
 {
@@ -12,7 +12,7 @@
     </div>
 }
 
-<div class="card">
+<div class="card auth__form">
     <div class="card-body">
         <h5 class="card-title">Wprowadź swoje dane logowania</h5>
         <EditForm Model="loginModel" OnValidSubmit="HandleLogin">

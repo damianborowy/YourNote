@@ -63,3 +63,8 @@ html, body {
 .form-control::placeholder {
     color: #aaa;
 }
+
+.auth__form {
+    width: 50%;
+    margin: 50px auto;
+}
