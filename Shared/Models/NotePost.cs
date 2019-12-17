@@ -4,7 +4,7 @@ using System.Text;
 
 namespace YourNote.Shared.Models
 {
-    public class NotePost
+    public class NotePost : IComparable<NotePost>
     {
         public int? Id { get; set; }
         public string Title { get; set; }
@@ -37,6 +37,14 @@ namespace YourNote.Shared.Models
             if (note.Lecture != null)
                 Lecture = note.Lecture.Id + "";
 
+        }
+
+        public virtual int CompareTo(NotePost other)
+        {
+            if (other == null)
+                return 1;
+            else
+                return Id.Value.CompareTo(other.Id);
         }
     }
 }
