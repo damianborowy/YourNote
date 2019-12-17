@@ -18,12 +18,17 @@ namespace YourNote.Server.Controllers
     {
         private readonly IDatabaseService<Note> databaseNote;
         private readonly IDatabaseService<User> databaseUser;
+        private readonly IDatabaseService<Tag> databaseTag;
+        private readonly IDatabaseService<Lecture> databaseLecture;
 
         public NotesController(ILogger<NotesController> logger,
-           IDatabaseService<Note> dataBaseNote, IDatabaseService<User> databaseUser)
+           IDatabaseService<Note> dataBaseNote, IDatabaseService<User> databaseUser,
+           IDatabaseService<Tag> databaseTag, IDatabaseService<Lecture> databaseLecture)
         {
             this.databaseNote = dataBaseNote;
             this.databaseUser = databaseUser;
+            this.databaseLecture = databaseLecture;
+            this.databaseTag = databaseTag;
         }
 
         // GET: api/Notes
@@ -44,20 +49,29 @@ namespace YourNote.Server.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] NotePost obj)
         {
+            var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
+            var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
+
+            if (tag == null)
+                tag = new Tag() { Name = obj.Tag };
+
+            if (lecture == null)
+                lecture = new Lecture() { Name = obj.Lecture };
+
             var note = new Note()
             {
                 Title = obj.Title,
                 Content = obj.Content,
                 Color = obj.Color,
-                Lecture = new Lecture()
-                {
-                    Name = obj.Lecture
-                },
-                Tag = new Tag()
-                {
-                    Name = obj.Tag
-                }
+                Tag = tag,
+                Lecture = lecture
             };
+
+            tag.Notes.Add(note);
+            lecture.Notes.Add(note);
+
+            databaseTag.Create(tag);
+            databaseLecture.Create(lecture);
 
             var user = databaseUser.Read(obj.OwnerId);
             user.AddNote(note);
