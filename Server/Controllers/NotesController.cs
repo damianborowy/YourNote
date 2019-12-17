@@ -53,10 +53,16 @@ namespace YourNote.Server.Controllers
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
             if (tag == null)
+            {
                 tag = new Tag() { Name = obj.Tag };
+                databaseTag.Create(tag);
+            }
 
             if (lecture == null)
+            {
                 lecture = new Lecture() { Name = obj.Lecture };
+                databaseLecture.Create(lecture);
+            }
 
             var note = new Note()
             {
@@ -66,12 +72,6 @@ namespace YourNote.Server.Controllers
                 Tag = tag,
                 Lecture = lecture
             };
-
-            tag.Notes.Add(note);
-            lecture.Notes.Add(note);
-
-            databaseTag.Create(tag);
-            databaseLecture.Create(lecture);
 
             var user = databaseUser.Read(obj.OwnerId);
             user.AddNote(note);

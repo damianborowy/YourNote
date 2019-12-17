@@ -20,15 +20,13 @@ namespace YourNote.Shared.Models.MappingClasses
             Map(n => n.Content);
 
             References(n => n.Owner);
-            References(n => n.Tag);
-            References(n => n.Lecture);
+            References(n => n.Tag).Cascade.All();
+            References(n => n.Lecture).Cascade.All();
 
             HasManyToMany(n => n.SharedTo)
                 .Cascade.All()
                 .Table("UserNote")
                 .Not.LazyLoad();
-
-
         }
     }
 }

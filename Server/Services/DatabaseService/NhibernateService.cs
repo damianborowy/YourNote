@@ -122,7 +122,7 @@ namespace YourNote.Server.Services
 
                 try
                 {
-                    session.Update(obj);
+                    session.SaveOrUpdate(obj);
                     tx.Commit();
                 }
                 catch (NHibernate.HibernateException)
