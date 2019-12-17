@@ -15,7 +15,8 @@ namespace YourNote.Server.Models.MappingClasses
         {
             Table("Lecture");
 
-            Id(l => l.Name).GeneratedBy.Assigned();
+            Id(l => l.Id).GeneratedBy.Identity().Not.Nullable();
+            Map(l => l.Name);
 
             HasMany(l => l.Notes)
                 .Cascade.All()
