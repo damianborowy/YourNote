@@ -52,7 +52,7 @@ namespace YourNote.Server.Controllers
             var result = databaseUser.Update(user);
 
             if (result != null)
-                return Ok(result);
+                return Ok();
             else
                 return BadRequest(new { error = "User doesn't exist" });
         }
@@ -110,7 +110,7 @@ namespace YourNote.Server.Controllers
             databaseUser.Update(helper);
 
             if (helper != null)
-                return Ok(helper);
+                return Ok();
             else
                 return BadRequest(new { error = "User doesn't exist" });
         }
