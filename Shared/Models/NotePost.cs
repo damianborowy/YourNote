@@ -6,6 +6,7 @@ namespace YourNote.Shared.Models
 {
     public class NotePost
     {
+        public int? Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public byte Color { get; set; }
@@ -26,13 +27,13 @@ namespace YourNote.Shared.Models
         public NotePost(Note note)
         {
 
+            Id = note.Id;
             Title = note.Title;
             Content = note.Content;
             Color = note.Color;
             OwnerId = note.Owner.Id;
             Tag = note.Tag.Id + "";
             Lecture = note.Lecture.Id + "";
-
 
         }
     }

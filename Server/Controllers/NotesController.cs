@@ -140,7 +140,9 @@ namespace YourNote.Server.Controllers
                 
                  
             };
-           
+
+            if (notePost.Id.HasValue)
+                note.Id = notePost.Id.Value;
 
             return note;
         }
