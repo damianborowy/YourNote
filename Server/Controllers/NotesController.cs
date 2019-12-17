@@ -54,10 +54,11 @@ namespace YourNote.Server.Controllers
 
             if (tag == null)
             {
-                tag = new Tag() { Name = obj.Tag };
+                tag = new Tag() { Name = obj.Tag }; 
                 databaseTag.Create(tag);
             }
 
+            }
             if (lecture == null)
             {
                 lecture = new Lecture() { Name = obj.Lecture };
@@ -69,10 +70,11 @@ namespace YourNote.Server.Controllers
                 Title = obj.Title,
                 Content = obj.Content,
                 Color = obj.Color,
-                Tag = tag,
-                Lecture = lecture
             };
-
+            
+            tag.AddNote(note);
+            lecture.AddNote(note);
+            
             var user = databaseUser.Read(obj.OwnerId);
             user.AddNote(note);
 
