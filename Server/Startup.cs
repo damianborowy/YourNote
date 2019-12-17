@@ -46,6 +46,9 @@ namespace YourNote.Server
                 };
             });
 
+
+            services.AddTransient<FluentMigratorService>();
+
             services.AddScoped<IUserAuthenticateService, UserAuthenticateService>();
 
             services.AddScoped<IDatabaseService<Note>, NhibernateService<Note>>();

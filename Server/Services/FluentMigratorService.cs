@@ -1,18 +1,21 @@
 ﻿
 using FluentMigrator.Runner;
+using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.DependencyInjection;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YourNote.Shared.Models;
+
 
 namespace YourNote.Server.Services
 {
     public class FluentMigratorService
     {
         #region Connection handler
-
+        public static ISessionFactory SessionFactory { get; set; }
         private static string[] connectionData = GetConnectionData();
         private static string Host = connectionData[0];
         private static string Port = connectionData[1];
@@ -20,7 +23,7 @@ namespace YourNote.Server.Services
         private static string User = connectionData[3];
         private static string Password = connectionData[4];
 
-
+        
         private static readonly string connectionString = $" Host={Host}; Port={Port}; Database={DBname};" +
                 $" Username={User}; Password={Password};";
 
@@ -40,16 +43,35 @@ namespace YourNote.Server.Services
 
 
 
-        private static void MigrateTo(long? version)
+        public bool MigrateTo(long? version)
         {
 
-            Version = version;
-            var serviceProvider = CreateServices(connectionString);
 
-            using (var scope = serviceProvider.CreateScope())
+
+            SessionFactory = CreateSession();
+            bool exist = false;
+            using (var session = SessionFactory.OpenSession())
             {
-                UpdateDatabase(scope.ServiceProvider);
+
+               exist  = session.Query<VersionInfo>()
+                               .Any(x => x.Version.Equals(version.ToString()));
+               
             }
+            
+            
+            if(exist)
+            {
+                Version = version;
+                var serviceProvider = CreateServices(connectionString);
+
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    UpdateDatabase(scope.ServiceProvider);
+                }
+            }
+
+            return exist;
+
         }
 
         private static IServiceProvider CreateServices(string connectionString)
@@ -79,6 +101,30 @@ namespace YourNote.Server.Services
                 runner.MigrateUp();
             }
         }
+
+        public static ISessionFactory CreateSession()
+        {
+            
+            Console.WriteLine(connectionData);
+
+            return Fluently.Configure()
+                .Database(PostgreSQLConfiguration.PostgreSQL81
+                .ConnectionString($" Host={Host}; Port={Port}; Database={DBname};" +
+                $" Username={User}; Password={Password};"))
+                .BuildSessionFactory();
+        }
+
+        public ISession OpenSession() => SessionFactory.OpenSession();
+
+
+    }
+
+    internal class VersionInfo
+    {
+
+        public string Version { get; set; }
+        public DateTime AppiledOn { get; set; }
+        public string Description { get; set; }
 
     }
 }
