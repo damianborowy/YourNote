@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 @using YourNote.Shared.Models;
 
-<h1>Rejestracja</h1>
+<h1 class="text-center">Rejestracja</h1>
 
 @if (ShowErrors)
 {
@@ -15,7 +15,7 @@
     </div>
 }
 
-<div class="card">
+<div class="card auth__form">
     <div class="card-body">
         <h5 class="card-title">Wprowadź dane</h5>
         <EditForm Model="RegisterModel" OnValidSubmit="HandleRegistration">
