@@ -85,7 +85,7 @@ namespace YourNote.Server.Controllers
             var result = databaseUser.Update(user);
 
             if (result != null)
-                return Ok();
+                return Ok(new NotePost(note));
             else
                 return BadRequest(new { error = "User doesn't exist" });
         }
@@ -108,7 +108,7 @@ namespace YourNote.Server.Controllers
             var result = databaseNote.Update(note);
 
             if (result != null)
-                return Ok();
+                return Ok(new NotePost(note));
             else
                 return BadRequest(new { error = "Note doesn't exist" });
         }
