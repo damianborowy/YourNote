@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace YourNote.Shared.Models
 {
-    public class Note
+    public class Note : IComparable<Note>
     {
 
         public virtual int Id { get; set; }
@@ -38,6 +38,14 @@ namespace YourNote.Shared.Models
         {
             user.SharedNotes.Remove(this);
             SharedTo.Remove(user);
+        }
+
+        public virtual int CompareTo(Note other)
+        {
+            if (other == null)
+                return 1;
+            else
+                return Id.CompareTo(other.Id);
         }
     }
 }

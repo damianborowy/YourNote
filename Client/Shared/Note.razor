@@ -18,7 +18,7 @@
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
     <BSModalHeader OnClick="@(() => ModalRef.Hide())" Class="modal__header">
         <input class="form-control text-light bg-dark modal__title flex-grow-1" @bind="@NoteObj.Title" placeholder="Tytuł"/>
-        <NoteDeleter NoteId="@NoteObj.Id" ModalRef="@ModalRef" Notes="@Notes" NotesChanged="@NotesChanged" />
+        <NoteDeleter NoteId="@NoteObj.Id.Value" ModalRef="@ModalRef" Notes="@Notes" NotesChanged="@NotesChanged" />
     </BSModalHeader>
     <BSModalBody>
         <div class="modal__inputs">
