@@ -52,29 +52,34 @@ namespace YourNote.Server.Controllers
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
-            if (tag == null)
-            {
-                tag = new Tag() { Name = obj.Tag }; 
-                databaseTag.Create(tag);
-            }
-
-            }
-            if (lecture == null)
-            {
-                lecture = new Lecture() { Name = obj.Lecture };
-                databaseLecture.Create(lecture);
-            }
-
             var note = new Note()
             {
                 Title = obj.Title,
                 Content = obj.Content,
                 Color = obj.Color,
             };
-            
-            tag.AddNote(note);
-            lecture.AddNote(note);
-            
+
+
+            if (tag == null && !obj.Tag.Equals(""))
+            {
+                tag = new Tag() { Name = obj.Tag }; 
+                databaseTag.Create(tag);
+                tag.AddNote(note);
+
+            }
+
+
+            if (lecture == null && !obj.Lecture.Equals(""))
+            {
+                lecture = new Lecture() { Name = obj.Lecture };
+                databaseLecture.Create(lecture);
+                lecture.AddNote(note);
+
+            }
+
+
+
+
             var user = databaseUser.Read(obj.OwnerId);
             user.AddNote(note);
 
