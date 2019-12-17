@@ -56,13 +56,11 @@ namespace YourNote.Server.Controllers
             {
                 tag = new Tag() { Name = obj.Tag }; 
                 databaseTag.Create(tag);
-
-                
+            }
 
             }
             if (lecture == null)
             {
-
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
             }
@@ -73,10 +71,10 @@ namespace YourNote.Server.Controllers
                 Content = obj.Content,
                 Color = obj.Color,
             };
-
+            
             tag.AddNote(note);
             lecture.AddNote(note);
-
+            
             var user = databaseUser.Read(obj.OwnerId);
             user.AddNote(note);
 

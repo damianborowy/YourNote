@@ -22,8 +22,8 @@
     </BSModalHeader>
     <BSModalBody>
         <div class="modal__inputs">
-            <TagField @bind-Tag="Tag" Tags="@Tags" />
-            <LectureField @bind-Lecture="Lecture" Lectures="@Lectures" />
+            <TagField @bind-Tag="@NoteObj.Tag.Name" Tags="@Tags" />
+            <LectureField @bind-Lecture="@NoteObj.Lecture.Name" Lectures="@Lectures" />
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" placeholder="Treść notatki..." />
     </BSModalBody>
@@ -52,9 +52,6 @@
     [Parameter]
     public List<string> Lectures { get; set; }
 
-    string Tag;
-    string Lecture;
-
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
 
@@ -65,8 +62,6 @@
 
     async Task SaveNote()
     {
-        NoteObj.Tag.Name = Tag;
-        NoteObj.Lecture.Name = Lecture;
         IsNoteBeingSaved = true;
         var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{UserId}", NoteObj);
         IsNoteBeingSaved = false;

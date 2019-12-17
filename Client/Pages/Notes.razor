@@ -35,19 +35,17 @@
         UserId = UserId ?? ClaimsParser.Select(authService, "nameid");
 
         notes = await Http.GetJsonAsync<List<SharedModels.Note>>($"api/notes/{UserId}");
+        var tagsArr = await Http.GetJsonAsync<List<Tag>>("api/tags");
+        var lecturesArr = await Http.GetJsonAsync<List<Lecture>>("api/lectures");
 
-        tags.AddRange(new string[] 
-            {
-                "lalala",
-                "lelelel"
-            }
-        );
+        foreach (var tag in tagsArr)
+        {
+            tags.Add(tag.Name);
+        }
 
-        lectures.AddRange(new string[]
-            {
-                "someValue",
-                "someLecture"
-            }
-        );
+        foreach (var lecture in lecturesArr)
+        {
+            lectures.Add(lecture.Name);
+        }
     }
 }
