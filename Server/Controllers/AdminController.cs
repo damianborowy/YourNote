@@ -52,15 +52,41 @@ namespace YourNote.Server.Controllers
 
         }
 
-        [HttpPut("up/{version}")]
-        public IActionResult RestoreVersionUp(long? version)
+
+        [HttpPut("down/")]
+        public IActionResult RestoreVersionDown()
         {
-            var result = migratorService.MigrateUp(version);
+            var result = migratorService.MigrateDown(null);
 
             if (result)
                 return Ok(result);
             else
                 return BadRequest(new { error = "Version doesn't exist" });
+
+
+        }
+
+
+        [HttpPut("up/{version}")]
+        public IActionResult RestoreVersionUp(long? version)
+        {
+            var result = migratorService.MigrateUp(version);
+
+           
+           return Ok(true);
+            
+
+
+        }
+
+        [HttpPut("up/")]
+        public IActionResult RestoreVersionUp()
+        {
+            var result = migratorService.MigrateUp(null);
+
+            
+            return Ok(true);
+            
 
 
         }
