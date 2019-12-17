@@ -2,9 +2,9 @@
 
 @if (IsToggled)
 {
-    <div class="flex-column align-items-center">
+    <div class="d-flex flex-row align-items-center">
         <img src="/img/file-document-box.svg" class="svg-icon" />
-        <input list="lectures" @bind-value="Lecture" @oninput="@OnInput" />
+        <input list="lectures" value="@Lecture" @onchange="((e) => OnChange(e))" placeholder="Nazwa kursu..." />
         <datalist id="lectures">
             @foreach (var lecture in Lectures)
             {
@@ -25,7 +25,9 @@ else
     [Parameter]
     public EventCallback<string> LectureChanged { get; set; }
 
-    string[] Lectures { get; set; } = Array.Empty<string>();
+    [Parameter]
+    public string[] Lectures { get; set; }
+
     bool IsToggled { get; set; } = false;
 
     void OnAddClick()
@@ -33,19 +35,14 @@ else
         IsToggled = true;
     }
 
-    async Task OnInput()
+    async Task OnChange(ChangeEventArgs e)
     {
+        Lecture = e.Value.ToString();
         await LectureChanged.InvokeAsync(Lecture);
-        Console.WriteLine($"Lecture: {Lecture}");
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        Lectures = new string[]
-        {
-            "lalala",
-            "lelelel",
-            "foo"
-        };
+        IsToggled = Lecture?.Length > 0;
     }
 }

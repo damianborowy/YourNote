@@ -57,6 +57,7 @@ namespace YourNote.Server.Controllers
                 return BadRequest(new { error = "User doesn't exist" });
         }
 
+        
         // DELETE: api/User
         [HttpDelete("{id}")]
         public bool DeleteUserById(int id)

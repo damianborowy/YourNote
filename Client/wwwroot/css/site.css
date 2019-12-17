@@ -50,3 +50,16 @@ html, body {
 .svg-icon {
     cursor: pointer;
 }
+
+.adder {
+    position: fixed;
+    right: 10%;
+    bottom: 10%;
+    height: 70px;
+    width: 70px;
+    border-radius: 50px;
+}
+
+.form-control::placeholder {
+    color: #aaa;
+}
