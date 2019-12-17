@@ -18,12 +18,13 @@
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
     <BSModalHeader OnClick="@(() => ModalRef.Hide())" Class="modal__header">
         <input class="form-control text-light bg-dark modal__title flex-grow-1" @bind="@NoteObj.Title" placeholder="Tytuł"/>
-        <NoteDeleter NoteId="@NoteObj.Id" ModalRef="@ModalRef" Notes="@Notes" NotesChanged="@NotesChanged" />
+        @*<ColorPicker @bind="@NoteObj.Color" />*@
+        <NoteDeleter NoteId="@NoteObj.Id" ModalRef="@ModalRef" />
     </BSModalHeader>
     <BSModalBody>
         <div class="modal__inputs">
-            <TagField @bind-Tag="Tag" Tags="@Tags" />
-            <LectureField @bind-Lecture="Lecture" Lectures="@Lectures" />
+            <TagField @bind-Tag="Tag" />
+            <LectureField @bind-Lecture="Lecture" />
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" placeholder="Treść notatki..." />
     </BSModalBody>
@@ -35,25 +36,13 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.Note> Notes { get; set; }
-
-    [Parameter]
-    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
-
-    [Parameter]
     public SharedModels.Note NoteObj { get; set; }
 
     [Parameter]
     public string UserId { get; set; }
 
-    [Parameter]
-    public string[] Tags { get; set; }
-
-    [Parameter]
-    public string[] Lectures { get; set; }
-
-    string Tag;
-    string Lecture;
+    string Tag = "some";
+    string Lecture = "body";
 
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
@@ -65,6 +54,8 @@
 
     async Task SaveNote()
     {
+        Console.WriteLine($"Tag: {Tag}, Lecture: {Lecture}");
+
         IsNoteBeingSaved = true;
         var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{UserId}", NoteObj);
         IsNoteBeingSaved = false;
