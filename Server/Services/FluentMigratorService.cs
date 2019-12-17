@@ -127,7 +127,10 @@ namespace YourNote.Server.Services
             if (Version.HasValue)
             {
                 runner.MigrateUp(Version.Value);
+
             }
+            else
+                runner.MigrateUp();
            
         }
 
