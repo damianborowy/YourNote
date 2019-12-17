@@ -16,11 +16,13 @@ namespace YourNote.Shared.Models.MappingClasses
             Id(n => n.Id).GeneratedBy.Identity().Not.Nullable();
             Map(n => n.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(n => n.Color);
-
             Map(n => n.Title);
             Map(n => n.Content);
 
             References(n => n.Owner);
+            References(n => n.NoteTag);
+            References(n => n.NoteLecture);
+
             HasManyToMany(n => n.SharedTo)
                 .Cascade.All()
                 .Table("UserNote")
