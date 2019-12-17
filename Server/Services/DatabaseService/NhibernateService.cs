@@ -43,6 +43,8 @@ namespace YourNote.Server.Services
                 .Mappings(m => m.FluentMappings
                     .AddFromAssemblyOf<NoteMap>()
                     .AddFromAssemblyOf<UserMap>()
+                    .AddFromAssemblyOf<TagMap>()
+                    .AddFromAssemblyOf<LectureMap>()
                 )
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
                 .Create(createNew, createNew))

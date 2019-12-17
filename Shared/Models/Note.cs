@@ -9,15 +9,18 @@ namespace YourNote.Shared.Models
     public class Note
     {
 
-        public virtual int  Id      { get; set; } 
+        public virtual int Id { get; set; }
         [DataType(DataType.Date)]
-        public virtual DateTime Date    { get; set; }
+        public virtual DateTime Date { get; set; }
         public virtual string Title { get; set; }
         public virtual string Content { get; set; }
-        public virtual byte Color   { get; set; }
+        public virtual byte Color { get; set; }
         [JsonIgnore]
         public virtual User Owner { get; set; }
         public virtual IList<User> SharedTo { get; set; }
+
+        public virtual Tag NoteTag {get; set;}
+        public virtual Lecture NoteLecture {get; set;}
 
         public Note()
         {
@@ -36,7 +39,6 @@ namespace YourNote.Shared.Models
         {
             user.SharedNotes.Remove(this);
             SharedTo.Remove(user);
-
         }
     }
 }

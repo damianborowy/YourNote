@@ -1,0 +1,48 @@
+﻿@inject HttpClient Http
+
+@if (IsToggled)
+{
+    <div class="d-flex flex-row align-items-center">
+        <img src="/img/file-document-box.svg" class="svg-icon" />
+        <input list="lectures" value="@Lecture" @onchange="((e) => OnChange(e))" placeholder="Nazwa kursu..." />
+        <datalist id="lectures">
+            @foreach (var lecture in Lectures)
+            {
+                <option value="@lecture" />
+            }
+        </datalist><br />
+    </div>
+}
+else
+{
+    <img src="/img/file-document-box-plus.svg" class="svg-icon" @onclick="@OnAddClick" />
+}
+
+@code {
+    [Parameter]
+    public string Lecture { get; set; }
+
+    [Parameter]
+    public EventCallback<string> LectureChanged { get; set; }
+
+    [Parameter]
+    public string[] Lectures { get; set; }
+
+    bool IsToggled { get; set; } = false;
+
+    void OnAddClick()
+    {
+        IsToggled = true;
+    }
+
+    async Task OnChange(ChangeEventArgs e)
+    {
+        Lecture = e.Value.ToString();
+        await LectureChanged.InvokeAsync(Lecture);
+    }
+
+    protected override void OnInitialized()
+    {
+        IsToggled = Lecture?.Length > 0;
+    }
+}

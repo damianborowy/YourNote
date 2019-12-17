@@ -1,0 +1,48 @@
+﻿@inject HttpClient Http
+
+@if (IsToggled)
+{
+    <div class="d-flex flex-row align-items-center">
+        <img src="/img/tag.svg" class="svg-icon" />
+        <input list="tags" value="@Tag" @onchange="((e) => OnChange(e))" placeholder="Nazwa tagu..." />
+        <datalist id="tags">
+            @foreach (var tag in Tags)
+            {
+                <option value="@tag" />
+            }
+        </datalist><br />
+    </div>
+}
+else
+{
+    <img src="/img/tag-plus.svg" class="svg-icon" @onclick="@OnAddClick" />
+}
+
+@code {
+    [Parameter]
+    public string Tag { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TagChanged { get; set; }
+
+    [Parameter]
+    public string[] Tags { get; set; }
+
+    bool IsToggled { get; set; } = false;
+
+    void OnAddClick()
+    {
+        IsToggled = true;
+    }
+
+    async Task OnChange(ChangeEventArgs e)
+    {
+        Tag = e.Value.ToString();
+        await TagChanged.InvokeAsync(Tag);
+    }
+
+    protected override void OnInitialized()
+    {
+        IsToggled = Tag?.Length > 0;
+    }
+}

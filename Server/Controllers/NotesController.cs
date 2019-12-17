@@ -84,11 +84,7 @@ namespace YourNote.Server.Controllers
             return databaseNote.Delete(id);
         }
 
-
-
         #region Private methods
         #endregion 
     }
-
-    //enum UpdateOrSave{ UPDATE, SAVE};
 }

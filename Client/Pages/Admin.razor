@@ -1,0 +1,40 @@
+﻿@page "/admin"
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider ApiAuthenticationStateProvider
+@inject HttpClient Http
+@using YourNote.Shared.Models
+
+@if (IsPermitted)
+{
+    <h1>Panel administracyjny</h1>
+    <ul>
+        @foreach (var user in users)
+        {
+            <li>
+                @user.Username
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>
+        Nie posiadasz wystarczających uprawnień by wyświetlić tą stronę.
+    </p>
+}
+
+@code {
+    bool IsPermitted { get; set; } = false;
+    IEnumerable<User> users = Array.Empty<User>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
+        var role = ClaimsParser.Select(authState, "role");
+
+        if (role.Equals("Admin")) IsPermitted = true;
+        else return;
+
+        users = await Http.GetJsonAsync<User[]>("/api/users");
+    }
+}

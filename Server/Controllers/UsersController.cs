@@ -10,6 +10,7 @@ using YourNote.Shared.Models;
 using NHibernate;
 using Microsoft.AspNetCore.Authorization;
 using YourNote.Server.Services.DatabaseService;
+using static YourNote.Shared.Models.User;
 
 namespace YourNote.Server.Controllers
 {
@@ -56,6 +57,7 @@ namespace YourNote.Server.Controllers
                 return BadRequest(new { error = "User doesn't exist" });
         }
 
+        
         // DELETE: api/User
         [HttpDelete("{id}")]
         public bool DeleteUserById(int id)
@@ -99,6 +101,17 @@ namespace YourNote.Server.Controllers
             return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
         }
 
+        [HttpPatch("/role/{userId}/{roleValue}")]
+        public IActionResult UpdateRole(int id, int role)
+        {
+            User helper = databaseUser.Read(id);
+            helper.Role = (Permission)role;
+            databaseUser.Update(helper);
+            if (helper != null)
+                return Ok(helper);
+            else
+                return BadRequest(new { error = "User doesn't exist" });
+        }
         #region Private methods
 
         public static User HashPassword(User user)
