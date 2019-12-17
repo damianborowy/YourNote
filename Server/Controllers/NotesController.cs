@@ -62,7 +62,7 @@ namespace YourNote.Server.Controllers
             var note = ParseToNewNote(obj);
 
 
-            if (tag == null && !obj.Tag.Equals(""))
+            if (tag == null)
             {
                 tag = new Tag() { Name = obj.Tag }; 
                 databaseTag.Create(tag);
@@ -71,7 +71,7 @@ namespace YourNote.Server.Controllers
             }
 
 
-            if (lecture == null && !obj.Lecture.Equals(""))
+            if (lecture == null)
             {
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
@@ -132,14 +132,19 @@ namespace YourNote.Server.Controllers
                 Title = notePost.Title,
                 Content = notePost.Content,
                 Color = notePost.Color,
-                Tag = notePost.Tag.Equals("") ? null : databaseTag.Read(Int32.Parse(notePost.Tag)),
-                Lecture = notePost.Lecture.Equals("") ? null : 
-                                                 databaseLecture.Read(Int32.Parse(notePost.Lecture)),
+                
                 Owner = databaseUser.Read(notePost.OwnerId),
                 Date = DateTime.Now
                 
                  
             };
+
+            if (notePost.Tag != null)
+                note.Tag = databaseTag.Read(Int32.Parse(notePost.Tag));
+
+            if (notePost.Lecture != null)
+                note.Lecture = databaseLecture.Read(Int32.Parse(notePost.Lecture));
+
 
             if (notePost.Id.HasValue)
                 note.Id = notePost.Id.Value;
