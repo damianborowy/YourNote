@@ -33,7 +33,7 @@ namespace YourNote.Server.Services
 
         public static ISessionFactory CreateSessionFactory()
         {
-            bool createNew = true;
+            bool createNew = false;
             Console.WriteLine(connectionData);
 
             return Fluently.Configure()
@@ -43,8 +43,8 @@ namespace YourNote.Server.Services
                 .Mappings(m => m.FluentMappings
                     .AddFromAssemblyOf<NoteMap>()
                     .AddFromAssemblyOf<UserMap>()
-                    //.AddFromAssemblyOf<TagMap>()
-                    //.AddFromAssemblyOf<LectureMap>()
+                    .AddFromAssemblyOf<TagMap>()
+                    .AddFromAssemblyOf<LectureMap>()
                 )
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
                 .Create(createNew, createNew))
