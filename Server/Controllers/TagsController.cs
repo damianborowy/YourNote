@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
 
+
 namespace YourNote.Server.Controllers
 {
     [Authorize]
@@ -25,10 +26,6 @@ namespace YourNote.Server.Controllers
         [HttpGet]
         public IEnumerable<Tag> GetAllRecords()
         {
-            
-
-           
-
             return databaseTag.Read();
         }
     }
