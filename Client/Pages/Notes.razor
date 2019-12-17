@@ -25,7 +25,7 @@
     [Parameter]
     public string UserId { get; set; }
 
-    List<SharedModels.Note> notes;
+    List<SharedModels.NotePost> notes;
     List<string> tags = new List<string>();
     List<string> lectures = new List<string>();
 
@@ -34,7 +34,7 @@
         var authService = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
         UserId = UserId ?? ClaimsParser.Select(authService, "nameid");
 
-        notes = await Http.GetJsonAsync<List<SharedModels.Note>>($"api/notes/{UserId}");
+        notes = await Http.GetJsonAsync<List<SharedModels.NotePost>>($"api/notes/{UserId}");
         var tagsArr = await Http.GetJsonAsync<List<Tag>>("api/tags");
         var lecturesArr = await Http.GetJsonAsync<List<Lecture>>("api/lectures");
 

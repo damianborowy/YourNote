@@ -25,10 +25,10 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.Note> Notes { get; set; }
+    public List<SharedModels.NotePost> Notes { get; set; }
 
     [Parameter]
-    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
+    public EventCallback<List<SharedModels.NotePost>> NotesChanged { get; set; }
 
     [Parameter]
     public string UserId { get; set; }
@@ -56,7 +56,7 @@
         Console.WriteLine(JsonSerializer.Serialize<SharedModels.NotePost>(note));
 
         IsNoteBeingSaved = true;
-        var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
+        var result = await Http.PostJsonAsync<SharedModels.NotePost>($"/api/notes/", note);
         IsNoteBeingSaved = false;
 
         Notes.Add(result);
