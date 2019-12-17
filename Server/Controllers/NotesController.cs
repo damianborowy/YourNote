@@ -59,7 +59,7 @@ namespace YourNote.Server.Controllers
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
-            var note = ParseToNewNote(obj);
+            var note = Parse(obj);
 
 
             if (tag == null)
@@ -88,6 +88,24 @@ namespace YourNote.Server.Controllers
                 return Ok(new NotePost(note));
             else
                 return BadRequest(new { error = "User doesn't exist" });
+
+
+            Note Parse(NotePost notePost)
+            {
+                Note parser = new Note()
+                {
+
+                    Title = notePost.Title,
+                    Content = notePost.Content,
+                    Color = notePost.Color,
+
+                    Owner = databaseUser.Read(notePost.OwnerId),
+                    Date = DateTime.Now
+
+
+                };
+                return parser;
+            }
         }
 
         // PUT: api/Notes
@@ -96,6 +114,10 @@ namespace YourNote.Server.Controllers
         {
            
             var note = ParseToNewNote(obj);
+            
+            
+            if(obj.SharedTo is null)
+                obj.SharedTo = new List<int>();
 
             foreach (var userID  in obj.SharedTo)
             {

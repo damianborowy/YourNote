@@ -37,6 +37,9 @@ namespace YourNote.Shared.Models
             if (note.Lecture != null)
                 Lecture = note.Lecture.Id + "";
 
+            SharedTo = new List<int>();
+
+
         }
 
         public virtual int CompareTo(NotePost other)
