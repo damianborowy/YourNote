@@ -101,12 +101,14 @@ namespace YourNote.Server.Controllers
             return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
         }
 
-        [HttpPatch("/role/{userId}/{roleValue}")]
+        [HttpPatch("role/{userId}/{roleValue}")]
         public IActionResult UpdateRole(int id, int role)
         {
-            User helper = databaseUser.Read(id);
+            var helper = databaseUser.Read(id);
             helper.Role = (Permission)role;
+
             databaseUser.Update(helper);
+
             if (helper != null)
                 return Ok(helper);
             else

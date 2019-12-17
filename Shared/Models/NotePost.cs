@@ -11,6 +11,9 @@ namespace YourNote.Shared.Models
         public byte Color { get; set; }
         public int OwnerId { get; set; }
 
+        public virtual string Tag { get; set; }
+        public virtual string Lecture { get; set; }
+
         public NotePost() 
         {
             Color = 1;

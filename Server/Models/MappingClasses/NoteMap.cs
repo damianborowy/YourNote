@@ -20,8 +20,8 @@ namespace YourNote.Shared.Models.MappingClasses
             Map(n => n.Content);
 
             References(n => n.Owner);
-            References(n => n.NoteTag);
-            References(n => n.NoteLecture);
+            References(n => n.Tag);
+            References(n => n.Lecture);
 
             HasManyToMany(n => n.SharedTo)
                 .Cascade.All()
