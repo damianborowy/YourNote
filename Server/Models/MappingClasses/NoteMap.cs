@@ -18,8 +18,6 @@ namespace YourNote.Shared.Models.MappingClasses
             Map(n => n.Color);
             Map(n => n.Title);
             Map(n => n.Content);
-            Map(n => n.NoteTag);
-            Map(n => n.NoteLecture);
 
             References(n => n.Owner);
             References(n => n.NoteTag);

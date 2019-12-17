@@ -16,7 +16,6 @@ namespace YourNote.Server.Models.MappingClasses
             Table("Tag");
             
             Id(t => t.Name).GeneratedBy.Assigned();
-            Map(t => t.Notes);
 
             HasMany(t => t.Notes)
                 .Cascade.All()
