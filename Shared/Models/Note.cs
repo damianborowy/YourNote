@@ -26,8 +26,7 @@ namespace YourNote.Shared.Models
         {
             SharedTo = new List<User>();
             Date = DateTime.Now;
-            Tag = new Tag();
-            Lecture = new Lecture();
+            
         }
 
         public virtual void AddListener(User user)
