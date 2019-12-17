@@ -39,7 +39,6 @@ namespace YourNote.Shared.Models
         {
             user.SharedNotes.Remove(this);
             SharedTo.Remove(user);
-
         }
     }
 }
