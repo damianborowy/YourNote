@@ -33,31 +33,33 @@ namespace YourNote.Server.Controllers
 
         // GET: api/Notes
         [HttpGet]
-        public IEnumerable<Note> GetAllRecords()
+        public IEnumerable<NotePost> GetAllRecords()
         {
-           return databaseNote.Read();
+           var noteList = databaseNote.Read();
+
+            return ParseToNotePost(noteList);
         }
 
         // GET: api/Notes/5
         [HttpGet("{id}")]
-        public IEnumerable<Note> GetAllRecordsById(int id)
+        public IEnumerable<NotePost> GetAllRecordsById(int id)
         {
-            return databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
+            var noteList = databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
+
+            return ParseToNotePost(noteList);
         }
 
         // POST: api/Notes
         [HttpPost]
         public IActionResult Post([FromBody] NotePost obj)
         {
+
+            
+
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
-            var note = new Note()
-            {
-                Title = obj.Title,
-                Content = obj.Content,
-                Color = obj.Color,
-            };
+            var note = ParseToNewNote(obj);
 
 
             if (tag == null && !obj.Tag.Equals(""))
@@ -90,12 +92,20 @@ namespace YourNote.Server.Controllers
 
         // PUT: api/Notes
         [HttpPut("{userId}")]
-        public IActionResult Put(int userId, [FromBody] Note obj)
+        public IActionResult Put(int userId, [FromBody] NotePost obj)
         {
-            var user = databaseUser.Read(userId);
-            obj.Owner = user;
+           
+            var note = ParseToNewNote(obj);
 
-            var result = databaseNote.Update(obj);
+            foreach (var userID  in obj.SharedTo)
+            {
+                var user = databaseUser.Read(userID);
+                note.SharedTo.Add(user);
+
+            }
+
+
+            var result = databaseNote.Update(note);
 
             if (result != null)
                 return Ok(result);
@@ -111,6 +121,45 @@ namespace YourNote.Server.Controllers
         }
 
         #region Private methods
+
+
+        private Note ParseToNewNote(NotePost notePost)
+        {
+
+            Note note = new Note()
+            {
+
+                Title = notePost.Title,
+                Content = notePost.Content,
+                Color = notePost.Color,
+                Tag = notePost.Tag.Equals("") ? null : databaseTag.Read(Int32.Parse(notePost.Tag)),
+                Lecture = notePost.Lecture.Equals("") ? null : 
+                                                 databaseLecture.Read(Int32.Parse(notePost.Lecture)),
+                Owner = databaseUser.Read(notePost.OwnerId),
+                Date = DateTime.Now
+                
+                 
+            };
+           
+
+            return note;
+        }
+
+        private static List<NotePost> ParseToNotePost(IList<Note> noteList)
+        {
+
+            var notePostList = new List<NotePost>();
+
+            foreach (var note in noteList)
+            {
+
+                notePostList.Add(new NotePost(note));
+
+            }
+            notePostList.Sort();
+
+            return notePostList;
+        }
         #endregion 
     }
 }
