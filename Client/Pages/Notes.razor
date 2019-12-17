@@ -3,6 +3,7 @@
 @using SharedModels = YourNote.Shared.Models
 @inject HttpClient Http
 @inject AuthenticationStateProvider ApiAuthenticationStateProvider
+@using YourNote.Shared.Models
 
 <div class="wrapper">
     @if (notes == null)
@@ -25,40 +26,28 @@
     public string UserId { get; set; }
 
     List<SharedModels.Note> notes;
-    string[] tags = Array.Empty<string>();
-    string[] lectures = Array.Empty<string>();
+    List<string> tags = new List<string>();
+    List<string> lectures = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
         var authService = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
-        UserId = UserId ?? ClaimsParser.Select(authService, "id");
+        UserId = UserId ?? ClaimsParser.Select(authService, "nameid");
 
         notes = await Http.GetJsonAsync<List<SharedModels.Note>>($"api/notes/{UserId}");
 
-        /* TEST DATA
-
-        notes = new List<SharedModels.Note>()
-        {
-            new SharedModels.Note()
+        tags.AddRange(new string[] 
             {
-                Title = "lalala",
-                Content = "lelele",
-                Color = 2
+                "lalala",
+                "lelelel"
             }
-        };
+        );
 
-        tags = new string[]
-        {
-            "lalala",
-            "someTag"
-        };
-
-        lectures = new string[]
-        {
-            "someValue",
-            "someLecture"
-        };
-
-        */
+        lectures.AddRange(new string[]
+            {
+                "someValue",
+                "someLecture"
+            }
+        );
     }
 }
