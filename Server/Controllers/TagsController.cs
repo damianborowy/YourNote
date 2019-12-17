@@ -23,17 +23,13 @@ namespace YourNote.Server.Controllers
         }
         // GET: api/Tags
         [HttpGet]
-        public IEnumerable<string> GetAllRecords()
+        public IEnumerable<Tag> GetAllRecords()
         {
-            var list = new List<string>();
+            
 
-            foreach (var item in databaseTag.Read())
-            {
-                if (item.Name != null)
-                    list.Add(item.Name);
-            }
+           
 
-            return list;
+            return databaseTag.Read();
         }
     }
 }
