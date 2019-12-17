@@ -49,6 +49,14 @@ namespace YourNote.Server.Controllers
                 Title = obj.Title,
                 Content = obj.Content,
                 Color = obj.Color,
+                Lecture = new Lecture()
+                {
+                    Name = obj.Lecture
+                },
+                Tag = new Tag()
+                {
+                    Name = obj.Tag
+                }
             };
 
             var user = databaseUser.Read(obj.OwnerId);

@@ -16,7 +16,7 @@ namespace YourNote.Shared.Models
 
         public virtual void AddNote(Note note)
         {
-            note.NoteTag = this;
+            note.Tag = this;
             Notes.Add(note);
         }
     }

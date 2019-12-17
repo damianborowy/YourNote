@@ -14,7 +14,7 @@ namespace YourNote.Shared.Models
         }
         public virtual void AddNote(Note note)
         {
-            note.NoteLecture = this;
+            note.Lecture = this;
             Notes.Add(note);
         }
     }
