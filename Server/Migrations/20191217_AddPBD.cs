@@ -6,19 +6,23 @@ using FluentMigrator;
 
 namespace YourNote.Server.Migrations
 {
-    [Migration(20191216121800)]
-    public class AddLogTable : Migration
+    [Migration(20191217043100)]
+    public class AddPBD : Migration
     {
         public override void Up()
         {
-            Create.Table("Log")
-                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("Text").AsString();
+
+            Create.Table("PBD")
+                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                 .WithColumn("Text").AsString();
         }
 
         public override void Down()
         {
-            Delete.Table("Log");
+
+            Delete.Table("PBD");
+
+
         }
     }
 }

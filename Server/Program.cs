@@ -16,7 +16,7 @@ namespace YourNote.Server
         {
             BuildWebHost(args).Run();
         }
-
+      
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseConfiguration(new ConfigurationBuilder()
@@ -24,7 +24,6 @@ namespace YourNote.Server
                     .Build())
                 .UseStartup<Startup>()
                 .Build();
-
     }
 
 
