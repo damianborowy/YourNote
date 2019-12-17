@@ -48,9 +48,7 @@ namespace YourNote.Shared.Models
 
         public virtual void DeleteNote(Note note)
         {
-
             Notes.Remove(note);
-
         }
 
         public enum Permission
