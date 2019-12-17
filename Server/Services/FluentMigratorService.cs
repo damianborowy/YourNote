@@ -138,7 +138,7 @@ namespace YourNote.Server.Services
                 .ConfigureRunner(rb => rb
                     .AddPostgres()
                     .WithGlobalConnectionString(connectionString)
-                    .ScanIn(typeof(StartingVersion).Assembly, typeof(AddPBD).Assembly).For.Migrations())
+                    .ScanIn(typeof(StartingVersion).Assembly, typeof(EditSomeTable).Assembly, typeof(AddSomeTable).Assembly).For.Migrations())
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
                 .BuildServiceProvider(true);
         }

@@ -77,9 +77,6 @@ namespace YourNote.Server.Controllers
 
             }
 
-
-
-
             var user = databaseUser.Read(obj.OwnerId);
             user.AddNote(note);
 
