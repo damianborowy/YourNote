@@ -34,6 +34,6 @@
     {
         var authState = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
 
-        Username = ClaimsParser.Select(authState, "unique_name");
+        Username = ClaimsParser.Select(authState, "username");
     }
 }

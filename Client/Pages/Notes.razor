@@ -13,20 +13,18 @@
     {
         foreach (var note in notes)
         {
-            <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" Tags="@tags" Lectures="@lectures" />
+            <Note NoteObj="@note" UserId="@UserId" />
         }
     }
 </div>
 
-<NoteAdder UserId="@UserId" @bind-Notes="notes" Tags="@tags" Lectures="@lectures" />
+<NoteAdder UserId="@UserId" />
 
 @code {
     [Parameter]
     public string UserId { get; set; }
 
     List<SharedModels.Note> notes;
-    string[] tags = Array.Empty<string>();
-    string[] lectures = Array.Empty<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,31 +32,5 @@
         UserId = UserId ?? ClaimsParser.Select(authService, "id");
 
         notes = await Http.GetJsonAsync<List<SharedModels.Note>>($"api/notes/{UserId}");
-
-        /* TEST DATA
-
-        notes = new List<SharedModels.Note>()
-        {
-            new SharedModels.Note()
-            {
-                Title = "lalala",
-                Content = "lelele",
-                Color = 2
-            }
-        };
-
-        tags = new string[]
-        {
-            "lalala",
-            "someTag"
-        };
-
-        lectures = new string[]
-        {
-            "someValue",
-            "someLecture"
-        };
-
-        */
     }
 }

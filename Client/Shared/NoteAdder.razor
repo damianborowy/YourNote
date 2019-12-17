@@ -1,19 +1,16 @@
 ﻿@inject HttpClient Http
 @using SharedModels = YourNote.Shared.Models
 
-<BSButton Color="BlazorStrap.Color.Primary" @onclick="(() => ModalRef.Show())" Class="adder">
+<BSButton Color="BlazorStrap.Color.Primary" @onclick="(() => ModalRef.Show())">
     <img src="/img/plus.svg" />
 </BSButton>
 
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
     <BSModalHeader OnClick="@(() => ModalRef.Hide())">
         <input class="form-control text-light bg-dark modal__title" @bind="@note.Title" placeholder="Tytuł" />
+        <?xml version="1.0" encoding="UTF-8" ?>
     </BSModalHeader>
     <BSModalBody>
-        <div class="modal__inputs">
-            <TagField @bind-Tag="Tag" Tags="@Tags" />
-            <LectureField @bind-Lecture="Lecture" Lectures="@Lectures" />
-        </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@note.Content" placeholder="Treść notatki..." />
     </BSModalBody>
     <BSModalFooter>
@@ -24,24 +21,9 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.Note> Notes { get; set; }
-
-    [Parameter]
-    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
-
-    [Parameter]
     public string UserId { get; set; }
 
-    [Parameter]
-    public string[] Tags { get; set; }
-
-    [Parameter]
-    public string[] Lectures { get; set; }
-
     SharedModels.NotePost note = new SharedModels.NotePost();
-
-    string Tag;
-    string Lecture;
 
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
@@ -53,9 +35,6 @@
         IsNoteBeingSaved = true;
         var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
         IsNoteBeingSaved = false;
-
-        Notes.Add(result);
-        await NotesChanged.InvokeAsync(Notes);
 
         note = new SharedModels.NotePost();
 
