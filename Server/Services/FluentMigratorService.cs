@@ -8,7 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using YourNote.Server.Migrations;
+using YourNote.Shared.Models;
 
 namespace YourNote.Server.Services
 {
@@ -37,41 +38,97 @@ namespace YourNote.Server.Services
         {
 
             Version = null;
+            SessionFactory = CreateSession();
 
-           
         }
 
-
-
-        public bool MigrateTo(long? version)
+        public bool MigrateUp(long? version)
         {
 
 
+                Version = version;
+                var serviceProvider = CreateServices(connectionString);
 
-            SessionFactory = CreateSession();
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    UpdateDatabaseUp(scope.ServiceProvider);
+                }
+            
+
+            return true;
+        }
+
+        public bool MigrateDown(long? version)
+        {
+            
             bool exist = false;
             using (var session = SessionFactory.OpenSession())
             {
 
-               exist  = session.Query<VersionInfo>()
-                               .Any(x => x.Version.Equals(version.ToString()));
-               
+                var list = OpenSession().CreateSQLQuery("SELECT * FROM public.\"VersionInfo\"").List<Object[]>();
+
+                foreach (var item in list)
+                {
+
+                    for(var i = 0 ; i < 1 ; i++)
+                    {
+
+                        var type1 = (long?)item[i];
+                        var type2 = version;
+                        if (type1.Value == type2.Value)
+                            exist = true;
+
+                    }
+
+                }
+
+
             }
-            
-            
-            if(exist)
+           
+            if (exist)
             {
                 Version = version;
                 var serviceProvider = CreateServices(connectionString);
 
                 using (var scope = serviceProvider.CreateScope())
                 {
-                    UpdateDatabase(scope.ServiceProvider);
+                    UpdateDatabaseDown(scope.ServiceProvider);
                 }
             }
 
-            return exist;
+            return true;
 
+        }
+
+       
+
+        private static void UpdateDatabaseDown(IServiceProvider serviceProvider)
+        {
+            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+
+            
+
+            if (Version.HasValue)
+            {
+                runner.MigrateDown(Version.Value);
+                
+            }
+            else
+            {
+                runner.MigrateUp();
+            }
+        }
+
+        private static void UpdateDatabaseUp(IServiceProvider serviceProvider)
+        {
+            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+
+
+            if (Version.HasValue)
+            {
+                runner.MigrateUp(Version.Value);
+            }
+           
         }
 
         private static IServiceProvider CreateServices(string connectionString)
@@ -81,26 +138,11 @@ namespace YourNote.Server.Services
                 .ConfigureRunner(rb => rb
                     .AddPostgres()
                     .WithGlobalConnectionString(connectionString)
-                    .ScanIn(typeof(Program).Assembly).For.Migrations())
+                    .ScanIn(typeof(StartingVersion).Assembly, typeof(AddPBD).Assembly).For.Migrations())
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
                 .BuildServiceProvider(true);
         }
 
-        private static void UpdateDatabase(IServiceProvider serviceProvider)
-        {
-            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
-
-            
-
-            if (Version.HasValue)
-            {
-                runner.MigrateDown(Version.Value);
-            }
-            else
-            {
-                runner.MigrateUp();
-            }
-        }
 
         public static ISessionFactory CreateSession()
         {
@@ -119,12 +161,5 @@ namespace YourNote.Server.Services
 
     }
 
-    internal class VersionInfo
-    {
-
-        public string Version { get; set; }
-        public DateTime AppiledOn { get; set; }
-        public string Description { get; set; }
-
-    }
+   
 }
