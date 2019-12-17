@@ -11,6 +11,10 @@
         <?xml version="1.0" encoding="UTF-8" ?>
     </BSModalHeader>
     <BSModalBody>
+        <div class="modal__inputs">
+            <TagField @bind-Tag="Tag" Tags="@Tags" />
+            <LectureField @bind-Lecture="Lecture" Lectures="@Lectures" />
+        </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@note.Content" placeholder="Treść notatki..." />
     </BSModalBody>
     <BSModalFooter>
@@ -29,7 +33,16 @@
     [Parameter]
     public string UserId { get; set; }
 
+    [Parameter]
+    public string[] Tags { get; set; }
+
+    [Parameter]
+    public string[] Lectures { get; set; }
+
     SharedModels.NotePost note = new SharedModels.NotePost();
+
+    string Tag;
+    string Lecture;
 
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;

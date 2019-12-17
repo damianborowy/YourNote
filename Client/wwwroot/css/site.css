@@ -59,3 +59,7 @@ html, body {
     width: 70px;
     border-radius: 50px;
 }
+
+.form-control::placeholder {
+    color: #aaa;
+}
