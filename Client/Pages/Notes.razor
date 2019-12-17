@@ -40,11 +40,21 @@
 
         foreach (var tag in tagsArr)
         {
+            foreach (var note in notes)
+            {
+                note.Tag = tagsArr.FirstOrDefault(x => x.Id == tag.Id)?.Name;
+            }
+
             tags.Add(tag.Name);
         }
 
         foreach (var lecture in lecturesArr)
         {
+            foreach (var note in notes)
+            {
+                note.Lecture = lecturesArr.FirstOrDefault(x => x.Id == lecture.Id)?.Name;
+            }
+
             lectures.Add(lecture.Name);
         }
     }
