@@ -1,5 +1,9 @@
 ﻿<BSNavbar IsExpand="true" IsDark="true" Class="mb-3">
-    <BSNavbarBrand>Your Note</BSNavbarBrand>
+    <BSNavbarBrand>
+        <a href="/" style="text-decoration: none;">
+            Your Note
+        </a>
+    </BSNavbarBrand>
     <BSNavbarToggler @onclick="onclick" />
     <BSCollapse isOpen="@IsOpen" IsNavbar="true" IsOpenChanged="OpenChanged">
         <BSNav IsList="true" Class="ml-auto" IsNavbar="true">
