@@ -1,21 +1,17 @@
-﻿
-using FluentMigrator.Runner;
+﻿using FluentMigrator.Runner;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using YourNote.Server.Migrations;
-using YourNote.Shared.Models;
 
 namespace YourNote.Server.Services
 {
     public class FluentMigratorService
     {
         #region Connection handler
+
         public static ISessionFactory SessionFactory { get; set; }
         private static string[] connectionData = GetConnectionData();
         private static string Host = connectionData[0];
@@ -24,67 +20,53 @@ namespace YourNote.Server.Services
         private static string User = connectionData[3];
         private static string Password = connectionData[4];
 
-        
         private static readonly string connectionString = $" Host={Host}; Port={Port}; Database={DBname};" +
                 $" Username={User}; Password={Password};";
 
         private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSDATA").Split(':');
 
-        #endregion
+        #endregion Connection handler
 
         private static long? Version { get; set; }
 
         public FluentMigratorService()
         {
-
             Version = null;
             SessionFactory = CreateSession();
-
         }
 
         public bool MigrateUp(long? version)
         {
+            Version = version;
+            var serviceProvider = CreateServices(connectionString);
 
-
-                Version = version;
-                var serviceProvider = CreateServices(connectionString);
-
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    UpdateDatabaseUp(scope.ServiceProvider);
-                }
-            
+            using (var scope = serviceProvider.CreateScope())
+            {
+                UpdateDatabaseUp(scope.ServiceProvider);
+            }
 
             return true;
         }
 
         public bool MigrateDown(long? version)
         {
-            
             bool exist = false;
             using (var session = SessionFactory.OpenSession())
             {
-
                 var list = OpenSession().CreateSQLQuery("SELECT * FROM public.\"VersionInfo\"").List<Object[]>();
 
                 foreach (var item in list)
                 {
-
-                    for(var i = 0 ; i < 1 ; i++)
+                    for (var i = 0; i < 1; i++)
                     {
-
                         var type1 = (long?)item[i];
                         var type2 = version;
                         if (type1.Value == type2.Value)
                             exist = true;
-
                     }
-
                 }
-
-
             }
-           
+
             if (exist)
             {
                 Version = version;
@@ -97,21 +79,15 @@ namespace YourNote.Server.Services
             }
 
             return true;
-
         }
-
-       
 
         private static void UpdateDatabaseDown(IServiceProvider serviceProvider)
         {
             var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
 
-            
-
             if (Version.HasValue)
             {
                 runner.MigrateDown(Version.Value);
-                
             }
             else
             {
@@ -123,15 +99,12 @@ namespace YourNote.Server.Services
         {
             var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
 
-
             if (Version.HasValue)
             {
                 runner.MigrateUp(Version.Value);
-
             }
             else
                 runner.MigrateUp();
-           
         }
 
         private static IServiceProvider CreateServices(string connectionString)
@@ -146,10 +119,8 @@ namespace YourNote.Server.Services
                 .BuildServiceProvider(true);
         }
 
-
         public static ISessionFactory CreateSession()
         {
-            
             Console.WriteLine(connectionData);
 
             return Fluently.Configure()
@@ -160,9 +131,5 @@ namespace YourNote.Server.Services
         }
 
         public ISession OpenSession() => SessionFactory.OpenSession();
-
-
     }
-
-   
 }

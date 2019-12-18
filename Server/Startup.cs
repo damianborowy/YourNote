@@ -1,17 +1,15 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
-using System.Linq;
-using YourNote.Server.Services;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using YourNote.Server.Services.DatabaseService;
 using System;
+using System.Linq;
+using System.Text;
+using YourNote.Server.Services;
+using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
 
 namespace YourNote.Server
@@ -45,7 +43,6 @@ namespace YourNote.Server
                     ValidateAudience = false
                 };
             });
-
 
             services.AddTransient<FluentMigratorService>();
 

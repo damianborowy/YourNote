@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NHibernate;
+using System;
 using System.Collections.Generic;
-using YourNote.Server.Services;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
-using Microsoft.AspNetCore.Authorization;
-using System;
 
 namespace YourNote.Server.Controllers
 {
@@ -35,8 +32,8 @@ namespace YourNote.Server.Controllers
         [HttpGet]
         public IEnumerable<NotePost> GetAllRecords()
         {
-           var noteList = databaseNote.Read();          
-           return ParseToNotePost(noteList);
+            var noteList = databaseNote.Read();
+            return ParseToNotePost(noteList);
         }
 
         // GET: api/Notes/5
@@ -58,28 +55,23 @@ namespace YourNote.Server.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] NotePost obj)
         {
-
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
             var note = Parse(obj);
 
-
             if (tag == null && obj.Tag != null)
             {
-                tag = new Tag() { Name = obj.Tag }; 
+                tag = new Tag() { Name = obj.Tag };
                 databaseTag.Create(tag);
                 tag.AddNote(note);
-
             }
-
 
             if (lecture == null && obj.Lecture != null)
             {
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
                 lecture.AddNote(note);
-
             }
 
             var user = databaseUser.Read(obj.OwnerId);
@@ -92,20 +84,16 @@ namespace YourNote.Server.Controllers
             else
                 return BadRequest(new { error = "User doesn't exist" });
 
-
             Note Parse(NotePost notePost)
             {
                 Note parser = new Note()
                 {
-
                     Title = notePost.Title,
                     Content = notePost.Content,
                     Color = notePost.Color,
 
                     Owner = databaseUser.Read(notePost.OwnerId),
                     Date = DateTime.Now
-
-
                 };
                 return parser;
             }
@@ -115,12 +103,11 @@ namespace YourNote.Server.Controllers
         [HttpPut("{userId}")]
         public IActionResult Put(int userId, [FromBody] NotePost obj)
         {
-
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
             var note = Parse(obj);
-            if(obj.Id.HasValue)
+            if (obj.Id.HasValue)
                 note.Id = obj.Id.Value;
 
             if (tag == null && obj.Tag != null)
@@ -128,21 +115,18 @@ namespace YourNote.Server.Controllers
                 tag = new Tag() { Name = obj.Tag };
                 databaseTag.Create(tag);
                 tag.AddNote(note);
-
             }
-
 
             if (lecture == null && obj.Lecture != null)
             {
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
                 lecture.AddNote(note);
-
             }
 
             if (obj.SharedTo is null)
                 obj.SharedTo = new List<int>();
-            else 
+            else
             {
                 List<User> tempUserList = ShareNotes(obj);
                 foreach (User us in tempUserList)
@@ -159,7 +143,6 @@ namespace YourNote.Server.Controllers
                 return Ok(new NotePost(note));
             else
                 return BadRequest(new { error = "Note doesn't exist" });
-
         }
 
         // DELETE: api/Notes/5
@@ -171,21 +154,16 @@ namespace YourNote.Server.Controllers
 
         #region Private methods
 
-
         private Note ParseToNewNote(NotePost notePost)
         {
-
             Note note = new Note()
             {
-
                 Title = notePost.Title,
                 Content = notePost.Content,
                 Color = notePost.Color,
-                
+
                 Owner = databaseUser.Read(notePost.OwnerId),
                 Date = DateTime.Now
-                
-                 
             };
 
             if (notePost.Tag != null)
@@ -193,7 +171,6 @@ namespace YourNote.Server.Controllers
 
             if (notePost.Lecture != null)
                 note.Lecture = databaseLecture.Read(Int32.Parse(notePost.Lecture));
-
 
             if (notePost.Id.HasValue)
                 note.Id = notePost.Id.Value;
@@ -203,48 +180,44 @@ namespace YourNote.Server.Controllers
 
         private static List<NotePost> ParseToNotePost(IList<Note> noteList)
         {
-
             var notePostList = new List<NotePost>();
 
             foreach (var note in noteList)
             {
-
                 notePostList.Add(new NotePost(note));
-
             }
             notePostList.Sort();
 
             return notePostList;
         }
-        #endregion
 
+        #endregion Private methods
 
         public Note Parse(NotePost notePost)
         {
             Note parser = new Note()
             {
-
                 Title = notePost.Title,
                 Content = notePost.Content,
                 Color = notePost.Color,
 
                 Owner = databaseUser.Read(notePost.OwnerId),
                 Date = DateTime.Now
-
-
             };
             return parser;
         }
+
         #region privateMethods
+
         private List<User> ShareNotes(NotePost notePost)
         {
-            IList <User> userList = databaseUser.Read();
+            IList<User> userList = databaseUser.Read();
             List<User> newUserList = new List<User>();
-            foreach(User us in userList)
+            foreach (User us in userList)
             {
-                for(int i=0; i<notePost.SharedTo.Count; i++)
+                for (int i = 0; i < notePost.SharedTo.Count; i++)
                 {
-                    if(us.Id==notePost.SharedTo[i])
+                    if (us.Id == notePost.SharedTo[i])
                     {
                         newUserList.Add(us);
                     }
@@ -252,7 +225,7 @@ namespace YourNote.Server.Controllers
             }
             return newUserList;
         }
-        #endregion
-    }
 
+        #endregion privateMethods
+    }
 }

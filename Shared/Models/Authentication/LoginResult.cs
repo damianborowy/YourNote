@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YourNote.Shared.Models
+﻿namespace YourNote.Shared.Models
 {
     public class LoginResult
     {

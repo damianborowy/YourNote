@@ -2,12 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-using FluentMigrator.Runner;
-using FluentMigrator.Runner.Initialization;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using YourNote.Server.Migrations;
-
 namespace YourNote.Server
 {
     public class Program
@@ -16,7 +10,7 @@ namespace YourNote.Server
         {
             BuildWebHost(args).Run();
         }
-      
+
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseConfiguration(new ConfigurationBuilder()
@@ -25,9 +19,4 @@ namespace YourNote.Server
                 .UseStartup<Startup>()
                 .Build();
     }
-
-
-
-
-
 }

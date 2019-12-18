@@ -1,21 +1,15 @@
 ﻿using FluentNHibernate.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using YourNote.Shared.Models;
-
 
 namespace YourNote.Server.Models.MappingClasses
 {
     public class UserMap : ClassMap<User>
     {
-
         public UserMap()
         {
             Table("Users");
             Id(u => u.Id).GeneratedBy.Identity().Not.Nullable();
-            Map(u => u.Username).Unique();  
+            Map(u => u.Username).Unique();
             Map(u => u.Password);
             Map(u => u.Role).CustomType<GenericEnumMapper<User.Permission>>();
             Map(u => u.EmailAddress).Unique();
