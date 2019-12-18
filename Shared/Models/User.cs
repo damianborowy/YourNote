@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -27,8 +28,9 @@ namespace YourNote.Shared.Models
         public virtual DateTime Date { get; set; }
         public virtual string Name { get; set; }
 
-
+        [JsonIgnore]
         public virtual IList<Note> Notes  { get; set; }
+        [JsonIgnore]
         public virtual IList<Note> SharedNotes { get; set; }
 
         public User()

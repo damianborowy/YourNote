@@ -54,8 +54,6 @@ namespace YourNote.Server.Controllers
         public IActionResult Post([FromBody] NotePost obj)
         {
 
-            
-
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
@@ -112,19 +110,40 @@ namespace YourNote.Server.Controllers
         [HttpPut("{userId}")]
         public IActionResult Put(int userId, [FromBody] NotePost obj)
         {
-           
-            var note = ParseToNewNote(obj);
-            
-            
-            if(obj.SharedTo is null)
-                obj.SharedTo = new List<int>();
 
-            foreach (var userID  in obj.SharedTo)
+            var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
+            var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
+
+            var note = Parse(obj);
+            if(obj.Id.HasValue)
+                note.Id = obj.Id.Value;
+
+            if (tag == null)
             {
-                var user = databaseUser.Read(userID);
-                note.SharedTo.Add(user);
+                tag = new Tag() { Name = obj.Tag };
+                databaseTag.Create(tag);
+                tag.AddNote(note);
 
             }
+
+
+            if (lecture == null)
+            {
+                lecture = new Lecture() { Name = obj.Lecture };
+                databaseLecture.Create(lecture);
+                lecture.AddNote(note);
+
+            }
+
+            var user = databaseUser.Read(obj.OwnerId);
+            user.AddNote(note);
+
+            
+
+            if (obj.SharedTo is null)
+                obj.SharedTo = new List<int>();
+
+           
 
 
             var result = databaseNote.Update(note);
@@ -133,6 +152,7 @@ namespace YourNote.Server.Controllers
                 return Ok(new NotePost(note));
             else
                 return BadRequest(new { error = "Note doesn't exist" });
+
         }
 
         // DELETE: api/Notes/5
@@ -189,6 +209,24 @@ namespace YourNote.Server.Controllers
 
             return notePostList;
         }
-        #endregion 
+        #endregion
+
+
+        public Note Parse(NotePost notePost)
+        {
+            Note parser = new Note()
+            {
+
+                Title = notePost.Title,
+                Content = notePost.Content,
+                Color = notePost.Color,
+
+                Owner = databaseUser.Read(notePost.OwnerId),
+                Date = DateTime.Now
+
+
+            };
+            return parser;
+        }
     }
 }
