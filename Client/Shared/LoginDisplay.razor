@@ -2,6 +2,22 @@
 
 <AuthorizeView>
     <Authorized>
+        @if (Role.Equals("Admin"))
+        {
+            <BSNavItem>
+                <BSNavLink Href="/admin">
+                    Panel administracyjny
+                </BSNavLink>
+            </BSNavItem>
+        }
+        @if (Role.Equals("Moderator"))
+        {
+            <BSNavItem>
+                <BSNavLink Href="/moderator">
+                    Panel moderatorski
+                </BSNavLink>
+            </BSNavItem>
+        }
         <BSNavItem>
             <BSNavLink>
                 @Username
@@ -28,12 +44,14 @@
 </AuthorizeView>
 
 @code {
-    private string Username;
+    private string Username = string.Empty;
+    private string Role = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
 
         Username = ClaimsParser.Select(authState, "unique_name");
+        Role = ClaimsParser.Select(authState, "role");
     }
 }
