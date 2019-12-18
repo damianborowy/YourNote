@@ -101,7 +101,7 @@ namespace YourNote.Server.Controllers
             return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
         }
 
-        [HttpPatch("role/{userId}/{roleValue}")]
+        [HttpPut("role/{userId}/{roleValue}")]
         public IActionResult UpdateRole(int id, int role)
         {
             var helper = databaseUser.Read(id);

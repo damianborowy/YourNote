@@ -4,7 +4,11 @@
 @inject HttpClient Http
 @using YourNote.Shared.Models
 
-@if (IsPermitted)
+@if (IsPermitted == null)
+{
+    <p><em>Wczytywanie...</em></p>
+}
+else if (IsPermitted.Value)
 {
     <h1>Panel administracyjny</h1>
     <ul>
@@ -24,7 +28,7 @@ else
 }
 
 @code {
-    bool IsPermitted { get; set; } = false;
+    bool? IsPermitted { get; set; } = null;
     IEnumerable<User> users = Array.Empty<User>();
 
     protected override async Task OnInitializedAsync()

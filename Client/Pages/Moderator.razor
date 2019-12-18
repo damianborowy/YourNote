@@ -4,17 +4,28 @@
 @inject HttpClient Http
 @using YourNote.Shared.Models
 
-@if (IsPermitted)
+@if (IsPermitted == null)
+{
+    <p><em>Wczytywanie...</em></p>
+}
+else if (IsPermitted.Value)
 {
     <h1>Panel moderatorski</h1>
-    <ul>
-        @foreach (var user in users)
-        {
-            <li>
-                <a href="/notes/@user.Id">@user.Username</a>
-            </li>
-        }
-    </ul>
+    <div class="d-flex flex-row">
+        <ul class="flex-grow-1 pl-0 mb-0">
+            @foreach (var user in users)
+            {
+                <li>
+                    <a href="/notes/@user.Id">
+                        @user.Username
+                    </a>
+                </li>
+            }
+        </ul>
+        <div class="flex-grow-1">
+
+        </div>
+    </div>
 }
 else
 {
@@ -24,7 +35,7 @@ else
 }
 
 @code {
-    bool IsPermitted { get; set; } = false;
+    bool? IsPermitted { get; set; } = null;
     IEnumerable<User> users = Array.Empty<User>();
 
     protected override async Task OnInitializedAsync()
