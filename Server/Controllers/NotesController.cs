@@ -35,9 +35,8 @@ namespace YourNote.Server.Controllers
         [HttpGet]
         public IEnumerable<NotePost> GetAllRecords()
         {
-           var noteList = databaseNote.Read();
-
-            return ParseToNotePost(noteList);
+           var noteList = databaseNote.Read();          
+           return ParseToNotePost(noteList);
         }
 
         // GET: api/Notes/5
@@ -45,6 +44,12 @@ namespace YourNote.Server.Controllers
         public IEnumerable<NotePost> GetAllRecordsById(int id)
         {
             var noteList = databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
+            var sharedNoteList = databaseUser.Read(id)?.SharedNotes ?? Array.Empty<Note>();
+
+            foreach (var item in sharedNoteList)
+            {
+                noteList.Add(item);
+            }
 
             return ParseToNotePost(noteList);
         }
@@ -135,16 +140,18 @@ namespace YourNote.Server.Controllers
 
             }
 
-            var user = databaseUser.Read(obj.OwnerId);
-            user.AddNote(note);
-
-            
-
             if (obj.SharedTo is null)
                 obj.SharedTo = new List<int>();
-
-           
-
+            else 
+            {
+                List<User> tempUserList = ShareNotes(obj);
+                foreach (User us in tempUserList)
+                {
+                    note.SharedTo.Add(us);
+                }
+            }
+            var user = databaseUser.Read(obj.OwnerId);
+            user.AddNote(note);
 
             var result = databaseNote.Update(note);
 
@@ -228,5 +235,24 @@ namespace YourNote.Server.Controllers
             };
             return parser;
         }
+        #region privateMethods
+        private List<User> ShareNotes(NotePost notePost)
+        {
+            IList <User> userList = databaseUser.Read();
+            List<User> newUserList = new List<User>();
+            foreach(User us in userList)
+            {
+                for(int i=0; i<notePost.SharedTo.Count; i++)
+                {
+                    if(us.Id==notePost.SharedTo[i])
+                    {
+                        newUserList.Add(us);
+                    }
+                }
+            }
+            return newUserList;
+        }
+        #endregion
     }
+
 }
