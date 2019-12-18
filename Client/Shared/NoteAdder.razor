@@ -59,10 +59,15 @@
         var result = await Http.PostJsonAsync<SharedModels.NotePost>($"/api/notes/", note);
         IsNoteBeingSaved = false;
 
+        result.Tag = Tag;
+        result.Lecture = Lecture;
+
         Notes.Add(result);
         await NotesChanged.InvokeAsync(Notes);
 
         note = new SharedModels.NotePost();
+        Tag = null;
+        Lecture = null;
 
         ModalRef.Hide();
     }

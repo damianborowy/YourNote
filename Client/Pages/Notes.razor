@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider ApiAuthenticationStateProvider
 @using YourNote.Shared.Models
+@using System.Text.Json
 
 <div class="wrapper">
     @if (notes == null)
@@ -38,12 +39,16 @@
         var tagsArr = await Http.GetJsonAsync<List<Tag>>("api/tags");
         var lecturesArr = await Http.GetJsonAsync<List<Lecture>>("api/lectures");
 
+        Console.WriteLine("Tags and lectures:");
+        Console.WriteLine(JsonSerializer.Serialize(notes));
+        Console.WriteLine(JsonSerializer.Serialize(tagsArr));
+        Console.WriteLine(JsonSerializer.Serialize(lecturesArr));
+
         foreach (var tag in tagsArr)
         {
             foreach (var note in notes)
-            {
-                note.Tag = tagsArr.FirstOrDefault(x => x.Id == tag.Id)?.Name;
-            }
+                if (tag.Name != null && tag.Id.ToString().Equals(note.Tag))
+                    note.Tag = tag.Name;
 
             tags.Add(tag.Name);
         }
@@ -51,9 +56,8 @@
         foreach (var lecture in lecturesArr)
         {
             foreach (var note in notes)
-            {
-                note.Lecture = lecturesArr.FirstOrDefault(x => x.Id == lecture.Id)?.Name;
-            }
+                if (lecture.Name != null && lecture.Id.ToString().Equals(note.Lecture))
+                    note.Lecture = lecture.Name;
 
             lectures.Add(lecture.Name);
         }

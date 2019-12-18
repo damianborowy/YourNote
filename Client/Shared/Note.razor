@@ -62,8 +62,6 @@
 
     async Task SaveNote()
     {
-        Console.WriteLine(JsonSerializer.Serialize<SharedModels.NotePost>(NoteObj));
-
         IsNoteBeingSaved = true;
         var result = await Http.PutJsonAsync<SharedModels.NotePost>($"/api/notes/{UserId}", NoteObj);
         IsNoteBeingSaved = false;
