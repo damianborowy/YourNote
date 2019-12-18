@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
+
 namespace YourNote.Shared.Models
 {
     public class Tag
@@ -23,6 +22,4 @@ namespace YourNote.Shared.Models
             Notes.Add(note);
         }
     }
-
-    
 }

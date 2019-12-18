@@ -3,18 +3,15 @@ using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 using System;
-
-using YourNote.Shared.Models.MappingClasses;
+using System.Collections.Generic;
 using YourNote.Server.Models.MappingClasses;
 using YourNote.Server.Services.DatabaseService;
-using YourNote.Shared.Models;
-using System.Collections.Generic;
+using YourNote.Shared.Models.MappingClasses;
 
 namespace YourNote.Server.Services
 {
     public class NhibernateService<T> : IDatabaseService<T> where T : class
     {
-
         #region Connection to Database
 
         private static string[] connectionData = GetConnectionData();
@@ -55,7 +52,7 @@ namespace YourNote.Server.Services
 
         private static string[] GetConnectionData() => Environment.GetEnvironmentVariable("PGPASSDATA").Split(':');
 
-        #endregion
+        #endregion Connection to Database
 
         #region CRUD
 
@@ -84,10 +81,9 @@ namespace YourNote.Server.Services
             return DeleteRecord(id);
         }
 
-        #endregion
+        #endregion CRUD
 
         #region privateMethods
-
 
         private T AddRecord(T obj)
         {
@@ -97,22 +93,18 @@ namespace YourNote.Server.Services
 
                 try
                 {
-
                     session.Save(obj);
                     tx.Commit();
-
                 }
                 catch (NHibernate.HibernateException)
                 {
                     tx.Rollback();
                     throw;
                 }
-
             }
 
             return obj;
         }
-
 
         private T UpdateRecord(T obj)
         {
@@ -135,19 +127,15 @@ namespace YourNote.Server.Services
             return obj;
         }
 
-
         private bool DeleteRecord(int id)
         {
-
             bool wasSucceeded = true;
-
 
             using (var session = OpenSession())
             {
                 var tx = session.BeginTransaction();
                 try
                 {
-
                     session.Delete(session.Get<T>(id));
                     tx.Commit();
                 }
@@ -157,25 +145,19 @@ namespace YourNote.Server.Services
                     tx.Rollback();
                     throw;
                 }
-
             }
 
             return wasSucceeded;
-
         }
-
-
 
         private T GetById(int id)
         {
-
             using (var session = OpenSession())
             {
                 var result = session.Get<T>(id);
                 return result;
             }
         }
-
 
         private IList<T> GetAllRecords()
         {
@@ -186,7 +168,6 @@ namespace YourNote.Server.Services
             }
         }
 
-
-        #endregion
+        #endregion privateMethods
     }
 }

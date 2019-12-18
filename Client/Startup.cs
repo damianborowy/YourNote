@@ -1,8 +1,8 @@
+using Blazored.LocalStorage;
+using BlazorStrap;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using BlazorStrap;
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace YourNote.Client
 {

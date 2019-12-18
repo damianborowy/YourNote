@@ -1,23 +1,21 @@
 ﻿using Blazored.LocalStorage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using System.Text.Json;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using YourNote.Client;
-using YourNote.Shared.Models;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using YourNote.Shared.Models;
 
 namespace YourNote.Client
 {
     public interface IAuthService
     {
         Task<RegisterResult> Register(RegisterModel user);
+
         Task<LoginResult> Login(LoginModel user);
+
         Task Logout();
     }
 
