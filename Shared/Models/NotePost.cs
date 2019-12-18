@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace YourNote.Shared.Models
 {
@@ -16,31 +15,26 @@ namespace YourNote.Shared.Models
         public string Lecture { get; set; }
         public List<int> SharedTo { get; set; }
 
-
-        public NotePost() 
+        public NotePost()
         {
             Color = 1;
             SharedTo = new List<int>();
         }
 
-
         public NotePost(Note note)
         {
-
             Id = note.Id;
             Title = note.Title;
             Content = note.Content;
             Color = note.Color;
             OwnerId = note.Owner.Id;
 
-            if(note.Tag != null)
+            if (note.Tag != null)
                 Tag = note.Tag.Id + "";
             if (note.Lecture != null)
                 Lecture = note.Lecture.Id + "";
 
             SharedTo = new List<int>();
-
-
         }
 
         public virtual int CompareTo(NotePost other)

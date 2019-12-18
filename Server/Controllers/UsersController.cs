@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 using YourNote.Server.Services;
-using YourNote.Shared.Models;
-using NHibernate;
-using Microsoft.AspNetCore.Authorization;
 using YourNote.Server.Services.DatabaseService;
+using YourNote.Shared.Models;
 using static YourNote.Shared.Models.User;
 
 namespace YourNote.Server.Controllers
@@ -57,7 +53,6 @@ namespace YourNote.Server.Controllers
                 return BadRequest(new { error = "User doesn't exist" });
         }
 
-        
         // DELETE: api/User
         [HttpDelete("{id}")]
         public bool DeleteUserById(int id)
@@ -114,6 +109,7 @@ namespace YourNote.Server.Controllers
             else
                 return BadRequest(new { error = "User doesn't exist" });
         }
+
         #region Private methods
 
         public static User HashPassword(User user)
@@ -121,6 +117,8 @@ namespace YourNote.Server.Controllers
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password);
             return user;
         }
-        #endregion 
+
+        #endregion Private methods
+
     }
 }

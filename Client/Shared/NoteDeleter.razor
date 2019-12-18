@@ -22,7 +22,7 @@
 
         Notes.Remove(Notes.Find(note => note.Id == NoteId));
         await NotesChanged.InvokeAsync(Notes);
-        
+
         ModalRef.Hide();
     }
 }

@@ -1,14 +1,9 @@
 ﻿using FluentNHibernate.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using YourNote.Shared.Models;
 
 namespace YourNote.Shared.Models.MappingClasses
 {
-    class NoteMap : ClassMap<Note>
+    internal class NoteMap : ClassMap<Note>
     {
-        
         public NoteMap()
         {
             Table("Notes");
@@ -20,7 +15,7 @@ namespace YourNote.Shared.Models.MappingClasses
             Map(n => n.Content);
 
             References(n => n.Owner);
-            
+
             References(n => n.Tag).Cascade.All().Nullable();
             References(n => n.Lecture).Cascade.All().Nullable();
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace YourNote.Server.Helpers
+﻿namespace YourNote.Server.Helpers
 {
     public class AppSettings
     {
