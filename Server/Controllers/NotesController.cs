@@ -60,7 +60,7 @@ namespace YourNote.Server.Controllers
             var note = Parse(obj);
 
 
-            if (tag == null)
+            if (tag == null && obj.Tag != null)
             {
                 tag = new Tag() { Name = obj.Tag }; 
                 databaseTag.Create(tag);
@@ -69,7 +69,7 @@ namespace YourNote.Server.Controllers
             }
 
 
-            if (lecture == null)
+            if (lecture == null && obj.Lecture != null)
             {
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
@@ -118,7 +118,7 @@ namespace YourNote.Server.Controllers
             if(obj.Id.HasValue)
                 note.Id = obj.Id.Value;
 
-            if (tag == null)
+            if (tag == null && obj.Tag != null)
             {
                 tag = new Tag() { Name = obj.Tag };
                 databaseTag.Create(tag);
@@ -127,7 +127,7 @@ namespace YourNote.Server.Controllers
             }
 
 
-            if (lecture == null)
+            if (lecture == null && obj.Lecture != null)
             {
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
