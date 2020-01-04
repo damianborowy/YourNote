@@ -10,7 +10,7 @@ using YourNote.Shared.Models.MappingClasses;
 
 namespace YourNote.Server.Services
 {
-    public class NhibernateService<T> : IDatabaseService<T> where T : class
+    public class NhibernateService<T>  /*IDatabaseService<T> where T : class*/
     {
         #region Connection to Database
 
@@ -66,10 +66,10 @@ namespace YourNote.Server.Services
             return GetById(id);
         }
 
-        public IList<T> Read()
+        /*public IList<T> Read()
         {
-            return GetAllRecords();
-        }
+            //return GetAllRecords();
+        }*/
 
         public T Update(T obj)
         {
@@ -159,7 +159,7 @@ namespace YourNote.Server.Services
             }
         }
 
-        private IList<T> GetAllRecords()
+        /*private IList<T> GetAllRecords()
         {
             using (var session = OpenSession())
             {
@@ -167,7 +167,7 @@ namespace YourNote.Server.Services
                 return result;
             }
         }
-
+        */
         #endregion privateMethods
     }
 }

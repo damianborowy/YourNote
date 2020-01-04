@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 using System;
 using System.Linq;
 using System.Text;
 using YourNote.Server.Services;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
+using YourNote.Shared.Models.MongoDB;
 
 namespace YourNote.Server
 {
@@ -44,17 +46,24 @@ namespace YourNote.Server
                 };
             });
 
-            services.AddTransient<FluentMigratorService>();
+            
 
             services.AddScoped<IUserAuthenticateService, UserAuthenticateService>();
+            services.AddSingleton(new MongoClient(GetConnectionData()));
+            services.AddScoped<IDatabaseService<MongoUser>, MongoDbService<MongoUser>>();
 
-            services.AddScoped<IDatabaseService<Note>, NhibernateService<Note>>();
-            services.AddScoped<IDatabaseService<User>, NhibernateService<User>>();
-            services.AddScoped<IDatabaseService<Tag>, NhibernateService<Tag>>();
-            services.AddScoped<IDatabaseService<Lecture>, NhibernateService<Lecture>>();
+            //-------------------------------Scopy do relacyjnenj bazy ----------------------
+            //services.AddTransient<FluentMigratorService>();
+            //services.AddScoped<IDatabaseService<Note>, NhibernateService<Note>>();
+            //services.AddScoped<IDatabaseService<User>, NhibernateService<User>>();
+            //services.AddScoped<IDatabaseService<Tag>, NhibernateService<Tag>>();
+            //services.AddScoped<IDatabaseService<Lecture>, NhibernateService<Lecture>>();
 
             services.AddCors();
             services.AddControllers();
+
+
+            string GetConnectionData() => Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

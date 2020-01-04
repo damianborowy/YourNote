@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using YourNote.Server.Services;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
@@ -36,14 +37,14 @@ namespace YourNote.Server.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public User GetUserById(int id)
+        public User GetUserById(string id)
         {
             return databaseUser.Read(id);
         }
 
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] User user)
+        public  IActionResult Put(string id, [FromBody] User user)
         {
             var result = databaseUser.Update(user);
 
@@ -55,7 +56,7 @@ namespace YourNote.Server.Controllers
 
         // DELETE: api/User
         [HttpDelete("{id}")]
-        public bool DeleteUserById(int id)
+        public bool DeleteUserById(string id)
         {
             return databaseUser.Delete(id);
         }
@@ -82,7 +83,7 @@ namespace YourNote.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] LoginModel user)
+        public  IActionResult Authenticate([FromBody] LoginModel user)
         {
             var userFromDb = databaseUser.Read().FirstOrDefault(u => u.Username == user.Username);
 
@@ -95,9 +96,9 @@ namespace YourNote.Server.Controllers
 
             return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
         }
-
+        
         [HttpPut("role/{userId}/{roleValue}")]
-        public IActionResult UpdateRole(int userId, int roleValue)
+        public IActionResult UpdateRole(string userId, int roleValue)
         {
             var helper = databaseUser.Read(userId);
             helper.Role = (Permission)roleValue;
@@ -109,7 +110,7 @@ namespace YourNote.Server.Controllers
             else
                 return BadRequest(new { error = "User doesn't exist" });
         }
-
+        
         #region Private methods
 
         public static User HashPassword(User user)

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace YourNote.Server.Services.DatabaseService
 {
@@ -6,12 +8,12 @@ namespace YourNote.Server.Services.DatabaseService
     {
         T Create(T obj);
 
-        T Read(int id);
+        T Read(string id);
 
         IList<T> Read();
 
         T Update(T obj);
 
-        bool Delete(int id);
+        bool Delete(string id);
     }
 }
