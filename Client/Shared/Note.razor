@@ -35,13 +35,13 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.NotePost> Notes { get; set; }
+    public List<SharedModels.Note> Notes { get; set; }
 
     [Parameter]
-    public EventCallback<List<SharedModels.NotePost>> NotesChanged { get; set; }
+    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
 
     [Parameter]
-    public SharedModels.NotePost NoteObj { get; set; }
+    public SharedModels.Note NoteObj { get; set; }
 
     [Parameter]
     public string UserId { get; set; }
@@ -63,7 +63,7 @@
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
-        var result = await Http.PutJsonAsync<SharedModels.NotePost>($"/api/notes/{UserId}", NoteObj);
+        var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{UserId}", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();

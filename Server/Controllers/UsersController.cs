@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using YourNote.Server.Services;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
-using static YourNote.Shared.Models.User;
+
 
 namespace YourNote.Server.Controllers
 {
@@ -42,11 +42,12 @@ namespace YourNote.Server.Controllers
             return databaseUser.Read(id);
         }
 
+        
         // PUT: api/User/5
         [HttpPut("{id}")]
         public  IActionResult Put(string id, [FromBody] User user)
         {
-            var result = databaseUser.Update(user);
+            var result = databaseUser.Update(id, user);
 
             if (result != null)
                 return Ok();
@@ -55,10 +56,10 @@ namespace YourNote.Server.Controllers
         }
 
         // DELETE: api/User
-        [HttpDelete("{id}")]
-        public bool DeleteUserById(string id)
+        [HttpDelete("{userId}")]
+        public bool DeleteUserById(string userId)
         {
-            return databaseUser.Delete(id);
+            return databaseUser.Delete(userId);
         }
 
         // POST: api/User
@@ -68,7 +69,7 @@ namespace YourNote.Server.Controllers
         {
             User user = new User
             {
-                Username = registerModel.Username,
+                EmailAddress = registerModel.EmailAddress,
                 Password = registerModel.Password
             };
 
@@ -85,25 +86,25 @@ namespace YourNote.Server.Controllers
         [HttpPost("authenticate")]
         public  IActionResult Authenticate([FromBody] LoginModel user)
         {
-            var userFromDb = databaseUser.Read().FirstOrDefault(u => u.Username == user.Username);
+            var userFromDb = databaseUser.Read().FirstOrDefault(u => u.EmailAddress == user.Username);
 
             if (userFromDb == null || !BCrypt.Net.BCrypt.EnhancedVerify(user.Password, userFromDb.Password))
                 return BadRequest(new LoginResult { Successful = false, Error = "Podano niepoprawny login lub has³o." });
 
-            userFromDb.Token = userService.Authenticate(userFromDb);
+            
+            //Token
+            
 
-            databaseUser.Update(userFromDb);
-
-            return Ok(new LoginResult { Successful = true, Token = userFromDb.Token });
+            return Ok(new LoginResult { Successful = true});
         }
         
         [HttpPut("role/{userId}/{roleValue}")]
         public IActionResult UpdateRole(string userId, int roleValue)
         {
             var helper = databaseUser.Read(userId);
-            helper.Role = (Permission)roleValue;
+            helper.Role = (User.Permission)roleValue;
 
-            databaseUser.Update(helper);
+            databaseUser.Update(userId, helper);
 
             if (helper != null)
                 return Ok();

@@ -1,53 +1,62 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Text;
+using YourNote.Shared.Models.CustomAttribute;
 
 namespace YourNote.Shared.Models
 {
-    public class Note : IComparable<Note>
+    [BsonCollection("Notes")]
+    public class Note 
     {
-        public virtual int Id { get; set; }
 
-        [DataType(DataType.Date)]
-        public virtual DateTime Date { get; set; }
-
-        public virtual string Title { get; set; }
-        public virtual string Content { get; set; }
-        public virtual byte Color { get; set; }
-
-        [JsonIgnore]
-        public virtual User Owner { get; set; }
-
-        public virtual IList<User> SharedTo { get; set; }
-
-        public virtual Tag Tag { get; set; }
-        public virtual Lecture Lecture { get; set; }
 
         public Note()
         {
-            SharedTo = new List<User>();
             Date = DateTime.Now;
         }
 
-        public virtual void AddListener(User user)
+        [BsonId]
+        [BsonElement("id")]
+        [BsonRepresentation(BsonType.String)]
+        public String Id { get; set; }
+
+        [BsonElement("title")]
+        [BsonRepresentation(BsonType.String)]
+        public string Title { get; set; }
+
+        [BsonElement("content")]
+        [BsonRepresentation(BsonType.String)]
+        public string Content { get; set; }
+
+        [BsonElement("content")]
+        [BsonRepresentation(BsonType.String)]
+        public byte Color { get; set; }
+
+        [BsonElement("tag")]
+        public MongoDBRef Tag { get; set; }
+
+        [BsonElement("lecture")]
+        public MongoDBRef Lecture { get; set; }
+
+        [BsonElement("date")]
+        [BsonRepresentation(BsonType.DateTime)]
+        public DateTime Date { get; set; }
+
+        public void SetTag(string Id)
         {
-            user.SharedNotes.Add(this);
-            SharedTo.Add(user);
+
+            Tag = new MongoDBRef("Tags", Id); 
+
         }
 
-        public virtual void DeleteListener(User user)
+        public void SetLecture(string Id)
         {
-            user.SharedNotes.Remove(this);
-            SharedTo.Remove(user);
-        }
 
-        public virtual int CompareTo(Note other)
-        {
-            if (other == null)
-                return 1;
-            else
-                return Id.CompareTo(other.Id);
+            Tag = new MongoDBRef("Lectures", Id);
+
         }
     }
 }

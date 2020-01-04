@@ -5,10 +5,10 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.NotePost> Notes { get; set; }
+    public List<SharedModels.Note> Notes { get; set; }
 
     [Parameter]
-    public EventCallback<List<SharedModels.NotePost>> NotesChanged { get; set; }
+    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
 
     [Parameter]
     public int NoteId { get; set; }
@@ -20,7 +20,7 @@
     {
         await Http.DeleteAsync($"/api/notes/{NoteId}");
 
-        Notes.Remove(Notes.Find(note => note.Id == NoteId));
+        Notes.Remove(Notes.Find(note => note.Id.Equals(NoteId)));
         await NotesChanged.InvokeAsync(Notes);
 
         ModalRef.Hide();

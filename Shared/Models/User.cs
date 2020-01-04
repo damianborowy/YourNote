@@ -1,53 +1,46 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using YourNote.Shared.Models.CustomAttribute;
 
 namespace YourNote.Shared.Models
 {
+    [BsonCollection("Users")]
     public class User
     {
-        public virtual int Id { get; set; }
-
-        [Required]
-        public virtual string Username { get; set; }
-
-        [Required]
-        [StringLength(255, MinimumLength = 8)]
-        public virtual string Password { get; set; }
-
-        public virtual Permission Role { get; set; } = Permission.Default;
-        public virtual string EmailAddress { get; set; }
-        public virtual string Token { get; set; }
-
-        [DataType(DataType.Date)]
-        public virtual DateTime Date { get; set; }
-
-        public virtual string Name { get; set; }
-
-        [JsonIgnore]
-        public virtual IList<Note> Notes { get; set; }
-
-        [JsonIgnore]
-        public virtual IList<Note> SharedNotes { get; set; }
 
         public User()
         {
             Notes = new List<Note>();
-            SharedNotes = new List<Note>();
-            Date = DateTime.Now;
         }
 
-        public virtual void AddNote(Note note)
-        {
-            note.Owner = this;
-            Notes.Add(note);
-        }
+        [BsonId]
+        [BsonElement("id")]
+        [BsonRepresentation(BsonType.String)]
+        public string Id { get; set; }
 
-        public virtual void DeleteNote(Note note)
-        {
-            Notes.Remove(note);
-        }
+        [Required]
+        [BsonElement("email")]
+        public string EmailAddress { get; set; }
+
+        [Required]
+        [BsonElement("password")]
+        [StringLength(255, MinimumLength = 8)]
+        public  string Password { get; set; }
+
+        [BsonElement("role")]
+        [BsonRepresentation(BsonType.String)]
+        public Permission Role { get; set; } = Permission.Default;
+
+        
+        [BsonElement("name")]
+        public string Name { get; set; }
+
+        [BsonElement("notes")]
+        [BsonRepresentation(BsonType.Array)]
+        public List<Note> Notes { get; set; }
+
 
         public enum Permission
         {

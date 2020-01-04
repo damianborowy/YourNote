@@ -12,7 +12,7 @@ using System.Text;
 using YourNote.Server.Services;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
-using YourNote.Shared.Models.MongoDB;
+
 
 namespace YourNote.Server
 {
@@ -50,7 +50,11 @@ namespace YourNote.Server
 
             services.AddScoped<IUserAuthenticateService, UserAuthenticateService>();
             services.AddSingleton(new MongoClient(GetConnectionData()));
-            services.AddScoped<IDatabaseService<MongoUser>, MongoDbService<MongoUser>>();
+            services.AddScoped<IDatabaseService<User>, MongoDbService<User>>();
+            services.AddScoped<IDatabaseService<Note>, MongoDbService<Note>>();
+
+            services.AddScoped<IDatabaseService<Shared.Models.Tag>, MongoDbService<Shared.Models.Tag>>();
+            services.AddScoped<IDatabaseService<Shared.Models.Lecture>, MongoDbService<Shared.Models.Lecture>>();
 
             //-------------------------------Scopy do relacyjnenj bazy ----------------------
             //services.AddTransient<FluentMigratorService>();

@@ -13,6 +13,8 @@ namespace YourNote.Server.Services.DatabaseService
         T InsertOne(T model);
         List<T> Find();
         T FindOne(string id);
+        T UpdateOne(string id, T model);
+        bool DeleteOne(string id);
 
     }
 
@@ -44,8 +46,8 @@ namespace YourNote.Server.Services.DatabaseService
             var collectionName = GetCollectionName();
             var collection = Database.GetCollection<T>(collectionName);
 
-            return collection.Find(_ => true).ToList();
-            
+            return collection.Find(new BsonDocument()).ToList();
+
         }
 
         public T FindOne(string id)
@@ -57,7 +59,26 @@ namespace YourNote.Server.Services.DatabaseService
 
         }
 
+        public T UpdateOne(string id, T model)
+        {
 
+            var filter = Builders<T>.Filter.Eq("id", id);
+
+            var collectionName = GetCollectionName();
+            var collection = Database.GetCollection<T>(collectionName);
+            collection.ReplaceOne(filter, model);
+            return model;
+        }
+
+        public bool DeleteOne(string id)
+        {
+            var filter = Builders<T>.Filter.Eq("id", id);
+
+            var collectionName = GetCollectionName();
+            var collection = Database.GetCollection<T>(collectionName);
+            var deleteResult = collection.DeleteOne(filter);
+            return deleteResult.IsAcknowledged;
+        }
         #endregion
 
 
@@ -79,9 +100,9 @@ namespace YourNote.Server.Services.DatabaseService
             return Find();
         }
 
-        public T Update(T obj)
+        public T Update(string id, T obj)
         {
-            throw new NotImplementedException();
+            return UpdateOne(id, obj);
         }
 
         public bool Delete(string id)

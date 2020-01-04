@@ -30,7 +30,7 @@ namespace YourNote.Server.Controllers
 
         // GET: api/Notes
         [HttpGet]
-        public IEnumerable<NotePost> GetAllRecords()
+        public IEnumerable<Note> GetAllRecords()
         {
             var noteList = databaseNote.Read();
             return ParseToNotePost(noteList);
@@ -38,7 +38,7 @@ namespace YourNote.Server.Controllers
 
         // GET: api/Notes/5
         [HttpGet("{id}")]
-        public IEnumerable<NotePost> GetAllRecordsById(int id)
+        public IEnumerable<Note> GetAllRecordsById(int id)
         {
             var noteList = databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
             var sharedNoteList = databaseUser.Read(id)?.SharedNotes ?? Array.Empty<Note>();
@@ -53,7 +53,7 @@ namespace YourNote.Server.Controllers
 
         // POST: api/Notes
         [HttpPost]
-        public IActionResult Post([FromBody] NotePost obj)
+        public IActionResult Post([FromBody] Note obj)
         {
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
@@ -80,11 +80,11 @@ namespace YourNote.Server.Controllers
             var result = databaseUser.Update(user);
 
             if (result != null)
-                return Ok(new NotePost(note));
+                return Ok(new Note(note));
             else
                 return BadRequest(new { error = "User doesn't exist" });
 
-            Note Parse(NotePost notePost)
+            Note Parse(Note notePost)
             {
                 Note parser = new Note()
                 {
@@ -101,7 +101,7 @@ namespace YourNote.Server.Controllers
 
         // PUT: api/Notes
         [HttpPut("{userId}")]
-        public IActionResult Put(int userId, [FromBody] NotePost obj)
+        public IActionResult Put(int userId, [FromBody] Note obj)
         {
             var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
             var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);

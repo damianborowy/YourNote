@@ -25,10 +25,10 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.NotePost> Notes { get; set; }
+    public List<SharedModels.Note> Notes { get; set; }
 
     [Parameter]
-    public EventCallback<List<SharedModels.NotePost>> NotesChanged { get; set; }
+    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
 
     [Parameter]
     public string UserId { get; set; }
@@ -39,7 +39,7 @@
     [Parameter]
     public List<string> Lectures { get; set; }
 
-    SharedModels.NotePost note = new SharedModels.NotePost();
+    SharedModels.Note note = new SharedModels.Note();
 
     string Tag;
     string Lecture;
@@ -53,10 +53,10 @@
         note.Tag = Tag;
         note.Lecture = Lecture;
 
-        Console.WriteLine(JsonSerializer.Serialize<SharedModels.NotePost>(note));
+        Console.WriteLine(JsonSerializer.Serialize<SharedModels.Note>(note));
 
         IsNoteBeingSaved = true;
-        var result = await Http.PostJsonAsync<SharedModels.NotePost>($"/api/notes/", note);
+        var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
         IsNoteBeingSaved = false;
 
         result.Tag = Tag;
@@ -65,7 +65,7 @@
         Notes.Add(result);
         await NotesChanged.InvokeAsync(Notes);
 
-        note = new SharedModels.NotePost();
+        note = new SharedModels.Note();
         Tag = null;
         Lecture = null;
 

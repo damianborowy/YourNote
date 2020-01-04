@@ -26,7 +26,7 @@
     [Parameter]
     public string UserId { get; set; }
 
-    List<SharedModels.NotePost> notes;
+    List<SharedModels.Note> notes;
     List<string> tags = new List<string>();
     List<string> lectures = new List<string>();
 
@@ -35,7 +35,7 @@
         var authService = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
         UserId = UserId ?? ClaimsParser.Select(authService, "nameid");
 
-        notes = await Http.GetJsonAsync<List<SharedModels.NotePost>>($"api/notes/{UserId}");
+        notes = await Http.GetJsonAsync<List<SharedModels.Note>>($"api/notes/{UserId}");
         var tagsArr = await Http.GetJsonAsync<List<Tag>>("api/tags");
         var lecturesArr = await Http.GetJsonAsync<List<Lecture>>("api/lectures");
 
@@ -48,16 +48,16 @@
         {
             foreach (var note in notes)
                 if (tag.Name != null && tag.Id.ToString().Equals(note.Tag))
-                    note.Tag = tag.Name;
+                    note.Tag = new MongoDB.Driver.MongoDBRef("Tags", tag.Id);
 
             tags.Add(tag.Name);
         }
 
-        foreach (var lecture in lecturesArr)
+        foreach (Lecture lecture in lecturesArr)
         {
             foreach (var note in notes)
-                if (lecture.Name != null && lecture.Id.ToString().Equals(note.Lecture))
-                    note.Lecture = lecture.Name;
+                if (lecture.Name != null && lecture.Id.Equals(note.Lecture))
+                    note.Lecture = new MongoDB.Driver.MongoDBRef("Lectures", lecture.Id);
 
             lectures.Add(lecture.Name);
         }

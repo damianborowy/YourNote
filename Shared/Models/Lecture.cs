@@ -1,25 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using YourNote.Shared.Models.CustomAttribute;
 
 namespace YourNote.Shared.Models
 {
     public class Lecture
     {
-        public virtual int Id { get; set; }
-        public virtual string Name { get; set; }
-
-        [JsonIgnore]
-        public virtual IList<Note> Notes { get; set; }
-
-        public Lecture()
+        [BsonCollection("Lectures")]
+        public class Tag
         {
-            Notes = new List<Note>();
-        }
+            [BsonId]
+            [BsonElement("id")]
+            [BsonRepresentation(BsonType.String)]
+            public string Id { get; set; }
 
-        public virtual void AddNote(Note note)
-        {
-            note.Lecture = this;
-            Notes.Add(note);
+            [BsonElement("name")]
+            public string Name { get; set; }
+
         }
     }
 }
