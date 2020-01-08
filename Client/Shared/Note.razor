@@ -24,13 +24,13 @@
         <div class="modal__inputs">
             <TagField @bind-Tag="@NoteObj.Tag" Tags="@Tags" />
             <LectureField @bind-Lecture="@NoteObj.Lecture" Lectures="@Lectures" /><br />
-            <label for="new-user">
+            @*<label for="new-user">
                 Udostępnij:
             </label>
             <input id="new-user" type="number" @bind="NewUserId" />
             <button @onclick="@AddNewUser">
                 Dodaj
-            </button><br />
+            </button><br />*@
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" placeholder="Treść notatki..." />
     </BSModalBody>
