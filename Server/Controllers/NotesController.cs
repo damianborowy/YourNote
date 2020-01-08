@@ -60,18 +60,28 @@ namespace YourNote.Server.Controllers
 
             var note = Parse(obj);
 
-            if (tag == null && obj.Tag != null)
+            if (tag == null && !String.IsNullOrWhiteSpace(obj.Tag))
             {
                 tag = new Tag() { Name = obj.Tag };
                 databaseTag.Create(tag);
                 tag.AddNote(note);
             }
+            else
+            {
+                tag.AddNote(note);
+                databaseTag.Update(tag);
+            }
 
-            if (lecture == null && obj.Lecture != null)
+            if (lecture == null && !String.IsNullOrWhiteSpace(obj.Lecture))
             {
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
                 lecture.AddNote(note);
+            }
+            else
+            {
+                lecture.AddNote(note);
+                databaseLecture.Update(lecture);
             }
 
             var user = databaseUser.Read(obj.OwnerId);
@@ -110,18 +120,28 @@ namespace YourNote.Server.Controllers
             if (obj.Id.HasValue)
                 note.Id = obj.Id.Value;
 
-            if (tag == null && obj.Tag != null)
+            if (tag == null && !String.IsNullOrWhiteSpace(obj.Tag))
             {
                 tag = new Tag() { Name = obj.Tag };
                 databaseTag.Create(tag);
                 tag.AddNote(note);
             }
+            else
+            {
+                tag.AddNote(note);
+                databaseTag.Update(tag);
+            }
 
-            if (lecture == null && obj.Lecture != null)
+            if (lecture == null && !String.IsNullOrWhiteSpace(obj.Lecture))
             {
                 lecture = new Lecture() { Name = obj.Lecture };
                 databaseLecture.Create(lecture);
                 lecture.AddNote(note);
+            }
+            else
+            {
+                lecture.AddNote(note);
+                databaseLecture.Update(lecture);
             }
 
             if (obj.SharedTo is null)
