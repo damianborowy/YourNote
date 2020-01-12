@@ -41,7 +41,7 @@ namespace YourNote.Server.Controllers
         public IEnumerable<NotePost> GetAllRecordsById(int id)
         {
             var noteList = databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
-            var sharedNoteList = databaseUser.Read(id)?.SharedNotes ?? Array.Empty<Note>();
+            var sharedNoteList = databaseUser.Read(id)?.UserNote ?? Array.Empty<Note>();
 
             foreach (var item in sharedNoteList)
             {

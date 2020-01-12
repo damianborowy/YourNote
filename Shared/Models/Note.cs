@@ -16,30 +16,16 @@ namespace YourNote.Shared.Models
         public virtual string Content { get; set; }
         public virtual byte Color { get; set; }
 
-        [JsonIgnore]
-        public virtual User Owner { get; set; }
 
-        public virtual IList<User> SharedTo { get; set; }
+        public virtual IList<UserNote> UserNote { get; set; }
 
         public virtual Tag Tag { get; set; }
         public virtual Lecture Lecture { get; set; }
 
         public Note()
         {
-            SharedTo = new List<User>();
+            UserNote = new List<UserNote>();
             Date = DateTime.Now;
-        }
-
-        public virtual void AddListener(User user)
-        {
-            user.SharedNotes.Add(this);
-            SharedTo.Add(user);
-        }
-
-        public virtual void DeleteListener(User user)
-        {
-            user.SharedNotes.Remove(this);
-            SharedTo.Remove(user);
         }
 
         public virtual int CompareTo(Note other)

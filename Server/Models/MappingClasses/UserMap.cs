@@ -17,15 +17,10 @@ namespace YourNote.Server.Models.MappingClasses
             Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(u => u.Name);
 
-            HasMany(u => u.Notes)
+            HasMany(u => u.UserNote)
                 .Cascade.All()
-                .Not.LazyLoad();
-
-            HasManyToMany(u => u.SharedNotes)
                 .Inverse()
-                .Cascade.All()
-                .Table("UserNote")
-                .Not.LazyLoad();
+                .Table("UserNote");
         }
     }
 }
