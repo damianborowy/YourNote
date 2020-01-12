@@ -14,7 +14,7 @@ namespace YourNote.Server.Models.MappingClasses
         {
             CompositeId()
                 .KeyReference(x => x.UserId)
-                .KeyReference(x => x.UserId);
+                .KeyReference(x => x.NoteId);
 
             Map(x => x.isOwner);
 
