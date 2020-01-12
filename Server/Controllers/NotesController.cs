@@ -36,20 +36,20 @@ namespace YourNote.Server.Controllers
             return ParseToNotePost(noteList);
         }
 
-        // GET: api/Notes/5
-        [HttpGet("{id}")]
-        public IEnumerable<NotePost> GetAllRecordsById(int id)
-        {
-            var noteList = databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
-            var sharedNoteList = databaseUser.Read(id)?.UserNote ?? Array.Empty<Note>();
+        //// GET: api/Notes/5
+        //[HttpGet("{id}")]
+        //public IEnumerable<NotePost> GetAllRecordsById(int id)
+        //{
+        //    var noteList = databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
+        //    var sharedNoteList = databaseUser.Read(id)?.UserNote ?? Array.Empty<Note>();
 
-            foreach (var item in sharedNoteList)
-            {
-                noteList.Add(item);
-            }
+        //    foreach (var item in sharedNoteList)
+        //    {
+        //        noteList.Add(item);
+        //    }
 
-            return ParseToNotePost(noteList);
-        }
+        //    return ParseToNotePost(noteList);
+        //}
 
         // POST: api/Notes
         [HttpPost]
@@ -75,7 +75,7 @@ namespace YourNote.Server.Controllers
             }
 
             var user = databaseUser.Read(obj.OwnerId);
-            user.AddNote(note);
+            //user.AddNote(note);
 
             var result = databaseUser.Update(user);
 
@@ -92,7 +92,7 @@ namespace YourNote.Server.Controllers
                     Content = notePost.Content,
                     Color = notePost.Color,
 
-                    Owner = databaseUser.Read(notePost.OwnerId),
+                    //Owner = databaseUser.Read(notePost.OwnerId),
                     Date = DateTime.Now
                 };
                 return parser;
@@ -131,11 +131,11 @@ namespace YourNote.Server.Controllers
                 List<User> tempUserList = ShareNotes(obj);
                 foreach (User us in tempUserList)
                 {
-                    note.SharedTo.Add(us);
+                    //note.SharedTo.Add(us);
                 }
             }
             var user = databaseUser.Read(obj.OwnerId);
-            user.AddNote(note);
+            //user.AddNote(note);
 
             var result = databaseNote.Update(note);
 
@@ -162,7 +162,7 @@ namespace YourNote.Server.Controllers
                 Content = notePost.Content,
                 Color = notePost.Color,
 
-                Owner = databaseUser.Read(notePost.OwnerId),
+                //Owner = databaseUser.Read(notePost.OwnerId),
                 Date = DateTime.Now
             };
 
@@ -201,7 +201,7 @@ namespace YourNote.Server.Controllers
                 Content = notePost.Content,
                 Color = notePost.Color,
 
-                Owner = databaseUser.Read(notePost.OwnerId),
+                //Owner = databaseUser.Read(notePost.OwnerId),
                 Date = DateTime.Now
             };
             return parser;

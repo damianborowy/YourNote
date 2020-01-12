@@ -42,6 +42,7 @@ namespace YourNote.Server.Services
                     .AddFromAssemblyOf<UserMap>()
                     .AddFromAssemblyOf<TagMap>()
                     .AddFromAssemblyOf<LectureMap>()
+                    .AddFromAssemblyOf<UserNoteMap>()
                 )
                 .ExposeConfiguration(cfg => new SchemaExport(cfg)
                 .Create(createNew, createNew))

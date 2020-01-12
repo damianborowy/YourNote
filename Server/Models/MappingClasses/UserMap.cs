@@ -17,10 +17,10 @@ namespace YourNote.Server.Models.MappingClasses
             Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(u => u.Name);
 
-            HasMany(u => u.UserNote)
+            HasMany(u => u.UserNotes)
                 .Cascade.All()
                 .Inverse()
-                .Table("UserNote");
+                .Table("usernote");
         }
     }
 }

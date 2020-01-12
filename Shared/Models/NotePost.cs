@@ -27,7 +27,7 @@ namespace YourNote.Shared.Models
             Title = note.Title;
             Content = note.Content;
             Color = note.Color;
-            OwnerId = note.Owner.Id;
+            //OwnerId = note.Owner.Id;
 
             if (note.Tag != null)
                 Tag = note.Tag.Id + "";

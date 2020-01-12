@@ -19,10 +19,10 @@ namespace YourNote.Shared.Models.MappingClasses
             References(n => n.Tag).Cascade.All().Nullable();
             References(n => n.Lecture).Cascade.All().Nullable();
 
-            HasMany(n => n.UserNote)
+            HasMany(n => n.UserNotes)
                 .Cascade.All()
                 .Inverse()
-                .Table("UserNote");
+                .Table("usernote");
 
 
         }
