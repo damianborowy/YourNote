@@ -123,7 +123,7 @@ namespace YourNote.Server.Services
                 {
                 //    var d = session.Contains(obj);
                 //    if (d)                 
-                        session.Evict(obj);
+                    
                     session.Update(obj);
                     tx.Commit();
                     

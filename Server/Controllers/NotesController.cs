@@ -211,8 +211,8 @@ namespace YourNote.Server.Controllers
 
             if (tag != null && !String.IsNullOrWhiteSpace(obj.Tag))
             {
-                
-                note.Tag = tag;
+
+                note.AddTag(tag);
 
             }
 
@@ -225,7 +225,7 @@ namespace YourNote.Server.Controllers
 
             if (tag != null && !String.IsNullOrWhiteSpace(obj.Lecture))
             {
-                note.Lecture = lecture;
+                note.AddLecture(lecture);
 
             }
 

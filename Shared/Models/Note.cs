@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace YourNote.Shared.Models
 {
-    public class Note : IComparable<Note>
+    public class Note : IComparable<Note>, IEquatable<Note>
     {
         public virtual int Id { get; set; }
 
@@ -28,12 +28,36 @@ namespace YourNote.Shared.Models
             Date = DateTime.Now;
         }
 
+        public virtual void AddTag(Tag tag)
+        {
+            Tag = tag;
+            //tag.Notes.Remove(this);
+            tag.Notes.Clear();
+
+            tag.Notes.Add(this);
+        }
+
+        public virtual void AddLecture(Lecture lecture)
+        {
+            Lecture = lecture;
+            //lecture.Notes.Remove(this);
+            lecture.Notes.Clear();
+
+            lecture.Notes.Add(this);
+        }
+
         public virtual int CompareTo(Note other)
         {
             if (other == null)
                 return 1;
             else
                 return Id.CompareTo(other.Id);
+        }
+
+        public bool Equals(Note other)
+        {
+            if (other == null) return false;
+            return (this.Id.Equals(other.Id));
         }
     }
 }
