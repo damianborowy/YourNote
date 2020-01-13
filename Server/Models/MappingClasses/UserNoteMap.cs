@@ -12,10 +12,11 @@ namespace YourNote.Server.Models.MappingClasses
 
         public UserNoteMap()
         {
+            Not.LazyLoad();
             Table("usernote");
             CompositeId()
-                .KeyReference(x => x.UserId, "user_id")
-                .KeyReference(x => x.NoteId, "note_id");
+                .KeyReference(x => x.User, "user_id")
+                .KeyReference(x => x.Note, "note_id");
 
             Map(x => x.IsOwner);
 

@@ -6,8 +6,9 @@ namespace YourNote.Shared.Models.MappingClasses
     {
         public NoteMap()
         {
+            Not.LazyLoad();
             Table("Notes");
-
+            
             Id(n => n.Id).GeneratedBy.Identity().Not.Nullable();
             Map(n => n.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(n => n.Color);
@@ -19,10 +20,11 @@ namespace YourNote.Shared.Models.MappingClasses
             References(n => n.Tag).Cascade.All().Nullable();
             References(n => n.Lecture).Cascade.All().Nullable();
 
-            HasMany(n => n.UserNotes)
-                .Cascade.All()
+            HasMany(n => n.Users)
+                .Cascade.All()                
                 .Inverse()
-                .Table("usernote");
+                .Table("usernote")
+                .Not.LazyLoad(); 
 
 
         }

@@ -17,15 +17,17 @@ namespace YourNote.Server.Controllers
         private readonly IDatabaseService<User> databaseUser;
         private readonly IDatabaseService<Tag> databaseTag;
         private readonly IDatabaseService<Lecture> databaseLecture;
-
+        private readonly IDatabaseService<UserNote> databaseUserNote;
         public NotesController(ILogger<NotesController> logger,
            IDatabaseService<Note> dataBaseNote, IDatabaseService<User> databaseUser,
-           IDatabaseService<Tag> databaseTag, IDatabaseService<Lecture> databaseLecture)
+           IDatabaseService<Tag> databaseTag, IDatabaseService<Lecture> databaseLecture,
+           IDatabaseService<UserNote> databaseUserNote)
         {
             this.databaseNote = dataBaseNote;
             this.databaseUser = databaseUser;
             this.databaseLecture = databaseLecture;
             this.databaseTag = databaseTag;
+            this.databaseUserNote = databaseUserNote;
         }
 
         // GET: api/Notes
@@ -36,106 +38,62 @@ namespace YourNote.Server.Controllers
             return ParseToNotePost(noteList);
         }
 
-        //// GET: api/Notes/5
-        //[HttpGet("{id}")]
-        //public IEnumerable<NotePost> GetAllRecordsById(int id)
-        //{
-        //    var noteList = databaseUser.Read(id)?.Notes ?? Array.Empty<Note>();
-        //    var sharedNoteList = databaseUser.Read(id)?.UserNote ?? Array.Empty<Note>();
+        // GET: api/Notes/5
+        [HttpGet("{id}")]
+        public IEnumerable<NotePost> GetAllRecordsById(int id)
+        {
+            var userNoteList = databaseUser.Read(id)?.Notes ?? Array.Empty<UserNote>();
+            var noteList = new List<Note>();
 
-        //    foreach (var item in sharedNoteList)
-        //    {
-        //        noteList.Add(item);
-        //    }
+            
 
-        //    return ParseToNotePost(noteList);
-        //}
+            foreach (var item in userNoteList)
+            {
+                noteList.Add(item.Note);
+            }
+            return ParseToNotePost(noteList);
+
+            
+        }
 
         // POST: api/Notes
         [HttpPost]
         public IActionResult Post([FromBody] NotePost obj)
         {
-            var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
-            var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
+            var note = SetTagAndLecture(obj);
 
-            var note = Parse(obj);
-
-            if (tag == null && obj.Tag != null)
-            {
-                tag = new Tag() { Name = obj.Tag };
-                databaseTag.Create(tag);
-                tag.AddNote(note);
-            }
-
-            if (lecture == null && obj.Lecture != null)
-            {
-                lecture = new Lecture() { Name = obj.Lecture };
-                databaseLecture.Create(lecture);
-                lecture.AddNote(note);
-            }
 
             var user = databaseUser.Read(obj.OwnerId);
-            //user.AddNote(note);
+            var userNote = new UserNote
+            {
+                User = user,
+                Note = note,
+                IsOwner = true
 
-            var result = databaseUser.Update(user);
+            };
+
+            note.Users.Add(userNote);
+            user.Notes.Add(userNote);
+
+            var result = databaseNote.Create(note);
+
+            
 
             if (result != null)
                 return Ok(new NotePost(note));
             else
                 return BadRequest(new { error = "User doesn't exist" });
 
-            Note Parse(NotePost notePost)
-            {
-                Note parser = new Note()
-                {
-                    Title = notePost.Title,
-                    Content = notePost.Content,
-                    Color = notePost.Color,
-
-                    //Owner = databaseUser.Read(notePost.OwnerId),
-                    Date = DateTime.Now
-                };
-                return parser;
-            }
+            
         }
 
         // PUT: api/Notes
         [HttpPut("{userId}")]
         public IActionResult Put(int userId, [FromBody] NotePost obj)
         {
-            var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
-            var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
 
-            var note = Parse(obj);
-            if (obj.Id.HasValue)
-                note.Id = obj.Id.Value;
-
-            if (tag == null && obj.Tag != null)
-            {
-                tag = new Tag() { Name = obj.Tag };
-                databaseTag.Create(tag);
-                tag.AddNote(note);
-            }
-
-            if (lecture == null && obj.Lecture != null)
-            {
-                lecture = new Lecture() { Name = obj.Lecture };
-                databaseLecture.Create(lecture);
-                lecture.AddNote(note);
-            }
-
-            if (obj.SharedTo is null)
-                obj.SharedTo = new List<int>();
-            else
-            {
-                List<User> tempUserList = ShareNotes(obj);
-                foreach (User us in tempUserList)
-                {
-                    //note.SharedTo.Add(us);
-                }
-            }
-            var user = databaseUser.Read(obj.OwnerId);
-            //user.AddNote(note);
+            var note = SetTagAndLecture(obj);
+            
 
             var result = databaseNote.Update(note);
 
@@ -149,6 +107,14 @@ namespace YourNote.Server.Controllers
         [HttpDelete("{id}")]
         public bool DeleteById(int id)
         {
+            var note = databaseNote.Read(id);
+
+            foreach (var item in note.Users)
+            {
+
+                databaseUserNote.Delete(item);
+            }
+            
             return databaseNote.Delete(id);
         }
 
@@ -162,7 +128,7 @@ namespace YourNote.Server.Controllers
                 Content = notePost.Content,
                 Color = notePost.Color,
 
-                //Owner = databaseUser.Read(notePost.OwnerId),
+                
                 Date = DateTime.Now
             };
 
@@ -191,9 +157,9 @@ namespace YourNote.Server.Controllers
             return notePostList;
         }
 
-        #endregion Private methods
+       
 
-        public Note Parse(NotePost notePost)
+        private Note Parse(NotePost notePost)
         {
             Note parser = new Note()
             {
@@ -201,13 +167,13 @@ namespace YourNote.Server.Controllers
                 Content = notePost.Content,
                 Color = notePost.Color,
 
-                //Owner = databaseUser.Read(notePost.OwnerId),
+                
                 Date = DateTime.Now
             };
             return parser;
         }
 
-        #region privateMethods
+        
 
         private List<User> ShareNotes(NotePost notePost)
         {
@@ -226,6 +192,45 @@ namespace YourNote.Server.Controllers
             return newUserList;
         }
 
-        #endregion privateMethods
+        private Note SetTagAndLecture(NotePost obj)
+        {
+
+            var tag = new List<Tag>(databaseTag.Read()).Find(x => x.Name == obj.Tag);
+            var lecture = new List<Lecture>(databaseLecture.Read()).Find(x => x.Name == obj.Lecture);
+
+            var note = Parse(obj);
+            if (obj.Id.HasValue)
+                note.Id = obj.Id.Value;
+
+            if (tag == null && !String.IsNullOrWhiteSpace(obj.Tag))
+            {
+                tag = new Tag() { Name = obj.Tag };
+                databaseTag.Create(tag);
+                note.Tag = tag;
+            }
+
+            if (tag != null && !String.IsNullOrWhiteSpace(obj.Tag))
+            {
+                
+                note.Tag = tag;
+
+            }
+
+            if (lecture == null && !String.IsNullOrWhiteSpace(obj.Lecture))
+            {
+                lecture = new Lecture() { Name = obj.Lecture };
+                databaseLecture.Create(lecture);
+                note.Lecture = lecture;
+            }
+
+            if (tag != null && !String.IsNullOrWhiteSpace(obj.Lecture))
+            {
+                note.Lecture = lecture;
+
+            }
+
+            return note;
+        }
+        #endregion Private methods
     }
 }

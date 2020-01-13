@@ -7,6 +7,7 @@ namespace YourNote.Server.Models.MappingClasses
     {
         public UserMap()
         {
+            Not.LazyLoad();
             Table("Users");
             Id(u => u.Id).GeneratedBy.Identity().Not.Nullable();
             Map(u => u.Username).Unique();
@@ -17,10 +18,11 @@ namespace YourNote.Server.Models.MappingClasses
             Map(u => u.Date).Default("CURRENT_TIMESTAMP(2)").Not.Nullable();
             Map(u => u.Name);
 
-            HasMany(u => u.UserNotes)
+            HasMany(u => u.Notes)
                 .Cascade.All()
                 .Inverse()
-                .Table("usernote");
+                .Table("usernote")
+                .Not.LazyLoad();
         }
     }
 }

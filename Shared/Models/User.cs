@@ -27,12 +27,12 @@ namespace YourNote.Shared.Models
 
 
         [JsonIgnore]
-        public virtual IList<UserNote> UserNotes { get; set; }
+        public virtual IList<UserNote> Notes { get; set; }
 
         public User()
         {
  
-            UserNotes = new List<UserNote>();
+            Notes = new List<UserNote>();
             Date = DateTime.Now;
         }
 

@@ -52,6 +52,8 @@ namespace YourNote.Server
             services.AddScoped<IDatabaseService<User>, NhibernateService<User>>();
             services.AddScoped<IDatabaseService<Tag>, NhibernateService<Tag>>();
             services.AddScoped<IDatabaseService<Lecture>, NhibernateService<Lecture>>();
+            services.AddScoped<IDatabaseService<UserNote>, NhibernateService<UserNote>>();
+
 
             services.AddCors();
             services.AddControllers();

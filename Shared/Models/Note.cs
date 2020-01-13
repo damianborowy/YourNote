@@ -17,14 +17,14 @@ namespace YourNote.Shared.Models
         public virtual byte Color { get; set; }
 
 
-        public virtual IList<UserNote> UserNotes { get; set; }
+        public virtual IList<UserNote> Users { get; set; }
 
         public virtual Tag Tag { get; set; }
         public virtual Lecture Lecture { get; set; }
 
         public Note()
         {
-            UserNotes = new List<UserNote>();
+            Users = new List<UserNote>();
             Date = DateTime.Now;
         }
 

@@ -6,9 +6,9 @@ namespace YourNote.Shared.Models
 {
     public class UserNote
     {
-        public virtual User UserId { set; get; }
+        public virtual User User { set; get; }
         
-        public virtual Note NoteId { set; get; }
+        public virtual Note Note { set; get; }
 
         public virtual bool IsOwner { set; get; }
 
@@ -20,8 +20,8 @@ namespace YourNote.Shared.Models
             }
             var x = obj as UserNote;
 
-            return ((x.UserId.Id == this.UserId.Id)
-                 && (x.NoteId.Id == this.NoteId.Id));
+            return ((x.User.Id == this.User.Id)
+                 && (x.Note.Id == this.Note.Id));
         }
 
         public override int GetHashCode()
