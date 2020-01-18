@@ -16,6 +16,8 @@ namespace YourNote.Shared.Models
         public Note()
         {
             Date = DateTime.Now;
+            Tags = new List<Tag>();
+            Lectures = new List<Lecture>();
         }
 
         [BsonId]
@@ -36,26 +38,28 @@ namespace YourNote.Shared.Models
         public byte Color { get; set; }
 
         [BsonElement("tag")]
-        public MongoDBRef Tag { get; set; }
+        [BsonRepresentation(BsonType.Array)]
+        public List<Tag> Tags { get; set; }
 
         [BsonElement("lecture")]
-        public MongoDBRef Lecture { get; set; }
+        [BsonRepresentation(BsonType.Array)]
+        public List<Lecture> Lectures { get; set; }
 
         [BsonElement("date")]
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime Date { get; set; }
 
-        public void SetTag(string Id)
+        public void AddTag(Tag tag)
         {
 
-            Tag = new MongoDBRef("Tags", Id); 
+            Tags.Add(tag);
 
         }
 
-        public void SetLecture(string Id)
+        public void AddLecture(Lecture tag)
         {
 
-            Tag = new MongoDBRef("Lectures", Id);
+            Lectures.Add(tag);
 
         }
     }

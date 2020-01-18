@@ -13,6 +13,9 @@ namespace YourNote.Shared.Models
         public User()
         {
             Notes = new List<Note>();
+            SharedNotesIds = new List<string>();
+            AllTags = new List<Tag>();
+            AllLectures = new List<Lecture>();
         }
 
         [BsonId]
@@ -29,6 +32,8 @@ namespace YourNote.Shared.Models
         [StringLength(255, MinimumLength = 8)]
         public  string Password { get; set; }
 
+        [Required]
+
         [BsonElement("role")]
         [BsonRepresentation(BsonType.String)]
         public Permission Role { get; set; } = Permission.Default;
@@ -37,10 +42,22 @@ namespace YourNote.Shared.Models
         [BsonElement("name")]
         public string Name { get; set; }
 
-        [BsonElement("notes")]
+        [BsonElement("ownedNotes")]
         [BsonRepresentation(BsonType.Array)]
         public List<Note> Notes { get; set; }
 
+        [BsonElement("sharedNotes")]
+        [BsonRepresentation(BsonType.Array)]
+        public List<string> SharedNotesIds { get; set; }
+
+
+        [BsonElement("allTags")]
+        [BsonRepresentation(BsonType.Array)]
+        public List<Tag> AllTags { get; set; }
+
+        [BsonElement("allLectures")]
+        [BsonRepresentation(BsonType.Array)]
+        public List<Lecture> AllLectures { get; set; }
 
         public enum Permission
         {
