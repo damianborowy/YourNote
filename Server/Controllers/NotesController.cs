@@ -32,20 +32,36 @@ namespace YourNote.Server.Controllers
 
         }
 
+        // GET: api/Users/5/Notes
+        [HttpGet("{userid}/Notes")]
+        public IEnumerable<Note> GetNotesByUserId(string userId)
+        {
+
+            var userDoc = databaseUser.Read(userId);
+            return userDoc.Notes;
+        }
+
         // POST: api/Notes
         [HttpPost("{userId}/Notes")]
-        public IActionResult PostNote(string userId, [FromBody] Note note)
+        public IActionResult PostNote(string userId, [FromBody] Note note, [FromBody] List<Shared.Models.Tag> tags, [FromBody] List<Lecture> lectures)
         {
 
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
             var filter = Builders<User>.Filter.Eq("id", userId);
-            //                & Builders<BsonDocument>.Filter.Eq("scores.type", "quiz");
 
-            var update = Builders<User>.Update.Push("notes", note);
 
+
+            var addNote = Builders<User>.Update.AddToSet("notes", note);
+            var addTags = Builders<User>.Update.AddToSetEach("allTags", tags);
+            var addLectures = Builders<User>.Update.AddToSetEach("allLectures", lectures);
+
+
+            var update = Builders<User>.Update.Combine(addNote, addTags, addLectures);
+            
             var result = collection.FindOneAndUpdate(filter, update);
+            
 
 
             if (result is null)

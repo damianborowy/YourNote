@@ -7,7 +7,7 @@ using YourNote.Shared.Models.CustomAttribute;
 namespace YourNote.Shared.Models
 {
     [BsonCollection("Tags")]
-    public class Tag
+    public class Tag : ICo
     {
         [BsonId]
         [BsonElement("id")]
