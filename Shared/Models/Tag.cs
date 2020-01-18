@@ -1,13 +1,14 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using YourNote.Shared.Models.CustomAttribute;
 
 namespace YourNote.Shared.Models
 {
     [BsonCollection("Tags")]
-    public class Tag : ICo
+    public class Tag : IComparable<Tag>
     {
         [BsonId]
         [BsonElement("id")]
@@ -16,6 +17,15 @@ namespace YourNote.Shared.Models
 
         [BsonElement("name")]
         public string Name { get; set; }
-       
+
+        public virtual int CompareTo(Tag other)
+        {
+
+            if (other is null)
+                return 1;
+            else
+                return Name.CompareTo(other.Name);
+        }
+
     }
 }

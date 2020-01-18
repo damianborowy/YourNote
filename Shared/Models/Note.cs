@@ -9,7 +9,7 @@ using YourNote.Shared.Models.CustomAttribute;
 namespace YourNote.Shared.Models
 {
     [BsonCollection("Notes")]
-    public class Note  
+    public class Note : IComparable<Note>
     {
 
 
@@ -62,5 +62,15 @@ namespace YourNote.Shared.Models
             Lectures.Add(tag);
 
         }
+
+        public virtual int CompareTo(Note other)
+        {
+            if (other == null)
+                return 1;
+            else
+                return Id.CompareTo(other.Id);
+        }
+
+
     }
 }
