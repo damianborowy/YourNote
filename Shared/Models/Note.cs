@@ -9,7 +9,7 @@ using YourNote.Shared.Models.CustomAttribute;
 namespace YourNote.Shared.Models
 {
     [BsonCollection("Notes")]
-    public class Note 
+    public class Note  
     {
 
 
