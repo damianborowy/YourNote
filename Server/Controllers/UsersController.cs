@@ -44,12 +44,12 @@ namespace YourNote.Server.Controllers
 
         // GET: api/User/5/Notes
         [HttpGet("{userid}/Notes")]
-        public IEnumerable<Note> GetNotesByUserId(string userId)
+        public IEnumerable<NotePost> GetNotesByUserId(string userId)
         {
             
             var userDoc = databaseUser.Read(userId);
             var Notes = userDoc.Notes;
-            return Parse
+            return ParseToNotePost(Notes);
         }
 
         // PUT: api/User/5
