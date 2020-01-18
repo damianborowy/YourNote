@@ -107,7 +107,7 @@ namespace YourNote.Server.Services.DatabaseService
 
         public bool Delete(string id)
         {
-            throw new NotImplementedException();
+            return DeleteOne(id);
         }
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using YourNote.Shared.Models.CustomAttribute;
@@ -13,7 +14,7 @@ namespace YourNote.Shared.Models
         public User()
         {
             Notes = new List<Note>();
-            SharedNotesIds = new List<string>();
+            SharedNotesIds = new List<MongoDBRef>();
             AllTags = new List<Tag>();
             AllLectures = new List<Lecture>();
         }
@@ -48,7 +49,7 @@ namespace YourNote.Shared.Models
 
         [BsonElement("sharedNotes")]
         [BsonRepresentation(BsonType.Array)]
-        public List<string> SharedNotesIds { get; set; }
+        public List<MongoDBRef> SharedNotesIds { get; set; }
 
 
         [BsonElement("allTags")]
@@ -58,6 +59,9 @@ namespace YourNote.Shared.Models
         [BsonElement("allLectures")]
         [BsonRepresentation(BsonType.Array)]
         public List<Lecture> AllLectures { get; set; }
+
+
+        
 
         public enum Permission
         {

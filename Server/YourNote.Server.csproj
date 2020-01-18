@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <Compile Remove="Interfaces\**" />
+    <Compile Remove="Migrations\**" />
     <Content Remove="Interfaces\**" />
+    <Content Remove="Migrations\**" />
     <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Migrations\**" />
     <None Remove="Interfaces\**" />
+    <None Remove="Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>

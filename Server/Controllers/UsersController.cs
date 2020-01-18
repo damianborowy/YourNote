@@ -42,7 +42,16 @@ namespace YourNote.Server.Controllers
             return databaseUser.Read(id);
         }
 
-        
+        // GET: api/User/5/Notes
+        [HttpGet("{userid}/Notes")]
+        public IEnumerable<Note> GetNotesByUserId(string userId)
+        {
+            
+            var userDoc = databaseUser.Read(userId);
+            var Notes = userDoc.Notes;
+            return Parse
+        }
+
         // PUT: api/User/5
         [HttpPut("{id}")]
         public  IActionResult Put(string id, [FromBody] User user)
@@ -118,6 +127,19 @@ namespace YourNote.Server.Controllers
         {
             user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password);
             return user;
+        }
+
+        private static List<NotePost> ParseToNotePost(IList<Note> noteList)
+        {
+            var notePostList = new List<NotePost>();
+
+            foreach (var note in noteList)
+            {
+                notePostList.Add(new NotePost(note));
+            }
+            notePostList.Sort();
+
+            return notePostList;
         }
 
         #endregion Private methods
