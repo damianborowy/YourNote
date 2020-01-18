@@ -44,14 +44,14 @@ namespace YourNote.Server
                 };
             });
 
-            services.AddTransient<FluentMigratorService>();
+            
 
             services.AddScoped<IUserAuthenticateService, UserAuthenticateService>();
-
             services.AddScoped<IDatabaseService<Note>, NhibernateService<Note>>();
             services.AddScoped<IDatabaseService<User>, NhibernateService<User>>();
             services.AddScoped<IDatabaseService<Tag>, NhibernateService<Tag>>();
             services.AddScoped<IDatabaseService<Lecture>, NhibernateService<Lecture>>();
+            services.AddScoped<IDatabaseService<UserNote>, NhibernateService<UserNote>>();
 
             services.AddCors();
             services.AddControllers();

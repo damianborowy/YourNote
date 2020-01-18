@@ -37,14 +37,17 @@ namespace YourNote.Server.Services
                 .Database(PostgreSQLConfiguration.PostgreSQL81
                 .ConnectionString($" Host={Host}; Port={Port}; Database={DBname};" +
                 $" Username={User}; Password={Password};"))
+                
                 .Mappings(m => m.FluentMappings
                     .AddFromAssemblyOf<NoteMap>()
                     .AddFromAssemblyOf<UserMap>()
                     .AddFromAssemblyOf<TagMap>()
                     .AddFromAssemblyOf<LectureMap>()
-                )
-                .ExposeConfiguration(cfg => new SchemaExport(cfg)
-                .Create(createNew, createNew))
+                    .AddFromAssemblyOf<UserNoteMap>()
+                    
+                )               
+                .ExposeConfiguration(cfg => new SchemaExport(cfg)               
+                .Create(createNew, createNew))                
                 .BuildSessionFactory();
         }
 
@@ -81,6 +84,10 @@ namespace YourNote.Server.Services
             return DeleteRecord(id);
         }
 
+        public bool Delete(T obj)
+        {
+            return DeleteRecord(obj);
+        }
         #endregion CRUD
 
         #region privateMethods
@@ -114,8 +121,12 @@ namespace YourNote.Server.Services
 
                 try
                 {
-                    session.SaveOrUpdate(obj);
+                //    var d = session.Contains(obj);
+                //    if (d)                 
+                    
+                    session.Update(obj);
                     tx.Commit();
+                    
                 }
                 catch (NHibernate.HibernateException)
                 {
@@ -136,7 +147,32 @@ namespace YourNote.Server.Services
                 var tx = session.BeginTransaction();
                 try
                 {
+                    
                     session.Delete(session.Get<T>(id));
+                    tx.Commit();
+                }
+                catch (NHibernate.HibernateException)
+                {
+                    wasSucceeded = false;
+                    tx.Rollback();
+                    //throw;
+                }
+            }
+
+            return wasSucceeded;
+        }
+
+        private bool DeleteRecord(T obj)
+        {
+            bool wasSucceeded = true;
+
+            using (var session = OpenSession())
+            {
+                var tx = session.BeginTransaction();
+                try
+                {
+
+                    session.Delete(obj);
                     tx.Commit();
                 }
                 catch (NHibernate.HibernateException)
@@ -149,7 +185,6 @@ namespace YourNote.Server.Services
 
             return wasSucceeded;
         }
-
         private T GetById(int id)
         {
             using (var session = OpenSession())

@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <Compile Remove="Interfaces\**" />
+    <Compile Remove="Tests\**" />
     <Content Remove="Interfaces\**" />
+    <Content Remove="Tests\**" />
     <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Tests\**" />
     <None Remove="Interfaces\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,10 +40,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Client\YourNote.Client.csproj" />
     <ProjectReference Include="..\Shared\YourNote.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Tests\" />
   </ItemGroup>
 
 </Project>

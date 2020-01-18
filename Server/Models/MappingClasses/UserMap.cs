@@ -7,6 +7,7 @@ namespace YourNote.Server.Models.MappingClasses
     {
         public UserMap()
         {
+            Not.LazyLoad();
             Table("Users");
             Id(u => u.Id).GeneratedBy.Identity().Not.Nullable();
             Map(u => u.Username).Unique();
@@ -19,12 +20,8 @@ namespace YourNote.Server.Models.MappingClasses
 
             HasMany(u => u.Notes)
                 .Cascade.All()
-                .Not.LazyLoad();
-
-            HasManyToMany(u => u.SharedNotes)
                 .Inverse()
-                .Cascade.All()
-                .Table("UserNote")
+                .Table("usernote")
                 .Not.LazyLoad();
         }
     }

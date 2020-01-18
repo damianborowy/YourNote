@@ -10,9 +10,9 @@ namespace YourNote.Server.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        public FluentMigratorService migratorService;
+        
         private ILogger<AdminController> logger;
-
+        FluentMigratorService migratorService;
         public AdminController(ILogger<AdminController> logger, FluentMigratorService migratorService)
         {
             this.logger = logger;

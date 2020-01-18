@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace YourNote.Shared.Models
 {
-    public class Tag
+    public class Tag 
     {
         public virtual int Id { get; set; }
         public virtual string Name { get; set; }
@@ -16,10 +17,10 @@ namespace YourNote.Shared.Models
             Notes = new List<Note>();
         }
 
-        public virtual void AddNote(Note note)
-        {
-            note.Tag = this;
-            Notes.Add(note);
-        }
+       
+
+        
+
+        
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace YourNote.Shared.Models
 {
-    public class Note : IComparable<Note>
+    public class Note : IComparable<Note>, IEquatable<Note>
     {
         public virtual int Id { get; set; }
 
@@ -16,30 +16,34 @@ namespace YourNote.Shared.Models
         public virtual string Content { get; set; }
         public virtual byte Color { get; set; }
 
-        [JsonIgnore]
-        public virtual User Owner { get; set; }
 
-        public virtual IList<User> SharedTo { get; set; }
+        public virtual IList<UserNote> Users { get; set; }
 
         public virtual Tag Tag { get; set; }
         public virtual Lecture Lecture { get; set; }
 
         public Note()
         {
-            SharedTo = new List<User>();
+            Users = new List<UserNote>();
             Date = DateTime.Now;
         }
 
-        public virtual void AddListener(User user)
+        public virtual void AddTag(Tag tag)
         {
-            user.SharedNotes.Add(this);
-            SharedTo.Add(user);
+            Tag = tag;
+            //tag.Notes.Remove(this);
+            tag.Notes.Clear();
+
+            tag.Notes.Add(this);
         }
 
-        public virtual void DeleteListener(User user)
+        public virtual void AddLecture(Lecture lecture)
         {
-            user.SharedNotes.Remove(this);
-            SharedTo.Remove(user);
+            Lecture = lecture;
+            //lecture.Notes.Remove(this);
+            lecture.Notes.Clear();
+
+            lecture.Notes.Add(this);
         }
 
         public virtual int CompareTo(Note other)
@@ -48,6 +52,12 @@ namespace YourNote.Shared.Models
                 return 1;
             else
                 return Id.CompareTo(other.Id);
+        }
+
+        public bool Equals(Note other)
+        {
+            if (other == null) return false;
+            return (this.Id.Equals(other.Id));
         }
     }
 }

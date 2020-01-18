@@ -13,5 +13,7 @@ namespace YourNote.Server.Services.DatabaseService
         T Update(T obj);
 
         bool Delete(int id);
+
+        bool Delete(T obj);
     }
 }

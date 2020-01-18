@@ -25,29 +25,20 @@ namespace YourNote.Shared.Models
 
         public virtual string Name { get; set; }
 
-        [JsonIgnore]
-        public virtual IList<Note> Notes { get; set; }
 
         [JsonIgnore]
-        public virtual IList<Note> SharedNotes { get; set; }
+        public virtual IList<UserNote> Notes { get; set; }
 
         public User()
         {
-            Notes = new List<Note>();
-            SharedNotes = new List<Note>();
+ 
+            Notes = new List<UserNote>();
             Date = DateTime.Now;
         }
 
-        public virtual void AddNote(Note note)
-        {
-            note.Owner = this;
-            Notes.Add(note);
-        }
+        
 
-        public virtual void DeleteNote(Note note)
-        {
-            Notes.Remove(note);
-        }
+        
 
         public enum Permission
         {

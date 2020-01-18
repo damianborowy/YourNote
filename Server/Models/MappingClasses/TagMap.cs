@@ -14,6 +14,7 @@ namespace YourNote.Server.Models.MappingClasses
 
             HasMany(t => t.Notes)
                 .Cascade.All()
+                .Inverse()
                 .Not.LazyLoad();
         }
     }
