@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,29 +22,33 @@ namespace YourNote.Server.Controllers
 
         private readonly IUserAuthenticateService userService;
 
+        public IMongoDatabase Database { get; }
+
         public UsersController(ILogger<UsersController> logger,
             IDatabaseService<User> databaseUser,
-            IUserAuthenticateService userService)
+            IUserAuthenticateService userService,
+            IMongoClient client)
         {
             this.databaseUser = databaseUser;
             this.userService = userService;
+            Database = client.GetDatabase("YourNote");
         }
 
-        // GET: api/User
+        // GET: api/Users
         [HttpGet]
         public IEnumerable<User> GetAllUsers()
         {
             return databaseUser.Read();
         }
 
-        // GET: api/User/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
         public User GetUserById(string id)
         {
             return databaseUser.Read(id);
         }
 
-        // GET: api/User/5/Notes
+        // GET: api/Users/5/Notes
         [HttpGet("{userid}/Notes")]
         public IEnumerable<NotePost> GetNotesByUserId(string userId)
         {
@@ -50,6 +56,76 @@ namespace YourNote.Server.Controllers
             var userDoc = databaseUser.Read(userId);
             var Notes = userDoc.Notes;
             return ParseToNotePost(Notes);
+        }
+
+
+        // POST: api/Notes
+        [HttpPost("{userId}/Notes")]
+        public IActionResult PostNote(string userId, [FromBody] Note note)
+        {
+
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+
+            var filter = Builders<User>.Filter.Eq("id", userId);
+            //                & Builders<BsonDocument>.Filter.Eq("scores.type", "quiz");
+
+            var update = Builders<User>.Update.Push("notes", note);
+
+            var result = collection.FindOneAndUpdate(filter, update);
+            
+
+            if (result is null)
+                return Ok(note);
+            else
+                return BadRequest(new { error = "User doesn't exist" });
+
+
+        }
+
+        // POST: api/Notes
+        [HttpPut("{userId}/Notes")]
+        public IActionResult PutNote(string userId, [FromBody] Note note)
+        {
+
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+
+            var filter = Builders<User>.Filter.Eq("id", userId)
+                       & Builders<User>.Filter.Eq("notes.id", note.Id);
+
+            var update = Builders<User>.Update.Push("notes", note);
+
+            var result = collection.FindOneAndUpdate(filter, update);
+
+
+            if (result is null)
+                return Ok(note);
+            else
+                return BadRequest(new { error = "User doesn't exist" });
+
+
+        }
+
+        // POST: api/Notes
+        [HttpDelete("{userId}/Notes")]
+        public IActionResult DeleteNote(string userId, [FromBody] Note note)
+        {
+
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+
+            var filter = Builders<User>.Filter.Eq("id", userId)
+                       & Builders<User>.Filter.Eq("notes.id", note.Id);
+
+            var result = collection.DeleteOne(filter);
+
+
+            if (result.IsAcknowledged)
+                return Ok(note);
+            else
+                return BadRequest(new { error = "User doesn't exist" });
+
         }
 
         // PUT: api/User/5
@@ -141,6 +217,11 @@ namespace YourNote.Server.Controllers
 
             return notePostList;
         }
+
+
+
+
+
 
         #endregion Private methods
 
