@@ -11,14 +11,14 @@
 else if (IsPermitted.Value)
 {
     <h1>Panel administracyjny</h1>
-    <ul>
-        @foreach (var user in users)
-        {
-            <li>
-                @user.Username
-            </li>
-        }
-    </ul>
+    <BSButton @onclick="@UpMerge">Up</BSButton><br />
+    <input list="values" @bind="@DownValue" />
+    <datalist id="values">
+        <option value="20191217043600" />
+        <option value="20191217065000" />
+        <option value="20191217065600" />
+    </datalist>
+    <BSButton @onclick="@DownMerge">Down</BSButton>
 }
 else
 {
@@ -31,6 +31,8 @@ else
     bool? IsPermitted { get; set; } = null;
     IEnumerable<User> users = Array.Empty<User>();
 
+    string DownValue = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -40,5 +42,17 @@ else
         else return;
 
         users = await Http.GetJsonAsync<User[]>("/api/users");
+    }
+
+    async Task UpMerge()
+    {
+        var content = new StringContent("");
+        await Http.PutAsync("api/admin/up", content);
+    }
+
+    async Task DownMerge()
+    {
+        var content = new StringContent("");
+        await Http.PutAsync($"api/admin/down/{DownValue}", content);
     }
 }

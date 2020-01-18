@@ -63,6 +63,7 @@ namespace YourNote.Server.Controllers
             var note = SetTagAndLecture(obj);
 
 
+
             var user = databaseUser.Read(obj.OwnerId);
             var userNote = new UserNote
             {
@@ -71,6 +72,7 @@ namespace YourNote.Server.Controllers
                 IsOwner = true
 
             };
+
 
             note.Users.Add(userNote);
             user.Notes.Add(userNote);
@@ -92,8 +94,10 @@ namespace YourNote.Server.Controllers
         public IActionResult Put(int userId, [FromBody] NotePost obj)
         {
 
+
             var note = SetTagAndLecture(obj);
             
+  
 
             var result = databaseNote.Update(note);
 

@@ -97,10 +97,10 @@ namespace YourNote.Server.Controllers
         }
 
         [HttpPut("role/{userId}/{roleValue}")]
-        public IActionResult UpdateRole(int id, int role)
+        public IActionResult UpdateRole(int userId, int roleValue)
         {
-            var helper = databaseUser.Read(id);
-            helper.Role = (Permission)role;
+            var helper = databaseUser.Read(userId);
+            helper.Role = (Permission)roleValue;
 
             databaseUser.Update(helper);
 
