@@ -34,12 +34,7 @@ namespace YourNote.Server.Controllers
             Database = client.GetDatabase("YourNote");
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public IEnumerable<User> GetAllUsers()
-        {
-            return databaseUser.Read();
-        }
+        
 
         // GET: api/Users/5
         [HttpGet("{id}")]
@@ -47,29 +42,33 @@ namespace YourNote.Server.Controllers
         {
             return databaseUser.Read(id);
         }
-
-        
-
-
-       
+              
 
         // PUT: api/User/5
-        [HttpPut("{id}")]
-        public  IActionResult Put(string id, [FromBody] User user)
+        [HttpPut]
+        public  IActionResult Put([FromBody] User user)
         {
-            var result = databaseUser.Update(id, user);
 
-            if (result != null)
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+            collection.InsertOne(user);
+
+            if (user != null)
                 return Ok();
             else
-                return BadRequest(new { error = "User doesn't exist" });
+                return BadRequest(new { error = "User is null" });
         }
 
         // DELETE: api/User
         [HttpDelete("{userId}")]
         public bool DeleteUserById(string userId)
         {
-            return databaseUser.Delete(userId);
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+            var filter = Builders<User>.Filter.Eq("id", userId);
+            var result = collection.DeleteOne(filter);
+
+            return result.IsAcknowledged;
         }
 
         // POST: api/User
@@ -96,7 +95,12 @@ namespace YourNote.Server.Controllers
         [HttpPost("authenticate")]
         public  IActionResult Authenticate([FromBody] LoginModel user)
         {
-            var userFromDb = databaseUser.Read().FirstOrDefault(u => u.EmailAddress == user.Username);
+
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+            var filter = Builders<User>.Filter.Eq("email", user.EmailAddress);
+
+            var userFromDb = collection.Find(filter).First();
 
             if (userFromDb == null || !BCrypt.Net.BCrypt.EnhancedVerify(user.Password, userFromDb.Password))
                 return BadRequest(new LoginResult { Successful = false, Error = "Podano niepoprawny login lub has³o." });
@@ -111,12 +115,15 @@ namespace YourNote.Server.Controllers
         [HttpPut("role/{userId}/{roleValue}")]
         public IActionResult UpdateRole(string userId, int roleValue)
         {
-            var helper = databaseUser.Read(userId);
-            helper.Role = (User.Permission)roleValue;
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+            var filter = Builders<User>.Filter.Eq("id", userId);
+            var updateRole = Builders<User>.Update.Set("role", (User.Permission)roleValue);
 
-            databaseUser.Update(userId, helper);
 
-            if (helper != null)
+            var result = collection.UpdateOne(filter, updateRole);
+
+            if (result.IsAcknowledged)
                 return Ok();
             else
                 return BadRequest(new { error = "User doesn't exist" });
@@ -130,18 +137,7 @@ namespace YourNote.Server.Controllers
             return user;
         }
 
-        private static List<NotePost> ParseToNotePost(IList<Note> noteList)
-        {
-            var notePostList = new List<NotePost>();
-
-            foreach (var note in noteList)
-            {
-                notePostList.Add(new NotePost(note));
-            }
-            notePostList.Sort();
-
-            return notePostList;
-        }
+        
 
 
 

@@ -10,11 +10,7 @@ namespace YourNote.Shared.Models
     [BsonCollection("Tags")]
     public class Tag : IComparable<Tag>
     {
-        [BsonId]
-        [BsonElement("id")]
-        [BsonRepresentation(BsonType.String)]
-        public string Id { get; set; }
-
+        
         [BsonElement("name")]
         public string Name { get; set; }
 

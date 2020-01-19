@@ -11,10 +11,6 @@ namespace YourNote.Shared.Models
     public class Lecture : IComparable<Lecture>
     {
         
-            [BsonId]
-            [BsonElement("id")]
-            [BsonRepresentation(BsonType.String)]
-            public string Id { get; set; }
 
             [BsonElement("name")]
             public string Name { get; set; }

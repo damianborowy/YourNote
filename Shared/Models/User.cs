@@ -13,7 +13,7 @@ namespace YourNote.Shared.Models
 
         public User()
         {
-            Notes = new List<Note>();
+            OwnedNotes = new List<Note>();
             SharedNotesIds = new List<MongoDBRef>();
             AllTags = new List<Tag>();
             AllLectures = new List<Lecture>();
@@ -45,7 +45,7 @@ namespace YourNote.Shared.Models
 
         [BsonElement("ownedNotes")]
         [BsonRepresentation(BsonType.Array)]
-        public List<Note> Notes { get; set; }
+        public List<Note> OwnedNotes { get; set; }
 
         [BsonElement("sharedNotes")]
         [BsonRepresentation(BsonType.Array)]

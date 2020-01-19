@@ -9,16 +9,18 @@ namespace YourNote.Shared.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public byte Color { get; set; }
-        public int OwnerId { get; set; }
+        
 
-        public string Tag { get; set; }
-        public string Lecture { get; set; }
-        public List<int> SharedTo { get; set; }
+        public List<string> Tags { get; set; }
+        public List<string> Lectures { get; set; }
+        
 
         public NotePost()
         {
             Color = 1;
-            SharedTo = new List<int>();
+            Tags = new List<string>();
+            Lectures = new List<string>();
+            
         }
 
         public NotePost(Note note)
@@ -28,12 +30,16 @@ namespace YourNote.Shared.Models
             Content = note.Content;
             Color = note.Color;
 
-            if (note.Tag != null)
-                Tag = note.Tag.Id + "";
-            if (note.Lecture != null)
-                Lecture = note.Lecture.Id + "";
+            foreach (var item in note.Tags)
+            {
+                this.Tags.Add(item);
+            }
 
-            SharedTo = new List<int>();
+            foreach (var item in note.Lectures)
+            {
+                this.Lectures.Add(item);
+            }        
+           
         }
 
         public virtual int CompareTo(NotePost other)

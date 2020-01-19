@@ -10,59 +10,59 @@ namespace YourNote.Server.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        public FluentMigratorService migratorService;
+        
         private ILogger<AdminController> logger;
 
-        public AdminController(ILogger<AdminController> logger, FluentMigratorService migratorService)
+        public AdminController(ILogger<AdminController> logger)
         {
             this.logger = logger;
-            this.migratorService = migratorService;
+            
         }
 
-        [HttpGet]
-        public IList<Object> Get()
-        {
-            var list = migratorService.OpenSession().CreateSQLQuery("SELECT * FROM public.\"VersionInfo\"").List<Object>();
+        //[HttpGet]
+        //public IList<Object> Get()
+        //{
+            
 
-            return list;
-        }
+            
+        //}
 
-        [HttpPut("down/{version}")]
-        public IActionResult RestoreVersionDown(long? version)
-        {
-            var result = migratorService.MigrateDown(version);
+        //[HttpPut("down/{version}")]
+        //public IActionResult RestoreVersionDown(long? version)
+        //{
+            
 
-            if (result)
-                return Ok(result);
-            else
-                return BadRequest(new { error = "Version doesn't exist" });
-        }
+        //    if (result)
+        //        return Ok(result);
+        //    else
+        //        return BadRequest(new { error = "Version doesn't exist" });
+        //}
 
-        [HttpPut("down/")]
-        public IActionResult RestoreVersionDown()
-        {
-            var result = migratorService.MigrateDown(null);
+        //[HttpPut("down/")]
+        //public IActionResult RestoreVersionDown()
+        //{
+        //    var result = migratorService.MigrateDown(null);
 
-            if (result)
-                return Ok(result);
-            else
-                return BadRequest(new { error = "Version doesn't exist" });
-        }
+        //    if (result)
+        //        return Ok(result);
+        //    else
+        //        return BadRequest(new { error = "Version doesn't exist" });
+        //}
 
-        [HttpPut("up/{version}")]
-        public IActionResult RestoreVersionUp(long? version)
-        {
-            var result = migratorService.MigrateUp(version);
+        //[HttpPut("up/{version}")]
+        //public IActionResult RestoreVersionUp(long? version)
+        //{
+        //    var result = migratorService.MigrateUp(version);
 
-            return Ok(true);
-        }
+        //    return Ok(true);
+        //}
 
-        [HttpPut("up/")]
-        public IActionResult RestoreVersionUp()
-        {
-            var result = migratorService.MigrateUp(null);
+        //[HttpPut("up/")]
+        //public IActionResult RestoreVersionUp()
+        //{
+        //    var result = migratorService.MigrateUp(null);
 
-            return Ok(true);
-        }
+        //    return Ok(true);
+        //}
     }
 }
