@@ -5,11 +5,11 @@ using System.Text;
 namespace YourNote.Shared.Models.CustomAttribute
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class BsonCollectionAttribute : Attribute
+    public class MyBsonCollectionAttribute : Attribute
     {
         private readonly string _collectionName;
 
-        public BsonCollectionAttribute(string collectionName)
+        public MyBsonCollectionAttribute(string collectionName)
         {
             _collectionName = collectionName;
         }

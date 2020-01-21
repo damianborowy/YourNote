@@ -24,7 +24,7 @@ namespace YourNote.Server.Services.DatabaseService
 
         public IMongoDatabase Database { get; }
 
-        public MongoDbService(IMongoClient client)
+        public MongoDbService(MongoClient client)
         {
             Database = client.GetDatabase("YourNote");
         }
@@ -34,7 +34,7 @@ namespace YourNote.Server.Services.DatabaseService
         #region IMongoDbRepository Implementation
         public T InsertOne(T model)
         {
-            var collectionName = GetCollectionName();
+            string collectionName = GetCollectionName();
             var collection = Database.GetCollection<T>(collectionName);
 
             collection.InsertOne(model);
@@ -115,9 +115,9 @@ namespace YourNote.Server.Services.DatabaseService
         #region private Methods
         private static string GetCollectionName()
         {
-            return (typeof(T).GetCustomAttributes(typeof(BsonCollectionAttribute), true)
+            return (typeof(T).GetCustomAttributes(typeof(MyBsonCollectionAttribute), true)
                 .FirstOrDefault()
-                as BsonCollectionAttribute).CollectionName;
+                as MyBsonCollectionAttribute).CollectionName;
         }
         #endregion
     }

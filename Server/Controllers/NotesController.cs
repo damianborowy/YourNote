@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace YourNote.Server.Controllers
 
             var User = GetUser(userId);
             return ParseToNotePost(User.OwnedNotes);
-
+            
 
         }
 
@@ -53,11 +54,12 @@ namespace YourNote.Server.Controllers
             //var note = SetTagAndLecture(obj);
 
             var note = ParseToNewNote(obj);
-
+            obj.Id = ObjectId.GenerateNewId().ToString();
+            
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
-            var filter = Builders<User>.Filter.Eq("id", obj.OwnerID);
+            var filter = Builders<User>.Filter.Eq("id", obj.OwnerId);
 
             var addNote = Builders<User>.Update.AddToSet("notes", note);
             var addTags = Builders<User>.Update.AddToSetEach("allTags", obj.Tags);
@@ -86,7 +88,7 @@ namespace YourNote.Server.Controllers
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
-            var filter = Builders<User>.Filter.Eq("id", obj.OwnerID)
+            var filter = Builders<User>.Filter.Eq("id", obj.OwnerId)
                        & Builders<User>.Filter.Eq("notes.id", obj.Id);
 
             var update = Builders<User>.Update.AddToSet("notes", note);

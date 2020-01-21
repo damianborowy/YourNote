@@ -27,7 +27,7 @@ namespace YourNote.Server.Controllers
         public UsersController(ILogger<UsersController> logger,
             IDatabaseService<User> databaseUser,
             IUserAuthenticateService userService,
-            IMongoClient client)
+            MongoClient client)
         {
             this.databaseUser = databaseUser;
             this.userService = userService;
@@ -79,8 +79,10 @@ namespace YourNote.Server.Controllers
             User user = new User
             {
                 EmailAddress = registerModel.EmailAddress,
-                Password = registerModel.Password
-            };
+                Password = registerModel.Password,
+                Id = ObjectId.GenerateNewId().ToString()
+
+        };
 
             user = HashPassword(user);
             var result = databaseUser.Create(user);

@@ -7,7 +7,7 @@ using YourNote.Shared.Models.CustomAttribute;
 
 namespace YourNote.Shared.Models
 {
-    [BsonCollection("Users")]
+    [MyBsonCollection("Users")]
     public class User
     {
 
@@ -44,21 +44,21 @@ namespace YourNote.Shared.Models
         public string Name { get; set; }
 
         [BsonElement("ownedNotes")]
-        [BsonRepresentation(BsonType.Array)]
-        public List<Note> OwnedNotes { get; set; }
+        //[BsonRepresentation(BsonType.Array)]
+        public IList<Note> OwnedNotes { get; set; }
 
         [BsonElement("sharedNotes")]
-        [BsonRepresentation(BsonType.Array)]
-        public List<MongoDBRef> SharedNotesIds { get; set; }
+        //[BsonRepresentation(BsonType.Array)]
+        public IList<MongoDBRef> SharedNotesIds { get; set; }
 
 
         [BsonElement("allTags")]
-        [BsonRepresentation(BsonType.Array)]
-        public List<Tag> AllTags { get; set; }
+        //[BsonRepresentation(BsonType.Array)]
+        public IList<Tag> AllTags { get; set; }
 
         [BsonElement("allLectures")]
-        [BsonRepresentation(BsonType.Array)]
-        public List<Lecture> AllLectures { get; set; }
+        //[BsonRepresentation(BsonType.Array)]
+        public IList<Lecture> AllLectures { get; set; }
 
 
         

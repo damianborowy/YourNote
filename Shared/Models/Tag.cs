@@ -7,7 +7,7 @@ using YourNote.Shared.Models.CustomAttribute;
 
 namespace YourNote.Shared.Models
 {
-    [BsonCollection("Tags")]
+    [MyBsonCollection("Tags")]
     public class Tag : IComparable<Tag>
     {
         

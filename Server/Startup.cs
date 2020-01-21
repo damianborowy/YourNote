@@ -81,7 +81,7 @@ namespace YourNote.Server
             }
 
             app.UseStaticFiles();
-            app.UseClientSideBlazorFiles<Startup>();
+            app.UseClientSideBlazorFiles<Client.Startup>();
 
             app.UseRouting();
 
@@ -97,7 +97,7 @@ namespace YourNote.Server
             {
                 endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapFallbackToClientSideBlazor<Startup>("index.html");
+                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
         }
     }
