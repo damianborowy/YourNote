@@ -12,8 +12,8 @@
     </BSModalHeader>
     <BSModalBody>
         <div class="modal__inputs">
-            <TagField @bind-Tag="Tag" Tags="@Tags" />
-            <LectureField @bind-Lecture="Lecture" Lectures="@Lectures" />
+            <TagField @bind-Tags="Tags" DownloadedTags="@DownloadedTags" />
+            <LectureField @bind-Lectures="Lectures" DownloadedLectures="@DownloadedLectures" />
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@note.Content" placeholder="Treść notatki..." />
     </BSModalBody>
@@ -34,15 +34,15 @@
     public string UserId { get; set; }
 
     [Parameter]
-    public List<string> Tags { get; set; }
+    public List<string> DownloadedTags { get; set; }
 
     [Parameter]
-    public List<string> Lectures { get; set; }
+    public List<string> DownloadedLectures { get; set; }
 
     SharedModels.NotePost note = new SharedModels.NotePost();
 
-    string Tag;
-    string Lecture;
+    List<string> Tags;
+    List<string> Lectures;
 
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
@@ -50,22 +50,22 @@
     async Task SaveNote()
     {
         note.OwnerId = UserId;
-        note.Tags = Tag.Split(' ').ToList();
-        note.Lectures = Lecture.Split(' ').ToList();
+        note.Tags = Tags;
+        note.Lectures = Lectures;
 
         IsNoteBeingSaved = true;
         var result = await Http.PostJsonAsync<SharedModels.NotePost>($"/api/notes/", note);
         IsNoteBeingSaved = false;
 
-        result.Tags = Tag.Split(' ').ToList();
-        result.Lectures = Lecture.Split(' ').ToList();
+        result.Tags = Tags;
+        result.Lectures = Lectures;
 
         Notes.Add(result);
         await NotesChanged.InvokeAsync(Notes);
 
         note = new SharedModels.NotePost();
-        Tag = null;
-        Lecture = null;
+        Tags = null;
+        Lectures = null;
 
         ModalRef.Hide();
     }

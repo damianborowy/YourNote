@@ -15,12 +15,12 @@
     {
         foreach (var note in notes)
         {
-            <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" Tags="@tags" Lectures="@lectures" />
+            <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" DownloadedTags="@tags" DownloadedLectures="@lectures" />
         }
     }
 </div>
 
-<NoteAdder UserId="@UserId" @bind-Notes="notes" Tags="@tags" Lectures="@lectures" />
+<NoteAdder UserId="@UserId" @bind-Notes="notes" DownloadedTags="@tags" DownloadedLectures="@lectures" />
 
 @code {
     [Parameter]
