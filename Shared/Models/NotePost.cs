@@ -9,7 +9,7 @@ namespace YourNote.Shared.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public byte Color { get; set; }
-        public string OwnerID { get; set; }
+        public string OwnerId { get; set; }
 
         public List<string> Tags { get; set; }
         public List<string> Lectures { get; set; }
@@ -20,7 +20,6 @@ namespace YourNote.Shared.Models
             Color = 1;
             Tags = new List<string>();
             Lectures = new List<string>();
-            
         }
 
         public NotePost(Note note)
