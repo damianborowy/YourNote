@@ -117,7 +117,7 @@ namespace YourNote.Server.Controllers
 
 
             if (result.IsAcknowledged)
-                return Ok(note);
+                return Ok(result.IsAcknowledged);
             else
                 return BadRequest(new { error = "Note doesn't exist" });
 
