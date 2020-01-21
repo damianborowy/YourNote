@@ -47,8 +47,8 @@ namespace YourNote.Server.Controllers
         }
 
         // POST: api/Notes
-        [HttpPost("{userId}")]
-        public IActionResult Post(string userId, [FromBody] NotePost obj)
+        [HttpPost]
+        public IActionResult Post([FromBody] NotePost obj)
         {
             //var note = SetTagAndLecture(obj);
 
@@ -57,7 +57,7 @@ namespace YourNote.Server.Controllers
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
-            var filter = Builders<User>.Filter.Eq("id", userId);
+            var filter = Builders<User>.Filter.Eq("id", obj.OwnerID);
 
             var addNote = Builders<User>.Update.AddToSet("notes", note);
             var addTags = Builders<User>.Update.AddToSetEach("allTags", obj.Tags);
@@ -78,15 +78,15 @@ namespace YourNote.Server.Controllers
         }
 
         // PUT: api/Notes
-        [HttpPut("{userId}")]
-        public IActionResult Put(int userId, [FromBody] NotePost obj)
+        [HttpPut]
+        public IActionResult Put([FromBody] NotePost obj)
         {
 
             var note = ParseToNewNote(obj);
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
-            var filter = Builders<User>.Filter.Eq("id", userId)
+            var filter = Builders<User>.Filter.Eq("id", obj.OwnerID)
                        & Builders<User>.Filter.Eq("notes.id", obj.Id);
 
             var update = Builders<User>.Update.AddToSet("notes", note);
@@ -102,14 +102,14 @@ namespace YourNote.Server.Controllers
         }
 
         // DELETE: api/Notes/5
-        [HttpDelete("{userId}")]
-        public IActionResult DeleteNote(string userId, [FromBody] NotePost note)
+        [HttpDelete("{noteId}")]
+        public IActionResult DeleteNote(string noteId)
         {
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
-            var filter = Builders<User>.Filter.Eq("id", userId);
-            var pull   = Builders<User>.Update.Pull("notes.id", note.Id);
+            var filter = Builders<User>.Filter.Eq("notes.id", noteId);
+            var pull   = Builders<User>.Update.Pull("notes.id", noteId);
                 
             var result = collection.UpdateOne(filter, pull);
             
