@@ -26,7 +26,7 @@ namespace YourNote.Server.Controllers
            IMongoClient client)
         {
             this.databaseNote = dataBaseNote;
-            this.databaseUser = databaseUser;
+            this.databaseUser = databaseUser; 
             this.databaseLecture = databaseLecture;
             Database = client.GetDatabase("YourNote");
 
