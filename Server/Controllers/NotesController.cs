@@ -103,7 +103,7 @@ namespace YourNote.Server.Controllers
 
         // DELETE: api/Notes/5
         [HttpDelete("{userId}")]
-        public IActionResult DeleteNote(string userId, [FromBody] Note note)
+        public IActionResult DeleteNote(string userId, [FromBody] NotePost note)
         {
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
