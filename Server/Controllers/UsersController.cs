@@ -108,10 +108,10 @@ namespace YourNote.Server.Controllers
                 return BadRequest(new LoginResult { Successful = false, Error = "Podano niepoprawny login lub has³o." });
 
             
-            //Token
-            
+            var token = userService.Authenticate(userFromDb);
 
-            return Ok(new LoginResult { Successful = true});
+
+            return Ok(new LoginResult { Successful = true, Token = token});
         }
         
         [HttpPut("role/{userId}/{roleValue}")]
