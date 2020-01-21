@@ -45,8 +45,9 @@ namespace YourNote.Server.Services.DatabaseService
         {
             var collectionName = GetCollectionName();
             var collection = Database.GetCollection<T>(collectionName);
+            var filter = Builders<T>.Filter.Empty;
 
-            return collection.Find(new BsonDocument()).ToList();
+            return collection.Find(filter).ToList();
 
         }
 
@@ -54,8 +55,8 @@ namespace YourNote.Server.Services.DatabaseService
         {
             var collectionName = GetCollectionName();
             var collection = Database.GetCollection<T>(collectionName);
-            var stringFilter = "{ _id: ObjectId('" + id + "') }";
-            return collection.Find(stringFilter).First();
+            var filter = Builders<T>.Filter.Eq("id", id);
+            return collection.Find(filter).First();
 
         }
 

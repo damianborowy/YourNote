@@ -82,7 +82,7 @@ namespace YourNote.Server.Controllers
                 Password = registerModel.Password,
                 Id = ObjectId.GenerateNewId().ToString()
 
-        };
+            };
 
             user = HashPassword(user);
             var result = databaseUser.Create(user);
