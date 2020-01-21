@@ -5,13 +5,13 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.Note> Notes { get; set; }
+    public List<SharedModels.NotePost> Notes { get; set; }
 
     [Parameter]
-    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
+    public EventCallback<List<SharedModels.NotePost>> NotesChanged { get; set; }
 
     [Parameter]
-    public int NoteId { get; set; }
+    public string NoteId { get; set; }
 
     [Parameter]
     public BSModal ModalRef { get; set; }

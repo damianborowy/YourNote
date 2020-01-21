@@ -4,9 +4,9 @@
 {
     <div class="d-flex flex-row align-items-center">
         <img src="/img/file-document-box.svg" class="svg-icon" />
-        <input list="lectures" value="@Lecture" @onchange="((e) => OnChange(e))" placeholder="Nazwa kursu..." />
+        <input list="lectures" value='@string.Join(" ", Lectures)' @onchange="((e) => OnChange(e))" placeholder="Nazwa kursu..." />
         <datalist id="lectures">
-            @foreach (var lecture in Lectures)
+            @foreach (var lecture in DownloadedLectures)
             {
                 <option value="@lecture" />
             }
@@ -20,13 +20,13 @@ else
 
 @code {
     [Parameter]
-    public string Lecture { get; set; }
-
-    [Parameter]
-    public EventCallback<string> LectureChanged { get; set; }
-
-    [Parameter]
     public List<string> Lectures { get; set; }
+
+    [Parameter]
+    public EventCallback<List<string>> LecturesChanged { get; set; }
+
+    [Parameter]
+    public List<string> DownloadedLectures { get; set; }
 
     bool IsToggled { get; set; } = false;
 
@@ -37,12 +37,12 @@ else
 
     async Task OnChange(ChangeEventArgs e)
     {
-        Lecture = e.Value.ToString();
-        await LectureChanged.InvokeAsync(Lecture);
+        Lectures = e.Value.ToString().Split(' ').ToList();
+        await LecturesChanged.InvokeAsync(Lectures);
     }
 
     protected override void OnInitialized()
     {
-        IsToggled = Lecture?.Length > 0;
+        IsToggled = Lectures?.Count > 0;
     }
 }

@@ -25,10 +25,10 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.Note> Notes { get; set; }
+    public List<SharedModels.NotePost> Notes { get; set; }
 
     [Parameter]
-    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
+    public EventCallback<List<SharedModels.NotePost>> NotesChanged { get; set; }
 
     [Parameter]
     public string UserId { get; set; }
@@ -39,7 +39,7 @@
     [Parameter]
     public List<string> Lectures { get; set; }
 
-    SharedModels.Note note = new SharedModels.Note();
+    SharedModels.NotePost note = new SharedModels.NotePost();
 
     string Tag;
     string Lecture;
@@ -49,23 +49,21 @@
 
     async Task SaveNote()
     {
-        note.OwnerId = Int32.Parse(UserId);
-        note.Tag = Tag;
-        note.Lecture = Lecture;
-
-        Console.WriteLine(JsonSerializer.Serialize<SharedModels.Note>(note));
+        note.OwnerId = UserId;
+        note.Tags = Tag.Split(' ').ToList();
+        note.Lectures = Lecture.Split(' ').ToList();
 
         IsNoteBeingSaved = true;
-        var result = await Http.PostJsonAsync<SharedModels.Note>($"/api/notes/", note);
+        var result = await Http.PostJsonAsync<SharedModels.NotePost>($"/api/notes/", note);
         IsNoteBeingSaved = false;
 
-        result.Tag = Tag;
-        result.Lecture = Lecture;
+        result.Tags = Tag.Split(' ').ToList();
+        result.Lectures = Lecture.Split(' ').ToList();
 
         Notes.Add(result);
         await NotesChanged.InvokeAsync(Notes);
 
-        note = new SharedModels.Note();
+        note = new SharedModels.NotePost();
         Tag = null;
         Lecture = null;
 

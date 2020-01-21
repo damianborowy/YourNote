@@ -18,12 +18,19 @@
 <BSModal @ref="ModalRef" IsCentered="true" IgnoreClickOnBackdrop="true" IgnoreEscape="true">
     <BSModalHeader OnClick="@(() => ModalRef.Hide())" Class="modal__header">
         <input class="form-control text-light bg-dark modal__title flex-grow-1" @bind="@NoteObj.Title" placeholder="Tytuł" />
-        <NoteDeleter NoteId="@NoteObj.Id.Value" ModalRef="@ModalRef" Notes="@Notes" NotesChanged="@NotesChanged" />
+        <NoteDeleter NoteId="@NoteObj.Id" ModalRef="@ModalRef" Notes="@Notes" NotesChanged="@NotesChanged" />
     </BSModalHeader>
     <BSModalBody>
         <div class="modal__inputs">
-            <TagField @bind-Tag="@NoteObj.Tag" Tags="@Tags" />
-            <LectureField @bind-Lecture="@NoteObj.Lecture" Lectures="@Lectures" />
+            <TagField @bind-Tags="@NoteObj.Tags" DownloadedTags="@Tags" />
+            <LectureField @bind-Lectures="@NoteObj.Lectures" DownloadedLectures="@Lectures" /><br />
+            @*<label for="new-user">
+                Udostępnij:
+            </label>
+            <input id="new-user" type="number" @bind="NewUserId" />
+            <button @onclick="@AddNewUser">
+                Dodaj
+            </button><br />*@
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" placeholder="Treść notatki..." />
     </BSModalBody>
@@ -35,13 +42,13 @@
 
 @code {
     [Parameter]
-    public List<SharedModels.Note> Notes { get; set; }
+    public List<SharedModels.NotePost> Notes { get; set; }
 
     [Parameter]
-    public EventCallback<List<SharedModels.Note>> NotesChanged { get; set; }
+    public EventCallback<List<SharedModels.NotePost>> NotesChanged { get; set; }
 
     [Parameter]
-    public SharedModels.Note NoteObj { get; set; }
+    public SharedModels.NotePost NoteObj { get; set; }
 
     [Parameter]
     public string UserId { get; set; }
@@ -54,16 +61,26 @@
 
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
+    int? NewUserId = null;
 
     private BlazorStrap.Color GetColorAsEnum()
     {
         return (BlazorStrap.Color)NoteObj.Color;
     }
 
+    /* void AddNewUser()
+    {
+        if (NewUserId.HasValue)
+            NoteObj.SharedTo.Add(NewUserId.Value);
+
+        NewUserId = null;
+    }
+    */
+
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
-        var result = await Http.PutJsonAsync<SharedModels.Note>($"/api/notes/{UserId}", NoteObj);
+        var result = await Http.PutJsonAsync<SharedModels.NotePost>($"/api/notes/{UserId}", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();
