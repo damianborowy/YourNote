@@ -9,7 +9,7 @@ namespace YourNote.Shared.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public byte Color { get; set; }
-        
+        public string OwnerID { get; set; }
 
         public List<string> Tags { get; set; }
         public List<string> Lectures { get; set; }
