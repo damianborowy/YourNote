@@ -42,20 +42,20 @@ namespace YourNote.Shared.Models
 
         [BsonElement("ownedNotes")]
         //[BsonRepresentation(BsonType.Array)]
-        public IList<Note> OwnedNotes { get; set; }
+        public List<Note> OwnedNotes { get; set; }
 
         [BsonElement("sharedNotes")]
         //[BsonRepresentation(BsonType.Array)]
-        public IList<MongoDBRef> SharedNotesIds { get; set; }
+        public List<MongoDBRef> SharedNotesIds { get; set; }
 
 
         [BsonElement("allTags")]
         //[BsonRepresentation(BsonType.Array)]
-        public IList<Tag> AllTags { get; set; }
+        public List<Tag> AllTags { get; set; }
 
         [BsonElement("allLectures")]
         //[BsonRepresentation(BsonType.Array)]
-        public IList<Lecture> AllLectures { get; set; }
+        public List<Lecture> AllLectures { get; set; }
 
 
         
