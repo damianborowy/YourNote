@@ -242,6 +242,7 @@ namespace YourNote.Server.Controllers
         {
             Note note = new Note()
             {
+                Id = notePost.Id,
                 Title = notePost.Title,
                 Content = notePost.Content,
                 Color = notePost.Color,
