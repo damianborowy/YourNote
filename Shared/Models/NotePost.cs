@@ -29,8 +29,9 @@ namespace YourNote.Shared.Models
             Title = note.Title;
             Content = note.Content;
             Color = note.Color;
+            Tags = new List<string>();
+            Lectures = new List<string>();
 
-            
 
             foreach (var item in note.Tags)
             {
