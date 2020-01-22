@@ -10,6 +10,7 @@ namespace YourNote.Shared.Models
         public string Content { get; set; }
         public byte Color { get; set; }
         public string OwnerId { get; set; }
+        public List<string> SharesTo { get; set; }
 
         public List<string> Tags { get; set; }
         public List<string> Lectures { get; set; }
@@ -39,7 +40,15 @@ namespace YourNote.Shared.Models
             foreach (var item in note.Lectures)
             {
                 this.Lectures.Add(item.Name);
-            }        
+            }
+
+            OwnerId = note.OwnerId;
+
+            if(SharesTo != null)
+            {
+                SharesTo = note.SharesTo;
+            }
+
            
         }
 
