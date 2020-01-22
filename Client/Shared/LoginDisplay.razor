@@ -20,7 +20,7 @@
         }
         <BSNavItem>
             <BSNavLink Href="/notes">
-                @Username
+                @Email
             </BSNavLink>
         </BSNavItem>
         <BSNavItem>
@@ -44,14 +44,14 @@
 </AuthorizeView>
 
 @code {
-    private string Username = string.Empty;
+    private string Email = string.Empty;
     private string Role = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await ApiAuthenticationStateProvider.GetAuthenticationStateAsync();
 
-        Username = ClaimsParser.Select(authState, "unique_name");
+        Email = ClaimsParser.Select(authState, "email");
         Role = ClaimsParser.Select(authState, "role");
     }
 }

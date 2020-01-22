@@ -27,8 +27,8 @@
     public string UserId { get; set; }
 
     List<SharedModels.NotePost> notes;
-    List<string> tags = new List<string>();
-    List<string> lectures = new List<string>();
+    List<string> tags;
+    List<string> lectures;
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,8 +39,14 @@
         var tagsArr = await Http.GetJsonAsync<List<Tag>>("api/tags");
         var lecturesArr = await Http.GetJsonAsync<List<Lecture>>("api/lectures");
 
-        tags = tagsArr.Select(tag => tag.Name).ToList();
-        lectures = lecturesArr.Select(lecture => lecture.Name).ToList();
+        foreach (var note in notes)
+        {
+            if (note.Tags == null) note.Tags = new List<string>();
+            if (note.Lectures == null) note.Lectures = new List<string>();
+        }
+
+        tags = tagsArr == null ? new List<string>() : tagsArr.Select(tag => tag.Name).ToList();
+        lectures = lecturesArr == null ? new List<string>() : lecturesArr.Select(lecture => lecture.Name).ToList();
         /*
         foreach (var tag in tagsArr)
         {

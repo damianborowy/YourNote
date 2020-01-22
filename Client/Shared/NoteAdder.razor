@@ -64,8 +64,8 @@
         await NotesChanged.InvokeAsync(Notes);
 
         note = new SharedModels.NotePost();
-        Tags = null;
-        Lectures = null;
+        Tags = new List<string>();
+        Lectures = new List<string>();
 
         ModalRef.Hide();
     }
