@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
@@ -36,7 +37,7 @@ namespace YourNote.Server.Controllers
         }
 
 
-      
+
 
         // GET: api/Shares/5
         [HttpGet("{userId}")]
@@ -57,95 +58,98 @@ namespace YourNote.Server.Controllers
         {
         }
 
-        // PUT: api/Shares/5
-        
-        //[HttpPut]
-        //public IActionResult Put([FromBody] NotePost obj)
-        //{
+        // PUT: api/Shares
+        [HttpPut]
+        public IActionResult Put([FromBody] NotePost obj, [FromBody] string EmailAddress)
+        {
 
-        //    var note = ParseToNewNote(obj);
+            var note = ParseToNewNote(obj);
+            var isNew = true;
 
-        //    var collection = GetSharedNoteCollection();
+            var collectionSharedNote = GetSharedNoteCollection();  
+            var collectionUsers = Database.GetCollection<User>("Users");
 
-        //    var filter = Builders<Note>.Filter.Eq("_id", obj.OwnerId);
+            var userFilter = Builders<User>.Filter.Eq("email", EmailAddress);
+            var userQuerry = collectionUsers.Find(userFilter);
 
+            if (!userQuerry.Any())
+                return BadRequest(new { error = "User doesn't exist" });
 
-
-        //    var userQuerry = collection.Find<Note>(filter);
-        //    if (!userQuerry.Any())
-        //        return BadRequest(new { error = "User doesn't exist" });
-
-        //    var user = userQuerry.First();
-        //    var newTags = note.Tags.Except(user.AllTags);
-        //    var newLectures = note.Lectures.Except(user.AllLectures);
-
-        //    filter = Builders<Note>.Filter.Eq("_id", obj.OwnerId)
-        //               & Builders<Note>.Filter.Eq("ownedNotes._id", obj.Id);
-
-        //    var updateNote = Builders<User>.Update.Set(model => model.OwnedNotes[-1], note);
-
-        //    UpdateDefinition<User> update; 
-
-        //    if (obj.Tags != null & obj.Lectures != null)
-        //    {
-
-        //        var addTags = Builders<User>.Update.AddToSetEach("allTags", newLectures);
-
-        //        var addLectures = Builders<User>.Update.AddToSetEach("allLectures", newTags);
+            var user = userQuerry.First();
 
 
+            var noteFilter = Builders<Note>.Filter.Eq("_id", obj.Id);
+            var noteQuerry = collectionSharedNote.Find(noteFilter);
 
-        //        update = Builders<User>.Update.Combine(updateNote, addTags, addLectures);
+            if (noteQuerry.Any())
+            {
+                isNew = false;
+                note = noteQuerry.First();
+            }
 
-        //    }
-        //    else
-        //    {
-
-        //        update = Builders<User>.Update.Combine(updateNote);
-
-        //        if (obj.Tags != null)
-        //        {
-        //            var addTags = Builders<User>.Update.AddToSetEach("allTags", newTags);
-        //            update = Builders<User>.Update.Combine(updateNote, addTags);
-
-        //        }
+            note.SharesTo.Add(user.Id);
 
 
-        //        if (obj.Tags != null)
-        //        {
-        //            var addLectures = Builders<User>.Update.AddToSetEach("allLectures", newLectures);
+            //var noteToShareIndex = user.OwnedNotes.IndexOf(new Note { Id = obj.Id });
+            //var noteToShare = user.OwnedNotes[noteToShareIndex];
 
-        //            update = Builders<User>.Update.Combine(updateNote, addLectures);
-        //        }
+            if (isNew)
+            {
+                DeleteNote(note.Id);
+                collectionSharedNote.InsertOne(note);
+
+            }
+            else
+            {
+                var filter = Builders<Note>.Filter.Eq("_id", note.Id);
+                collectionSharedNote.DeleteOne(filter);
+                collectionSharedNote.InsertOne(note);
+                
+
+            }
 
 
-        //    }
+
+            
+
+
+            
+            return Ok(new {obj, EmailAddress });
+            
 
 
 
 
 
-
-
-
-        //    var result = collection.UpdateOne(filter, update);
-
-
-        //    if (result.MatchedCount > 0)
-        //        return Ok(note);
-        //    else
-        //        return BadRequest(new { error = "Couldn't update the note" });
-
-
-
-
-
-        //}
+        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+
+        public bool DeleteNote(string noteId)
+        {
+            var collectionName = "Users";
+            var collection = Database.GetCollection<User>(collectionName);
+            var filterOne = Builders<User>.Filter.Eq("ownedNotes._id", noteId);
+
+            var user = collection.Find<User>(filterOne).First();
+
+            var filter = new BsonDocument("_id", user.Id);
+
+
+            var pull = Builders<User>.Update.PullFilter("ownedNotes",
+                Builders<Note>.Filter.Eq("_id", noteId));
+
+            var result = collection.UpdateOne(filter, pull);
+
+            
+                return result.IsAcknowledged;
+            
+
         }
 
 

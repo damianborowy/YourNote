@@ -85,15 +85,27 @@ namespace YourNote.Server.Controllers
                 SharedNotesIds = new List<MongoDBRef>(),
                 AllTags = new List<Shared.Models.Tag>(),
                 AllLectures = new List<Lecture>()
-        };
+            };
 
             user = HashPassword(user);
-            var result = databaseUser.Create(user);
 
-            if (result != null)
+            var Errors = new List<string>();
+
+            var collection = Database.GetCollection<User>("Users");
+            var filter = Builders<User>.Filter.Eq("email", user.EmailAddress);
+
+            if(collection.Find(filter).Any())
+            {
+                Errors.Add("User with that email address already exists");
+            }
+            
+            if(Errors.Count == 0)
+                databaseUser.Create(user);
+
+            if (Errors.Count == 0)
                 return Ok(new RegisterResult { Successful = true });
             else
-                return BadRequest(new RegisterResult { Successful = false });
+                return BadRequest(new RegisterResult { Successful = false, Errors = Errors});
         }
 
         [AllowAnonymous]
