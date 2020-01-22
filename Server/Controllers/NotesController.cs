@@ -201,7 +201,7 @@ namespace YourNote.Server.Controllers
 
 
             if(result.MatchedCount > 0 )
-                return Ok(note);
+                return Ok(obj);
             else
                 return BadRequest( new {error = "Couldn't update the note"});
 
