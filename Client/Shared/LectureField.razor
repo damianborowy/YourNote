@@ -37,7 +37,7 @@ else
 
     async Task OnChange(ChangeEventArgs e)
     {
-        Lectures = e.Value.ToString().Split(' ').ToList();
+        Lectures = e.Value.ToString().Split(' ').Where(tag => !String.IsNullOrWhiteSpace(tag)).ToList();
         await LecturesChanged.InvokeAsync(Lectures);
     }
 
