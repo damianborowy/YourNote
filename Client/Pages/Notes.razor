@@ -41,6 +41,7 @@
         {
             if (note.Tags == null) note.Tags = new List<string>();
             if (note.Lectures == null) note.Lectures = new List<string>();
+            if (note.SharesTo == null) note.SharesTo = new List<string>();
             
             Console.WriteLine(note.Tags.Count + " " + note.Lectures.Count);
         }
