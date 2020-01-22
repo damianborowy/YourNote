@@ -29,14 +29,16 @@ namespace YourNote.Shared.Models
             Content = note.Content;
             Color = note.Color;
 
+            
+
             foreach (var item in note.Tags)
             {
-                this.Tags.Add(item);
+                this.Tags.Add(item.Name);
             }
 
             foreach (var item in note.Lectures)
             {
-                this.Lectures.Add(item);
+                this.Lectures.Add(item.Name);
             }        
            
         }

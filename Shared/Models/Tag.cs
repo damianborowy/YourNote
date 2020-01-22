@@ -11,6 +11,11 @@ namespace YourNote.Shared.Models
     public class Tag : IComparable<Tag>
     {
         
+        public Tag(string Name)
+        {
+            this.Name = Name;
+        }
+
         [BsonElement("name")]
         public string Name { get; set; }
 

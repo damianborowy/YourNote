@@ -10,9 +10,12 @@ namespace YourNote.Shared.Models
     [MyBsonCollection("Lectures")]
     public class Lecture : IComparable<Lecture>
     {
-        
+        public Lecture(string Name)
+        {
+            this.Name = Name;
+        }
 
-            [BsonElement("name")]
+        [BsonElement("name")]
             public string Name { get; set; }
 
 

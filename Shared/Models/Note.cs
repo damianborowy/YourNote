@@ -16,8 +16,8 @@ namespace YourNote.Shared.Models
         public Note()
         {
             Date = DateTime.Now;
-            Tags = new List<string>();
-            Lectures = new List<string>();
+            Tags = new List<Tag>();
+            Lectures = new List<Lecture>();
         }
 
         [BsonId]
@@ -33,17 +33,17 @@ namespace YourNote.Shared.Models
         [BsonRepresentation(BsonType.String)]
         public string Content { get; set; }
 
-        [BsonElement("content")]
+        [BsonElement("color")]
         [BsonRepresentation(BsonType.String)]
         public byte Color { get; set; }
 
         [BsonElement("tag")]
         //[BsonRepresentation(BsonType.Array)]
-        public IList<string> Tags { get; set; }
+        public IList<Tag> Tags { get; set; }
 
         [BsonElement("lecture")]
         //[BsonRepresentation(BsonType.Array)]
-        public IList<string> Lectures { get; set; }
+        public IList<Lecture> Lectures { get; set; }
 
         [BsonElement("date")]
         [BsonRepresentation(BsonType.DateTime)]
@@ -52,14 +52,14 @@ namespace YourNote.Shared.Models
         public void AddTag(string tag)
         {
 
-            Tags.Add(tag);
+            Tags.Add(new Tag(tag));
 
         }
 
         public void AddLecture(string tag)
         {
 
-            Lectures.Add(tag);
+            Lectures.Add(new Lecture(tag));
 
         }
 

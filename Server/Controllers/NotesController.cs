@@ -24,7 +24,7 @@ namespace YourNote.Server.Controllers
         public NotesController(ILogger<NotesController> logger,
            IDatabaseService<Note> dataBaseNote, IDatabaseService<User> databaseUser,
             IDatabaseService<Lecture> databaseLecture,
-           IMongoClient client)
+           MongoClient client)
         {
             this.databaseNote = dataBaseNote;
             this.databaseUser = databaseUser; 
@@ -51,31 +51,73 @@ namespace YourNote.Server.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] NotePost obj)
         {
-            //var note = SetTagAndLecture(obj);
 
-            var note = ParseToNewNote(obj);
-            obj.Id = ObjectId.GenerateNewId().ToString();
-            
+
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
+            var filter = Builders<User>.Filter.Eq("_id", obj.OwnerId);
 
-            var filter = Builders<User>.Filter.Eq("id", obj.OwnerId);
-
-            var addNote = Builders<User>.Update.AddToSet("notes", note);
-            var addTags = Builders<User>.Update.AddToSetEach("allTags", obj.Tags);
-            var addLectures = Builders<User>.Update.AddToSetEach("allLectures", obj.Lectures);
-
-
-            var update = Builders<User>.Update.Combine(addNote, addTags, addLectures);
-
-            var result = collection.FindOneAndUpdate(filter, update);
-
-
-
-            if (result is null)
-                return Ok(note);
-            else
+            //var note = SetTagAndLecture(obj);
+            var result = collection.Find<User>(filter).Any();
+            if(!result)
                 return BadRequest(new { error = "User doesn't exist" });
+
+            var note = ParseToNewNote(obj);
+            note.Id = ObjectId.GenerateNewId().ToString();
+            
+           
+
+
+            var addNote = Builders<User>.Update.AddToSet("ownedNotes", note);
+
+            UpdateDefinition<User> update;;
+
+            if (obj.Tags != null & obj.Lectures != null)
+            {
+                
+                var addTags = Builders<User>.Update.AddToSetEach("allTags", obj.Tags);
+                
+                var addLectures = Builders<User>.Update.AddToSetEach("allLectures", obj.Lectures);
+
+
+
+               update = Builders<User>.Update.Combine(addNote, addTags, addLectures);
+
+            }
+            else
+            {
+
+                update = Builders<User>.Update.Combine(addNote);
+
+                if (obj.Tags != null)
+                {
+                    var addTags = Builders<User>.Update.AddToSetEach("allTags", obj.Tags);
+                    update = Builders<User>.Update.Combine(addNote, addTags);
+
+                }
+              
+               
+                if(obj.Tags != null)
+                {
+                    var addLectures = Builders<User>.Update.AddToSetEach("allLectures", obj.Lectures);
+
+                    update = Builders<User>.Update.Combine(addNote, addLectures);
+                }
+
+
+            }
+
+
+
+
+
+
+
+           
+                collection.FindOneAndUpdate(filter, update);
+                return Ok(note);
+            
+            
 
         }
 
@@ -89,9 +131,9 @@ namespace YourNote.Server.Controllers
             var collection = Database.GetCollection<User>(collectionName);
 
             var filter = Builders<User>.Filter.Eq("id", obj.OwnerId)
-                       & Builders<User>.Filter.Eq("notes.id", obj.Id);
+                       & Builders<User>.Filter.Eq("ownedNotes.id", obj.Id);
 
-            var update = Builders<User>.Update.AddToSet("notes", note);
+            var update = Builders<User>.Update.AddToSet("ownedNotes", note);
 
             var result = collection.FindOneAndUpdate(filter, update);
 
@@ -109,15 +151,18 @@ namespace YourNote.Server.Controllers
         {
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
+            var filterOne = Builders<User>.Filter.Eq("ownedNotes._id", noteId);
 
-            var filter = Builders<User>.Filter.Eq("notes.id", noteId);
-            var pull   = Builders<User>.Update.Pull("notes.id", noteId);
+            var user = collection.Find<User>(filterOne).First();
+
+            var filter = new BsonDocument("_id", user.Id);
+
+
+            var pull = Builders<User>.Update.PullFilter("ownedNotes",
+                Builders<Note>.Filter.Eq("_id", noteId));
                 
             var result = collection.UpdateOne(filter, pull);
             
-
-
-
             if (result.IsAcknowledged)
                 return Ok(result.IsAcknowledged);
             else
@@ -139,8 +184,22 @@ namespace YourNote.Server.Controllers
                 Date = DateTime.Now
             };
 
-            note.Tags = notePost.Tags;
-            note.Lectures = notePost.Lectures;
+            if (notePost.Tags is null)
+                notePost.Tags = new List<string>();
+
+            if (notePost.Lectures is null)
+                notePost.Lectures = new List<string>();
+
+            foreach (var item in notePost.Tags)
+            {
+                note.Tags.Add(new Shared.Models.Tag(item));
+            }
+
+            foreach (var item in notePost.Lectures)
+            {
+                note.Lectures.Add(new Lecture(item));
+            }
+            
 
             return note;
         }
@@ -179,7 +238,7 @@ namespace YourNote.Server.Controllers
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
-            var filter = Builders<User>.Filter.Eq("id", userId);
+            var filter = Builders<User>.Filter.Eq("_id", userId);
             //var projection = Builders<User>.Projection.Include("ownedNotes");
             return collection.Find(filter).First();
         }

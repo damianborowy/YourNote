@@ -102,7 +102,12 @@ namespace YourNote.Server.Controllers
             var collection = Database.GetCollection<User>(collectionName);
             var filter = Builders<User>.Filter.Eq("email", user.EmailAddress);
 
-            var userFromDb = collection.Find(filter).First();
+            var query = collection.Find(filter).Any();
+
+            User userFromDb = null;
+
+            if (query)
+              userFromDb = collection.Find(filter).First();
 
             if (userFromDb == null || !BCrypt.Net.BCrypt.EnhancedVerify(user.Password, userFromDb.Password))
                 return BadRequest(new LoginResult { Successful = false, Error = "Podano niepoprawny login lub has³o." });
