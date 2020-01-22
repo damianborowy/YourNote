@@ -80,6 +80,7 @@
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
+        NoteObj.OwnerId = UserId;
         var result = await Http.PutJsonAsync<SharedModels.NotePost>($"/api/notes/", NoteObj);
         IsNoteBeingSaved = false;
 
