@@ -8,7 +8,7 @@ using YourNote.Shared.Models.CustomAttribute;
 
 namespace YourNote.Shared.Models
 {
-    
+    [MyBsonCollection("SharedNotes")]
     public class Note : IComparable<Note>
     {
 
@@ -37,16 +37,20 @@ namespace YourNote.Shared.Models
         public byte Color { get; set; }
 
         [BsonElement("tag")]
-        //[BsonRepresentation(BsonType.Array)]
         public IList<Tag> Tags { get; set; }
 
         [BsonElement("lecture")]
-        //[BsonRepresentation(BsonType.Array)]
         public IList<Lecture> Lectures { get; set; }
 
         [BsonElement("date")]
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime Date { get; set; }
+
+        [BsonElement("sharesTo")]
+        public List<string> SharesTo { get; set; }
+
+        [BsonElement("ownerId")]
+        public string OwnerId { get; set; }
 
         public void AddTag(string tag)
         {
