@@ -43,6 +43,8 @@
         {
             if (note.Tags == null) note.Tags = new List<string>();
             if (note.Lectures == null) note.Lectures = new List<string>();
+            
+            Console.WriteLine(note.Tags.Count + " " + note.Lectures.Count);
         }
 
         tags = tagsArr == null ? new List<string>() : tagsArr.Select(tag => tag.Name).ToList();
