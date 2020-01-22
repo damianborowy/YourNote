@@ -155,7 +155,7 @@ namespace YourNote.Server.Controllers
 
             UpdateDefinition<User> update; ;
 
-            if (obj.Tags != null & obj.Lectures != null)
+            if (obj.Tags.Count != 0 & obj.Lectures.Count != 0)
             {
 
                 var addTags = Builders<User>.Update.AddToSetEach("allTags", newLectures);
@@ -172,7 +172,7 @@ namespace YourNote.Server.Controllers
 
                 update = Builders<User>.Update.Combine(updateNote);
 
-                if (obj.Tags != null)
+                if (obj.Tags.Count != 0 & newTags.Any())
                 {
                     var addTags = Builders<User>.Update.AddToSetEach("allTags", newTags);
                     update = Builders<User>.Update.Combine(updateNote, addTags);
@@ -180,7 +180,7 @@ namespace YourNote.Server.Controllers
                 }
 
 
-                if (obj.Tags != null)
+                if (obj.Tags.Count != 0 & newLectures.Any())
                 {
                     var addLectures = Builders<User>.Update.AddToSetEach("allLectures", newLectures);
 
