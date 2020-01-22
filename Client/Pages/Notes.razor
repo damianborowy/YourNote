@@ -6,16 +6,36 @@
 @using YourNote.Shared.Models
 @using System.Text.Json
 
-<div class="wrapper">
+<div>
     @if (notes == null)
     {
         <p><em>Wczytywanie...</em></p>
     }
     else
     {
-        foreach (var note in notes)
+        @if (notesOwned.Count > 0)
         {
-            <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" />
+            <div>
+                <h5>Własne notatki</h5>
+                <div class="wrapper">
+                    @foreach (var note in notesOwned)
+                    {
+                        <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" />
+                    }
+                </div>
+            </div>
+        }
+        @if (notesShared.Count > 0) 
+        {
+            <div>
+                <h5>Udostępnione mi notatki</h5>
+                <div class="wrapper">
+                    @foreach (var note in notesShared)
+                    {
+                        <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" />
+                    }
+                </div>
+            </div>
         }
     }
 </div>
@@ -27,6 +47,8 @@
     public string UserId { get; set; }
 
     List<SharedModels.NotePost> notes;
+    List<SharedModels.NotePost> notesOwned = new List<SharedModels.NotePost>();
+    List<SharedModels.NotePost> notesShared = new List<SharedModels.NotePost>();
     List<string> tags;
     List<string> lectures;
 
@@ -43,7 +65,10 @@
             if (note.Lectures == null) note.Lectures = new List<string>();
             if (note.SharesTo == null) note.SharesTo = new List<string>();
             
-            Console.WriteLine(note.Tags.Count + " " + note.Lectures.Count);
+            if (note.OwnerId == null || note.OwnerId.Equals(UserId))
+                notesOwned.Add(note);
+            else
+                notesShared.Add(note);
         }
     }
 }
