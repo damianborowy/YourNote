@@ -60,7 +60,7 @@ namespace YourNote.Server.Controllers
 
         // PUT: api/Shares
         [HttpPut]
-        public IActionResult Put([FromBody] NotePost obj, [FromBody] string EmailAddress)
+        public IActionResult Put([FromBody] NotePost obj)
         {
 
             var note = ParseToNewNote(obj);
@@ -68,6 +68,8 @@ namespace YourNote.Server.Controllers
 
             var collectionSharedNote = GetSharedNoteCollection();  
             var collectionUsers = Database.GetCollection<User>("Users");
+
+            var EmailAddress = obj.SharesTo[0];
 
             var userFilter = Builders<User>.Filter.Eq("email", EmailAddress);
             var userQuerry = collectionUsers.Find(userFilter);
