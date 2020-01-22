@@ -16,8 +16,7 @@ namespace YourNote.Shared.Models
         public Note()
         {
             Date = DateTime.Now;
-            Tags = new List<Tag>();
-            Lectures = new List<Lecture>();
+            
         }
 
         [BsonId]

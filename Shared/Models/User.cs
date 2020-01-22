@@ -13,10 +13,7 @@ namespace YourNote.Shared.Models
 
         public User()
         {
-            OwnedNotes = new List<Note>();
-            SharedNotesIds = new List<MongoDBRef>();
-            AllTags = new List<Tag>();
-            AllLectures = new List<Lecture>();
+            
         }
 
         [BsonId]

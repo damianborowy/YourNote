@@ -80,9 +80,12 @@ namespace YourNote.Server.Controllers
             {
                 EmailAddress = registerModel.EmailAddress,
                 Password = registerModel.Password,
-                Id = ObjectId.GenerateNewId().ToString()
-
-            };
+                Id = ObjectId.GenerateNewId().ToString(),
+                OwnedNotes = new List<Note>(),
+                SharedNotesIds = new List<MongoDBRef>(),
+                AllTags = new List<Shared.Models.Tag>(),
+                AllLectures = new List<Lecture>()
+        };
 
             user = HashPassword(user);
             var result = databaseUser.Create(user);

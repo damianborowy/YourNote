@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using YourNote.Server.Services.DatabaseService;
 using YourNote.Shared.Models;
 
@@ -51,19 +52,24 @@ namespace YourNote.Server.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] NotePost obj)
         {
-
+            var note = ParseToNewNote(obj);
+            note.Id = ObjectId.GenerateNewId().ToString();
 
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
             var filter = Builders<User>.Filter.Eq("_id", obj.OwnerId);
 
             //var note = SetTagAndLecture(obj);
-            var result = collection.Find<User>(filter).Any();
-            if(!result)
+            var userQuerry = collection.Find<User>(filter);
+            if(!userQuerry.Any())
                 return BadRequest(new { error = "User doesn't exist" });
 
-            var note = ParseToNewNote(obj);
-            note.Id = ObjectId.GenerateNewId().ToString();
+            var user = userQuerry.First();
+            var newTags = note.Tags.Except(user.AllTags);
+            var newLectures = note.Lectures.Except(user.AllLectures);
+
+
+            
             
            
 
@@ -75,9 +81,9 @@ namespace YourNote.Server.Controllers
             if (obj.Tags != null & obj.Lectures != null)
             {
                 
-                var addTags = Builders<User>.Update.AddToSetEach("allTags", obj.Tags);
+                var addTags = Builders<User>.Update.AddToSetEach("allTags", newTags);
                 
-                var addLectures = Builders<User>.Update.AddToSetEach("allLectures", obj.Lectures);
+                var addLectures = Builders<User>.Update.AddToSetEach("allLectures", newLectures);
 
 
 
@@ -91,7 +97,7 @@ namespace YourNote.Server.Controllers
 
                 if (obj.Tags != null)
                 {
-                    var addTags = Builders<User>.Update.AddToSetEach("allTags", obj.Tags);
+                    var addTags = Builders<User>.Update.AddToSetEach("allTags", newTags);
                     update = Builders<User>.Update.Combine(addNote, addTags);
 
                 }
@@ -99,7 +105,7 @@ namespace YourNote.Server.Controllers
                
                 if(obj.Tags != null)
                 {
-                    var addLectures = Builders<User>.Update.AddToSetEach("allLectures", obj.Lectures);
+                    var addLectures = Builders<User>.Update.AddToSetEach("allLectures", newLectures);
 
                     update = Builders<User>.Update.Combine(addNote, addLectures);
                 }
@@ -130,18 +136,78 @@ namespace YourNote.Server.Controllers
             var collectionName = "Users";
             var collection = Database.GetCollection<User>(collectionName);
 
-            var filter = Builders<User>.Filter.Eq("id", obj.OwnerId)
-                       & Builders<User>.Filter.Eq("ownedNotes.id", obj.Id);
+            var filter = Builders<User>.Filter.Eq("_id", obj.OwnerId);
 
-            var update = Builders<User>.Update.AddToSet("ownedNotes", note);
+            
+          
+            var userQuerry = collection.Find<User>(filter);
+            if (!userQuerry.Any())
+                return BadRequest(new { error = "User doesn't exist" });
 
-            var result = collection.FindOneAndUpdate(filter, update);
+            var user = userQuerry.First();
+            var newTags = note.Tags.Except(user.AllTags);
+            var newLectures = note.Lectures.Except(user.AllLectures);
+
+            filter = Builders<User>.Filter.Eq("_id", obj.OwnerId)
+                       & Builders<User>.Filter.Eq("ownedNotes._id", obj.Id);
+
+            var updateNote = Builders<User>.Update.Set(model => model.OwnedNotes[-1], note);
+
+            UpdateDefinition<User> update; ;
+
+            if (obj.Tags != null & obj.Lectures != null)
+            {
+
+                var addTags = Builders<User>.Update.AddToSetEach("allTags", newLectures);
+
+                var addLectures = Builders<User>.Update.AddToSetEach("allLectures", newTags);
 
 
-            if (result is null)
+
+                update = Builders<User>.Update.Combine(updateNote, addTags, addLectures);
+
+            }
+            else
+            {
+
+                update = Builders<User>.Update.Combine(updateNote);
+
+                if (obj.Tags != null)
+                {
+                    var addTags = Builders<User>.Update.AddToSetEach("allTags", newTags);
+                    update = Builders<User>.Update.Combine(updateNote, addTags);
+
+                }
+
+
+                if (obj.Tags != null)
+                {
+                    var addLectures = Builders<User>.Update.AddToSetEach("allLectures", newLectures);
+
+                    update = Builders<User>.Update.Combine(updateNote, addLectures);
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+          var result = collection.UpdateOne(filter, update);
+
+
+            if(result.MatchedCount > 0 )
                 return Ok(note);
             else
-                return BadRequest(new { error = "User doesn't exist" });
+                return BadRequest( new {error = "Couldn't update the note"});
+
+
+            
+            
 
         }
 
@@ -179,6 +245,8 @@ namespace YourNote.Server.Controllers
                 Title = notePost.Title,
                 Content = notePost.Content,
                 Color = notePost.Color,
+                Tags = new List<Shared.Models.Tag>(),
+                Lectures = new List<Lecture>(),
 
 
                 Date = DateTime.Now
