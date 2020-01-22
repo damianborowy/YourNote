@@ -198,6 +198,10 @@ namespace YourNote.Server.Controllers
                 note.SharesTo = notePost.SharesTo;
             }
 
+            if (note.SharesTo != null & notePost.SharesTo != null)
+            {
+                note.SharesTo = new List<string>();
+            }
 
             if (notePost.Tags is null)
                 notePost.Tags = new List<string>();
