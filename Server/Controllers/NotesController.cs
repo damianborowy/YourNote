@@ -121,7 +121,7 @@ namespace YourNote.Server.Controllers
 
            
                 collection.FindOneAndUpdate(filter, update);
-                return Ok(note);
+                return Ok(obj);
             
             
 
