@@ -66,7 +66,7 @@ namespace YourNote.Server.Controllers
             var note = ParseToNewNote(obj);
             var isNew = true;
 
-            var collectionSharedNote = GetSharedNoteCollection();  
+            var collectionSharedNote = GetSharedNoteCollection();
             var collectionUsers = Database.GetCollection<User>("Users");
 
             var EmailAddress = obj.SharesTo[0];
@@ -106,18 +106,18 @@ namespace YourNote.Server.Controllers
                 var filter = Builders<Note>.Filter.Eq("_id", note.Id);
                 collectionSharedNote.DeleteOne(filter);
                 collectionSharedNote.InsertOne(note);
-                
+
 
             }
 
 
 
-            
 
 
-            
-            return Ok(new {obj, EmailAddress });
-            
+
+
+            return Ok(new { obj, EmailAddress });
+
 
 
 
@@ -125,7 +125,7 @@ namespace YourNote.Server.Controllers
 
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Shares/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
@@ -148,9 +148,9 @@ namespace YourNote.Server.Controllers
 
             var result = collection.UpdateOne(filter, pull);
 
-            
-                return result.IsAcknowledged;
-            
+
+            return result.IsAcknowledged;
+
 
         }
 
@@ -188,9 +188,9 @@ namespace YourNote.Server.Controllers
                 Lectures = new List<Lecture>(),
                 OwnerId = notePost.OwnerId,
 
-            
 
-            Date = DateTime.Now
+
+                Date = DateTime.Now
             };
 
             if (note.SharesTo != null)
@@ -219,7 +219,7 @@ namespace YourNote.Server.Controllers
                 note.Lectures.Add(new Lecture(item));
             }
 
-          
+
 
             return note;
         }

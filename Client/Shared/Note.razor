@@ -31,6 +31,16 @@
             <button @onclick="@AddNewUser">
                 Dodaj
             </button><br />
+            @if (NoteObj.SharesTo.Count > 0)
+            {
+                <p>Udostępniasz tą notatkę:</p>
+                <ul>
+                    @foreach (var user in NoteObj.SharesTo)
+                    {
+                        <li>@user</li>
+                    }
+                </ul>
+            }
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" placeholder="Treść notatki..." />
     </BSModalBody>
@@ -64,18 +74,22 @@
 
     void AddNewUser()
     {
+        Console.WriteLine(NewUserId);
         if (!String.IsNullOrWhiteSpace(NewUserId))
         {
             NoteObj.SharesTo.Add(NewUserId);
             NewUserId = null;
-        }   
+        }
     }
 
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
         NoteObj.OwnerId = UserId;
-        var result = await Http.PutJsonAsync<SharedModels.NotePost>($"/api/notes/", NoteObj);
+        if (NoteObj.SharesTo.Count > 0)
+            await Http.PutJsonAsync<SharedModels.NotePost>("/api/shares/", NoteObj);
+        else
+            await Http.PutJsonAsync<SharedModels.NotePost>("/api/notes/", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();
