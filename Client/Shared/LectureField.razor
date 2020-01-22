@@ -4,13 +4,7 @@
 {
     <div class="d-flex flex-row align-items-center">
         <img src="/img/file-document-box.svg" class="svg-icon" />
-        <input list="lectures" value='@string.Join(" ", Lectures)' @onchange="((e) => OnChange(e))" placeholder="Nazwa kursu..." />
-        <datalist id="lectures">
-            @foreach (var lecture in DownloadedLectures)
-            {
-                <option value="@lecture" />
-            }
-        </datalist><br />
+        <input value='@string.Join(" ", Lectures)' @onchange="((e) => OnChange(e))" placeholder="Nazwa kursu..." /><br />
     </div>
 }
 else
@@ -24,9 +18,6 @@ else
 
     [Parameter]
     public EventCallback<List<string>> LecturesChanged { get; set; }
-
-    [Parameter]
-    public List<string> DownloadedLectures { get; set; }
 
     bool IsToggled { get; set; } = false;
 

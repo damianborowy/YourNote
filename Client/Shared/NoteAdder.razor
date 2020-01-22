@@ -12,8 +12,8 @@
     </BSModalHeader>
     <BSModalBody>
         <div class="modal__inputs">
-            <TagField @bind-Tags="Tags" DownloadedTags="@DownloadedTags" />
-            <LectureField @bind-Lectures="Lectures" DownloadedLectures="@DownloadedLectures" />
+            <TagField @bind-Tags="Tags" />
+            <LectureField @bind-Lectures="Lectures" />
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@note.Content" placeholder="Treść notatki..." />
     </BSModalBody>
@@ -32,12 +32,6 @@
 
     [Parameter]
     public string UserId { get; set; }
-
-    [Parameter]
-    public List<string> DownloadedTags { get; set; }
-
-    [Parameter]
-    public List<string> DownloadedLectures { get; set; }
 
     SharedModels.NotePost note = new SharedModels.NotePost();
 

@@ -22,15 +22,15 @@
     </BSModalHeader>
     <BSModalBody>
         <div class="modal__inputs">
-            <TagField @bind-Tags="@NoteObj.Tags" DownloadedTags="@DownloadedTags" />
-            <LectureField @bind-Lectures="@NoteObj.Lectures" DownloadedLectures="@DownloadedLectures" /><br />
-            @*<label for="new-user">
+            <TagField @bind-Tags="@NoteObj.Tags" />
+            <LectureField @bind-Lectures="@NoteObj.Lectures" /><br />
+            <label for="new-user">
                 Udostępnij:
             </label>
-            <input id="new-user" type="number" @bind="NewUserId" />
+            <input type="email" @bind="NewUserId" />
             <button @onclick="@AddNewUser">
                 Dodaj
-            </button><br />*@
+            </button><br />
         </div>
         <textarea rows="10" class="form-control text-light bg-dark modal__content" @bind="@NoteObj.Content" placeholder="Treść notatki..." />
     </BSModalBody>
@@ -53,29 +53,23 @@
     [Parameter]
     public string UserId { get; set; }
 
-    [Parameter]
-    public List<string> DownloadedTags { get; set; }
-
-    [Parameter]
-    public List<string> DownloadedLectures { get; set; }
-
     BSModal ModalRef;
     bool IsNoteBeingSaved = false;
-    int? NewUserId = null;
+    string NewUserId;
 
     private BlazorStrap.Color GetColorAsEnum()
     {
         return (BlazorStrap.Color)NoteObj.Color;
     }
 
-    /* void AddNewUser()
+    void AddNewUser()
     {
-        if (NewUserId.HasValue)
-            NoteObj.SharedTo.Add(NewUserId.Value);
-
-        NewUserId = null;
+        if (!String.IsNullOrWhiteSpace(NewUserId))
+        {
+            NoteObj.SharesTo.Add(NewUserId);
+            NewUserId = null;
+        }   
     }
-    */
 
     async Task SaveNote()
     {

@@ -15,12 +15,12 @@
     {
         foreach (var note in notes)
         {
-            <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" DownloadedTags="@tags" DownloadedLectures="@lectures" />
+            <Note NoteObj="@note" UserId="@UserId" @bind-Notes="notes" />
         }
     }
 </div>
 
-<NoteAdder UserId="@UserId" @bind-Notes="notes" DownloadedTags="@tags" DownloadedLectures="@lectures" />
+<NoteAdder UserId="@UserId" @bind-Notes="notes" />
 
 @code {
     [Parameter]
@@ -36,8 +36,6 @@
         UserId = UserId ?? ClaimsParser.Select(authService, "nameid");
 
         notes = await Http.GetJsonAsync<List<SharedModels.NotePost>>($"api/notes/{UserId}");
-        var tagsArr = await Http.GetJsonAsync<List<Tag>>("api/tags");
-        var lecturesArr = await Http.GetJsonAsync<List<Lecture>>("api/lectures");
 
         foreach (var note in notes)
         {
@@ -46,27 +44,5 @@
             
             Console.WriteLine(note.Tags.Count + " " + note.Lectures.Count);
         }
-
-        tags = tagsArr == null ? new List<string>() : tagsArr.Select(tag => tag.Name).ToList();
-        lectures = lecturesArr == null ? new List<string>() : lecturesArr.Select(lecture => lecture.Name).ToList();
-        /*
-        foreach (var tag in tagsArr)
-        {
-            foreach (var note in notes)
-                if (tag.Name != null && tag.Id.ToString().Equals(note.Tag))
-                    note.Tag = tag.Name;
-
-            tags.Add(tag.Name);
-        }
-
-        foreach (var lecture in lecturesArr)
-        {
-            foreach (var note in notes)
-                if (lecture.Name != null && lecture.Id.ToString().Equals(note.Lecture))
-                    note.Lecture = lecture.Name;
-
-            lectures.Add(lecture.Name);
-        }
-        */
     }
 }
