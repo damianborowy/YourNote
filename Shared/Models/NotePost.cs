@@ -31,7 +31,8 @@ namespace YourNote.Shared.Models
             Color = note.Color;
             Tags = new List<string>();
             Lectures = new List<string>();
-
+            if(note.OwnerId != null)
+                OwnerId = note.OwnerId;
 
             foreach (var item in note.Tags)
             {
@@ -45,7 +46,7 @@ namespace YourNote.Shared.Models
 
             OwnerId = note.OwnerId;
 
-            if(SharesTo != null)
+            if(note.SharesTo != null)
             {
                 SharesTo = note.SharesTo;
             }

@@ -43,7 +43,22 @@ namespace YourNote.Server.Controllers
         {
 
             var User = GetUser(userId);
-            return ParseToNotePost(User.OwnedNotes);
+            var notes = User.OwnedNotes;
+
+
+            var sharedCollection = Database.GetCollection<Note>("SharedNotes");
+            var filterShared = Builders<Note>.Filter.Eq("sharesTo", userId);
+            var filterOwner = Builders<Note>.Filter.Eq("ownerId", userId);
+
+            var sharedNotes = sharedCollection.Find(filterShared).ToList();
+
+            var ownerNotes = sharedCollection.Find(filterOwner).ToList();
+
+            sharedNotes.AddRange(ownerNotes);
+
+            notes.AddRange(sharedNotes);
+
+            return ParseToNotePost(notes);
             
 
         }
