@@ -89,7 +89,7 @@ namespace YourNote.Server.Controllers
                 note = noteQuerry.First();
             }
 
-            note.SharesTo.Add(user.Id);
+            
 
 
             //var noteToShareIndex = user.OwnedNotes.IndexOf(new Note { Id = obj.Id });
@@ -98,12 +98,15 @@ namespace YourNote.Server.Controllers
             if (isNew)
             {
                 DeleteNote(note.Id);
+                note.SharesTo = new List<string>();
+                note.SharesTo.Add(user.Id);
                 collectionSharedNote.InsertOne(note);
 
             }
             else
             {
                 var filter = Builders<Note>.Filter.Eq("_id", note.Id);
+                note.SharesTo.Add(user.Id);
                 collectionSharedNote.DeleteOne(filter);
                 collectionSharedNote.InsertOne(note);
 
