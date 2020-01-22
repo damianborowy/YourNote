@@ -45,6 +45,7 @@ namespace YourNote.Server.Controllers
             var User = GetUser(userId);
             var notes = User.OwnedNotes;
 
+            var userCollection = Database.GetCollection<User>("Users");
 
             var sharedCollection = Database.GetCollection<Note>("SharedNotes");
             var filterShared = Builders<Note>.Filter.Eq("sharesTo", userId);
@@ -57,6 +58,22 @@ namespace YourNote.Server.Controllers
             sharedNotes.AddRange(ownerNotes);
 
             notes.AddRange(sharedNotes);
+
+            notes.ForEach(note =>
+            {
+                var emailAddreses = new List<string>();
+
+                foreach (var item in note.SharesTo)
+                {
+                    var filter = Builders<User>.Filter.Eq("_id", item);
+                    var user = userCollection.Find(filter).FirstOrDefault();
+                    emailAddreses.Add(user.EmailAddress);
+
+                }
+
+                note.SharesTo = emailAddreses;
+            }
+            );
 
             return ParseToNotePost(notes);
             
