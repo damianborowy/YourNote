@@ -80,7 +80,7 @@
     async Task SaveNote()
     {
         IsNoteBeingSaved = true;
-        var result = await Http.PutJsonAsync<SharedModels.NotePost>($"/api/notes/{UserId}", NoteObj);
+        var result = await Http.PutJsonAsync<SharedModels.NotePost>($"/api/notes/", NoteObj);
         IsNoteBeingSaved = false;
 
         ModalRef.Hide();
