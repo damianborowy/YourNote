@@ -33,8 +33,8 @@
             </button><br />
             @if (NoteObj.SharesTo.Count > 0)
             {
-                <p>Udostępniasz tą notatkę:</p>
-                <ul>
+                <p style="margin-bottom: 0;">Udostępniasz do:</p>
+                <ul style="margin-bottom: 0;">
                     @foreach (var user in NoteObj.SharesTo)
                     {
                         <li>@user</li>
